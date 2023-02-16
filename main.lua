@@ -1,10 +1,22 @@
 local game = nil
+local emulator = nil
+
+package.path = package.path .. ";.\\?\\init.lua"
+
+if vba then
+    print("Loading VBA...")
+    emulator = require "virtualboyadvanced"
+elseif client then
+    print("Loading BizHawk...")
+    emulator = require "bizhawk"
+end
+
+local memory = emulator.memory()
 currentRom = memory.readdword(0x080000A0)
 local tbsRom = 0x646C6F47
 local tlaRom = 0x444C4F47
 
 local currentRom = memory.readdword(0x080000A0)
-package.path = package.path .. ";.\\?\\init.lua"
 if currentRom == tbsRom then
     print("Loading TBS...")
     game = require "tbs"
@@ -124,5 +136,5 @@ while true do
         yCursor = memory.readword(memMap.yMapCursor)
 
     end
-    vba.frameadvance()
+    emulator.frameadvance()
 end
