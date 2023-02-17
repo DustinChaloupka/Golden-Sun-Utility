@@ -35,18 +35,17 @@ local encountersIfHoldingL = false
 function move(xAddr, yAddr, speed)
     local x = memory.readword(xAddr)
     local y = memory.readword(yAddr)
-    if pad["down"] then y = y + speed end
-    if pad["up"] then y = y - speed end
-    if pad["left"] then x = x - speed end
-    if pad["right"] then x = x + speed end
+    if emulator.keyPressed("down") then y = y + speed end
+    if emulator.keyPressed("up") then y = y - speed end
+    if emulator.keyPressed("left") then x = x - speed end
+    if emulator.keyPressed("right") then x = x + speed end
     memory.writeword(xAddr, x)
     memory.writeword(yAddr, y)
     camSpeed = speed
 end
 
 while true do
-
-    pad = joypad.get(0)
+    emulator.loadJoypad(0)
 
     local memMap = {}
     if currentRom == memory.readdword(0x080000A0) then
@@ -63,7 +62,7 @@ while true do
         local mapNumber = memory.readword(memMap.mapAddr)
 
         if mapNumber == 2 then memory.writebyte(memMap.zoomLock, 2) end
-        if currentRom == 0x444C4F47 then
+        if currentRom == tlaRom then
             if (mapNumber == 0xc5 or mapNumber == 0xC6 or mapNumber == 0x10C) and
                 memory.readword(0x020004B6) ~= 1 then
                 memory.writeword(0x020004B6, 1)
@@ -77,7 +76,8 @@ while true do
                 end
             end
             -- Hold L and press B when in a menu to teleport the boat to you
-            if pad["L"] and pad["B"] and mapNumber == 2 and
+            if emulator.keyPressed("L") and emulator.keyPressed("B") and
+                mapNumber == 2 and
                 bit.band(bit.rshift(memory.readbyte(0x02000060), 6), 1) == 1 and
                 memory.readword(0x020004B6) == 0 then
                 memory.writeword(memMap.xBoat, memory.readword(memMap.xOver))
@@ -86,13 +86,13 @@ while true do
         end
 
         -- Hold L to go fast
-        if pad["L"] then
+        if emulator.keyPressed("L") then
             if mapNumber == 2 then
                 if movementType == 7 then
                     move(memMap.xBoat, memMap.yBoat, boatSpeed)
                 elseif movementType == 8 then
                     move(memMap.xBoat, memMap.yBoat, hoverBoatSpeed)
-                elseif pad["B"] then
+                elseif emulator.keyPressed("B") then
                     move(memMap.xOver, memMap.yOver, overRunSpeed)
                 else
                     move(memMap.xOver, memMap.yOver, overWorldSpeed)
@@ -112,7 +112,8 @@ while true do
 
         -- Press A on world map to teleport to cursor
         if mapState == 0 then switch = false end
-        if mapState == 1 and switch == false and pad["A"] == true then
+        if mapState == 1 and switch == false and emulator.keyPressed("A") ==
+            true then
             if currentRom == tbsRom then
                 x = bit.lshift(xCursor, 8) / 15 + 0x1000
                 y = bit.lshift(yCursor, 8) / 10
