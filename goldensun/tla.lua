@@ -24,7 +24,11 @@ local tla = {
 local Game = require("goldensun.game")
 local TLA = Game.new()
 
-function TLA:maybe_teleport_boat(mapNumber)
+function TLA:calculate_map_x(cursor) return bit.lshift(cursor + 269, 14) / 853 end
+function TLA:calculate_map_y(cursor) return bit.lshift(cursor + 112, 14) / 640 end
+
+function TLA:teleport_boat()
+    local mapNumber = memory.readword(self.mapAddress)
     if (mapNumber == 0xc5 or mapNumber == 0xC6 or mapNumber == 0x10C) and
         memory.readword(0x020004B6) ~= 1 then
         memory.writeword(0x020004B6, 1)

@@ -20,6 +20,13 @@ local tbs = {
 local Game = require("goldensun.game")
 local TBS = Game.new()
 
+-- what is this actually doing?
+local function cursor_shift(cursor) return bit.lshift(cursor, 8) end
+
+function TBS:calculate_map_x(cursor) return cursor_shift(cursor) / 15 + 0x1000 end
+
+function TBS:calculate_map_y(cursor) return cursor_shift(cursor) / 10 end
+
 setmetatable(tbs, {__index = TBS})
 
 return tbs
