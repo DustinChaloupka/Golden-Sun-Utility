@@ -1,7 +1,4 @@
-local game
-emulator = nil
-
-local addresses = require("goldensun.addresses")
+local emulator = nil
 
 if vba then
     print("Loading VBA...")
@@ -11,29 +8,32 @@ elseif client then
     emulator = require("emulation.bizhawk")
 end
 
+local game = require("goldensun.game")
 local tbs = require("goldensun.tbs")
 local tla = require("goldensun.tla")
 
-local currentRom = memory.readdword(addresses.rom)
-if currentRom == tbs.addresses.rom then
+local currentRom = emulator:current_rom(game.rom)
+if currentRom == tbs.rom then
     print("Loading TBS...")
     game = tbs
     tla = nil
-elseif currentRom == tla.addresses.rom then
+elseif currentRom == tla.rom then
     print("Loading TLA...")
     game = tla
     tbs = nil
 end
 
-while true do
-    emulator:load_joypad(0)
+game.emulator = emulator
 
-    if not addresses.is_battle() then
+while true do
+    game.emulator:load_joypad(0)
+
+    if not game:is_battle() then
         game:lock_zoom()
         game:teleport_boat()
         game:fast_travel()
         game:teleport_to_cursor()
     end
 
-    emulator:frameadvance()
+    game.emulator:frameadvance()
 end

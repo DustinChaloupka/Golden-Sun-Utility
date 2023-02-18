@@ -1,10 +1,5 @@
 local bizhawk = {emulation = emu}
 
--- Can this get removed to not edit a global table somehow?
-memory.readword = memory.read_u16_le
-memory.readdword = memory.read_u32_le
-memory.writeword = memory.write_s16_le
-
 local Emulator = require("emulation.emulator")
 local BizHawk = Emulator.new {
     controller = joypad.get(),
@@ -15,8 +10,12 @@ local BizHawk = Emulator.new {
         right = "Right",
         start = "Start",
         select = "Select"
-    }
+    },
+    memory = memory
 }
+BizHawk.memory.readword = memory.read_u16_le
+BizHawk.memory.readdword = memory.read_u32_le
+BizHawk.memory.writeword = memory.write_s16_le
 
 function BizHawk:load_joypad(joypad_number) self.controller = joypad.get() end
 function BizHawk:key_pressed(key)
