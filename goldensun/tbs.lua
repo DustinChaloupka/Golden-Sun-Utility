@@ -1,4 +1,7 @@
-local tbs = {
+local tbs = {}
+
+local Game = require("goldensun.game")
+local TBS = Game.new {
     camera = 0x03002000,
     collision = {0x0800F3B0},
     coordinates = {
@@ -11,13 +14,10 @@ local tbs = {
     },
     encounters = 0x02000478,
     mapFlag = 0x02030CB6,
-    moveType = 0x02000432,
+    move_type = require("goldensun.memory.tbs.movetype"),
     rom = 0x646C6F47,
     zoomLock = 0x03001CF5
 }
-
-local Game = require("goldensun.game")
-local TBS = Game.new()
 
 -- what is this actually doing?
 local function cursor_shift(cursor) return bit.lshift(cursor, 8) end

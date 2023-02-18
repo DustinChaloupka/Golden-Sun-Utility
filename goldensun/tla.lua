@@ -1,4 +1,7 @@
-local tla = {
+local tla = {}
+
+local Game = require("goldensun.game")
+local TLA = Game.new {
     camera = 0x03001300,
     collision = {0x08027A52, 0x0802860C, 0x08028B9A},
     coordinates = {
@@ -16,13 +19,10 @@ local tla = {
     encounters = 0x02000498,
     map = 0x02000420,
     mapFlag = 0x02030CA2,
-    moveType = 0x02000452,
+    move_type = require("goldensun.memory.tla.movetype"),
     rom = 0x444C4F47,
     zoomLock = 0x03001169
 }
-
-local Game = require("goldensun.game")
-local TLA = Game.new()
 
 function TLA:calculate_map_x(cursor) return bit.lshift(cursor + 269, 14) / 853 end
 function TLA:calculate_map_y(cursor) return bit.lshift(cursor + 112, 14) / 640 end
@@ -39,8 +39,7 @@ function TLA:teleport_boat()
         if self:read_word(playerPP) < 1 then self:write_word(playerPP, 1) end
     end
     -- Hold L and press B when in a menu to teleport the boat to you
-    if self.emulator:key_pressed("L") and self.emulator:key_pressed("B") and
-        mapNumber == 2 and
+    if self:key_pressed("L") and self:key_pressed("B") and mapNumber == 2 and
         bit.band(bit.rshift(self:read_byte(0x02000060), 6), 1) == 1 and
         self:read_word(0x020004B6) == 0 then
         self:write_word(self.coordinates.xBoat,

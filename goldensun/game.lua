@@ -8,6 +8,7 @@ function Game:write_word(...) return self.emulator.memory.writeword(...) end
 function Game:write_dword(...) return self.emulator.memory.writedword(...) end
 function Game:read_byte(...) return self.emulator.memory.readbyte(...) end
 function Game:write_byte(...) return self.emulator.memory.writebyte(...) end
+function Game:key_pressed(...) return self.emulator:key_pressed(...) end
 
 -- Hold L to go fast
 local settings = require("config.settings")
@@ -16,10 +17,10 @@ function Game:fast_travel()
     function move(xAddr, yAddr, speed)
         local x = self:read_word(xAddr)
         local y = self:read_word(yAddr)
-        if self.emulator:key_pressed("down") then y = y + speed end
-        if self.emulator:key_pressed("up") then y = y - speed end
-        if self.emulator:key_pressed("left") then x = x - speed end
-        if self.emulator:key_pressed("right") then x = x + speed end
+        if self:key_pressed("down") then y = y + speed end
+        if self:key_pressed("up") then y = y - speed end
+        if self:key_pressed("left") then x = x - speed end
+        if self:key_pressed("right") then x = x + speed end
         self:write_word(xAddr, x)
         self:write_word(yAddr, y)
         camSpeed = speed
@@ -27,12 +28,12 @@ function Game:fast_travel()
 
     if self.emulator:key_pressed("L") then
         local mapNumber = self:read_word(self.map)
-        local movementType = self:read_byte(self.moveType)
+        self.move_type:read(self)
         if mapNumber == 2 then
-            if movementType == 7 then
+            if self.move_type:is_overworld_ship() then
                 move(self.coordinates.xBoat, self.coordinates.yBoat,
                      settings.boatSpeed)
-            elseif movementType == 8 then
+            elseif self.move_type:is_hover_ship() then
                 move(self.coordinates.xBoat, self.coordinates.yBoat,
                      settings.hoverBoatSpeed)
             elseif self.emulator:key_pressed("B") then
@@ -47,7 +48,7 @@ function Game:fast_travel()
             local yCamera = self:read_dword(self.camera) + 0xA
             move(xCamera, yCamera, camSpeed - 1)
         else
-            if movementType == 6 then
+            if self.move_type:is_normal_ship() then
                 move(self.coordinates.xTownBoat, self.coordinates.yTownBoat,
                      settings.townSpeed)
             else
@@ -80,13 +81,12 @@ local yCursor
 function Game:teleport_to_cursor()
     local mapState = bit.band(self:read_byte(self.mapFlag), 1)
     if mapState == 0 then switch = false end
-    if mapState == 1 and switch == false and self.emulator:key_pressed("A") ==
-        true then
+    if mapState == 1 and switch == false and self:key_pressed("A") == true then
         local x = self:calculate_map_x(xCursor)
         local y = self:calculate_map_y(yCursor)
 
-        local movementType = self:read_byte(self.moveType)
-        if movementType == 7 or movementType == 8 then
+        self.move_type:read(self)
+        if self.move_type:is_ship() then
             self:write_word(self.coordinates.xBoat, x)
             self:write_word(self.coordinates.yBoat, y)
         else
@@ -106,8 +106,8 @@ function Game:teleport_to_cursor()
     yCursor = self:read_word(self.coordinates.yMapCursor)
 end
 
-function game.new()
-    local self = game
+function game.new(o)
+    local self = o or game
     setmetatable(self, {__index = Game})
     self.__index = self
     return self

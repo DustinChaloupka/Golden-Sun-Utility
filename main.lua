@@ -24,7 +24,6 @@ elseif currentRom == tla.rom then
 end
 
 game.emulator = emulator
-
 while true do
     game.emulator:load_joypad(0)
 
