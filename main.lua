@@ -15,11 +15,11 @@ local tbs = require("goldensun.tbs")
 local tla = require("goldensun.tla")
 
 local currentRom = memory.readdword(addresses.rom)
-if currentRom == tbs.rom then
+if currentRom == tbs.addresses.rom then
     print("Loading TBS...")
     game = tbs
     tla = nil
-elseif currentRom == tla.rom then
+elseif currentRom == tla.addresses.rom then
     print("Loading TLA...")
     game = tla
     tbs = nil

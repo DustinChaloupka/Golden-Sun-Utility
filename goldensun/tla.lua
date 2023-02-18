@@ -1,23 +1,25 @@
 local tla = {
-    rom = 0x444C4F47,
-    mapAddress = 0x02000420,
-    addresses = {zoomLock = 0x03001169},
-    movementAddresses = {
-        xOver = 0x020321C2,
-        yOver = 0x020321CA,
-        xBoat = 0x02032242,
-        yBoat = 0x0203224A,
-        xTown = 0x020322F6,
-        yTown = 0x020322FE,
-        xTownBoat = 0x02032376,
-        yTownBoat = 0x0203237E,
-        xMapCursor = 0x0202A006,
-        yMapCursor = 0x0202A00A,
+    addresses = {
+        camera = 0x03001300,
+        collision = {0x08027A52, 0x0802860C, 0x08028B9A},
+        coordinates = {
+            xOver = 0x020321C2,
+            yOver = 0x020321CA,
+            xBoat = 0x02032242,
+            yBoat = 0x0203224A,
+            xTown = 0x020322F6,
+            yTown = 0x020322FE,
+            xTownBoat = 0x02032376,
+            yTownBoat = 0x0203237E,
+            xMapCursor = 0x0202A006,
+            yMapCursor = 0x0202A00A
+        },
         encounters = 0x02000498,
-        moveTypeAddr = 0x02000452,
-        camAddr = 0x03001300,
+        map = 0x02000420,
         mapFlag = 0x02030CA2,
-        collision = {0x08027A52, 0x0802860C, 0x08028B9A}
+        moveType = 0x02000452,
+        rom = 0x444C4F47,
+        zoomLock = 0x03001169
     }
 }
 
@@ -28,7 +30,7 @@ function TLA:calculate_map_x(cursor) return bit.lshift(cursor + 269, 14) / 853 e
 function TLA:calculate_map_y(cursor) return bit.lshift(cursor + 112, 14) / 640 end
 
 function TLA:teleport_boat()
-    local mapNumber = memory.readword(self.mapAddress)
+    local mapNumber = memory.readword(self.addresses.map)
     if (mapNumber == 0xc5 or mapNumber == 0xC6 or mapNumber == 0x10C) and
         memory.readword(0x020004B6) ~= 1 then
         memory.writeword(0x020004B6, 1)
@@ -44,10 +46,10 @@ function TLA:teleport_boat()
     if emulator:key_pressed("L") and emulator:key_pressed("B") and mapNumber ==
         2 and bit.band(bit.rshift(memory.readbyte(0x02000060), 6), 1) == 1 and
         memory.readword(0x020004B6) == 0 then
-        memory.writeword(self.movementAddresses.xBoat,
-                         memory.readword(tla.movementAddresses.xOver))
-        memory.writeword(self.movementAddresses.yBoat,
-                         memory.readword(tla.movementAddresses.yOver))
+        memory.writeword(self.addresses.coordinates.xBoat,
+                         memory.readword(tla.ddresses.coordinates.xOver))
+        memory.writeword(self.addresses.coordinates.yBoat,
+                         memory.readword(tla.addresses.coordinates.yOver))
     end
 end
 
