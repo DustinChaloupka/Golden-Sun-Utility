@@ -2,25 +2,32 @@ local game = {rom = 0x080000A0}
 
 local Game = {}
 
+function Game:read_word(...) return self.emulator.memory.readword(...) end
+function Game:read_dword(...) return self.emulator.memory.readdword(...) end
+function Game:write_word(...) return self.emulator.memory.writeword(...) end
+function Game:write_dword(...) return self.emulator.memory.writedword(...) end
+function Game:read_byte(...) return self.emulator.memory.readbyte(...) end
+function Game:write_byte(...) return self.emulator.memory.writebyte(...) end
+
 -- Hold L to go fast
 local settings = require("config.settings")
 local camSpeed
 function Game:fast_travel()
     function move(xAddr, yAddr, speed)
-        local x = self.emulator.memory.readword(xAddr)
-        local y = self.emulator.memory.readword(yAddr)
+        local x = self:read_word(xAddr)
+        local y = self:read_word(yAddr)
         if self.emulator:key_pressed("down") then y = y + speed end
         if self.emulator:key_pressed("up") then y = y - speed end
         if self.emulator:key_pressed("left") then x = x - speed end
         if self.emulator:key_pressed("right") then x = x + speed end
-        self.emulator.memory.writeword(xAddr, x)
-        self.emulator.memory.writeword(yAddr, y)
+        self:write_word(xAddr, x)
+        self:write_word(yAddr, y)
         camSpeed = speed
     end
 
     if self.emulator:key_pressed("L") then
-        local mapNumber = self.emulator.memory.readword(self.map)
-        local movementType = self.emulator.memory.readbyte(self.moveType)
+        local mapNumber = self:read_word(self.map)
+        local movementType = self:read_byte(self.moveType)
         if mapNumber == 2 then
             if movementType == 7 then
                 move(self.coordinates.xBoat, self.coordinates.yBoat,
@@ -36,8 +43,8 @@ function Game:fast_travel()
                      settings.overWorldSpeed)
             end
 
-            local xCamera = self.emulator.memory.readdword(self.camera) + 0x2
-            local yCamera = self.emulator.memory.readdword(self.camera) + 0xA
+            local xCamera = self:read_dword(self.camera) + 0x2
+            local yCamera = self:read_dword(self.camera) + 0xA
             move(xCamera, yCamera, camSpeed - 1)
         else
             if movementType == 6 then
@@ -50,22 +57,18 @@ function Game:fast_travel()
         end
 
         if settings.encountersIfHoldingL == false then
-            self.emulator.memory.writeword(self.encounters, 0)
+            self:write_word(self.encounters, 0)
         end
     end
 end
 
 function Game:is_battle()
-    return
-        bit.band(bit.rshift(self.emulator.memory.readbyte(0x02000060), 3), 1) ==
-            1
+    return bit.band(bit.rshift(self:read_byte(0x02000060), 3), 1) == 1
 end
 
 function Game:lock_zoom()
-    local mapNumber = memory.readword(self.map)
-    if self and mapNumber == 2 then
-        self.emulator.memory.writebyte(self.zoomLock, 2)
-    end
+    local mapNumber = self:read_word(self.map)
+    if self and mapNumber == 2 then self:write_byte(self.zoomLock, 2) end
 end
 
 function Game:teleport_boat() end
@@ -75,32 +78,32 @@ local switch = false
 local xCursor
 local yCursor
 function Game:teleport_to_cursor()
-    local mapState = bit.band(self.emulator.memory.readbyte(self.mapFlag), 1)
+    local mapState = bit.band(self:read_byte(self.mapFlag), 1)
     if mapState == 0 then switch = false end
     if mapState == 1 and switch == false and self.emulator:key_pressed("A") ==
         true then
         local x = self:calculate_map_x(xCursor)
         local y = self:calculate_map_y(yCursor)
 
-        local movementType = self.emulator.memory.readbyte(self.moveType)
+        local movementType = self:read_byte(self.moveType)
         if movementType == 7 or movementType == 8 then
-            self.emulator.memory.writeword(self.coordinates.xBoat, x)
-            self.emulator.memory.writeword(self.coordinates.yBoat, y)
+            self:write_word(self.coordinates.xBoat, x)
+            self:write_word(self.coordinates.yBoat, y)
         else
-            self.emulator.memory.writeword(self.coordinates.xOver, x)
-            self.emulator.memory.writeword(self.coordinates.yOver, y)
+            self:write_word(self.coordinates.xOver, x)
+            self:write_word(self.coordinates.yOver, y)
         end
 
-        local xCamera = self.emulator.memory.readdword(self.camera) + 0x2
-        local yCamera = self.emulator.memory.readdword(self.camera) + 0xA
+        local xCamera = self:read_dword(self.camera) + 0x2
+        local yCamera = self:read_dword(self.camera) + 0xA
 
-        self.emulator.memory.writeword(xCamera, x)
-        self.emulator.memory.writeword(yCamera, y)
+        self:write_word(xCamera, x)
+        self:write_word(yCamera, y)
         switch = true
     end
 
-    xCursor = self.emulator.memory.readword(self.coordinates.xMapCursor)
-    yCursor = self.emulator.memory.readword(self.coordinates.yMapCursor)
+    xCursor = self:read_word(self.coordinates.xMapCursor)
+    yCursor = self:read_word(self.coordinates.yMapCursor)
 end
 
 function game.new()
