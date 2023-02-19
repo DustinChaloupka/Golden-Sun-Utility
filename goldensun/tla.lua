@@ -9,8 +9,6 @@ local TLA = Game.new {
         yOver = 0x020321CA,
         xTown = 0x020322F6,
         yTown = 0x020322FE,
-        xTownBoat = 0x02032376,
-        yTownBoat = 0x0203237E,
         xMapCursor = 0x0202A006,
         yMapCursor = 0x0202A00A
     },

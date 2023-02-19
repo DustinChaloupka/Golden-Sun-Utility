@@ -59,8 +59,7 @@ function Game:fast_travel()
             move(xCamera, yCamera, camSpeed - 1)
         else
             if self.move_type:is_normal_ship(self) then
-                move(self.coordinates.xTownBoat, self.coordinates.yTownBoat,
-                     settings.townSpeed)
+                move_coordinates(self.ship.normal_location, settings.townSpeed)
             else
                 move(self.coordinates.xTown, self.coordinates.yTown,
                      settings.townSpeed)
