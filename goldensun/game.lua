@@ -47,11 +47,11 @@ function Game:fast_travel()
                 move_coordinates(self.ship.overworld_location,
                                  settings.hoverBoatSpeed)
             elseif self.emulator:key_pressed("B") then
-                move(self.coordinates.xOver, self.coordinates.yOver,
-                     settings.overRunSpeed)
+                move_coordinates(self.field_player.overworld_location,
+                                 settings.overRunSpeed)
             else
-                move(self.coordinates.xOver, self.coordinates.yOver,
-                     settings.overWorldSpeed)
+                move_coordinates(self.field_player.overworld_location,
+                                 settings.overWorldSpeed)
             end
 
             local xCamera = self:read_dword(self.camera) + 0x2
@@ -61,8 +61,8 @@ function Game:fast_travel()
             if self.move_type:is_normal_ship(self) then
                 move_coordinates(self.ship.normal_location, settings.townSpeed)
             else
-                move(self.coordinates.xTown, self.coordinates.yTown,
-                     settings.townSpeed)
+                move_coordinates(self.field_player.normal_location,
+                                 settings.townSpeed)
             end
         end
 
@@ -90,21 +90,22 @@ function Game:teleport_to_cursor()
     local mapState = bit.band(self:read_byte(self.mapFlag), 1)
     if mapState == 0 then switch = false end
     if mapState == 1 and switch == false and self:key_pressed("A") == true then
-        local x = self:calculate_map_x(xCursor)
-        local y = self:calculate_map_y(yCursor)
+        local location = {
+            x = self:calculate_map_x(xCursor),
+            y = self:calculate_map_y(yCursor)
+        }
 
         if self.move_type:is_ship(self) then
-            self.ship:set_overworld_location(self, x, y)
+            self.ship:set_overworld_location(self, location)
         else
-            self:write_word(self.coordinates.xOver, x)
-            self:write_word(self.coordinates.yOver, y)
+            self.field_player:set_overworld_location(self, location)
         end
 
         local xCamera = self:read_dword(self.camera) + 0x2
         local yCamera = self:read_dword(self.camera) + 0xA
 
-        self:write_word(xCamera, x)
-        self:write_word(yCamera, y)
+        self:write_word(xCamera, location.x)
+        self:write_word(yCamera, location.y)
         switch = true
     end
 

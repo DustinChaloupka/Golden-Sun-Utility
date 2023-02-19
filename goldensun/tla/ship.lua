@@ -8,14 +8,12 @@ local Ship = {
 
 function Ship:board(game) self.boarding:board(game) end
 function Ship:is_aboard(game) return self.boarding:is_aboard(game) end
-function Ship:set_overworld_location(game, x, y)
-    self.overworld_location:set_x(game, x)
-    self.overworld_location:set_y(game, y)
+function Ship:set_overworld_location(game, location)
+    self.overworld_location:set_location(game, location)
 end
 
-function Ship:set_normal_location(game, x, y)
-    self.normal_location:set_x(game, x)
-    self.normal_location:set_y(game, y)
+function Ship:set_normal_location(game, location)
+    self.normal_location:set_location(game, location)
 end
 
 setmetatable(ship, {__index = Ship})

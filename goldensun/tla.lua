@@ -4,16 +4,10 @@ local Game = require("goldensun.game")
 local TLA = Game.new {
     camera = 0x03001300,
     collision = {0x08027A52, 0x0802860C, 0x08028B9A},
-    coordinates = {
-        xOver = 0x020321C2,
-        yOver = 0x020321CA,
-        xTown = 0x020322F6,
-        yTown = 0x020322FE,
-        xMapCursor = 0x0202A006,
-        yMapCursor = 0x0202A00A
-    },
+    coordinates = {xMapCursor = 0x0202A006, yMapCursor = 0x0202A00A},
     encounters = 0x02000498,
     field_flags = require("goldensun.tla.fieldflags"),
+    field_player = require("goldensun.tla.fieldplayer"),
     map = require("goldensun.memory.tla.map"),
     mapFlag = 0x02030CA2,
     move_type = require("goldensun.memory.tla.movetype"),
@@ -55,9 +49,9 @@ function TLA:teleport_ship()
         self.map:is_overworld(self) and
         bit.band(bit.rshift(self:read_byte(0x02000060), 6), 1) == 1 and
         self:read_word(0x020004B6) == 0 then
-        self.ship:set_overworld_location(self, self:read_word(
-                                             self.coordinates.xOver),
-                                         self:read_word(self.coordinates.yOver))
+        self.ship:set_overworld_location(self,
+                                         self.field_player:get_overworld_location(
+                                             self))
     end
 end
 
