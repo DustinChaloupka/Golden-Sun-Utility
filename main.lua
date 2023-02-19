@@ -30,7 +30,7 @@ while true do
     if not game:is_battle() then
         game:lock_zoom()
         game:ship_checks()
-        game:teleport_boat()
+        game:teleport_ship()
         game:fast_travel()
         game:teleport_to_cursor()
     end

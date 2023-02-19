@@ -7,8 +7,6 @@ local TLA = Game.new {
     coordinates = {
         xOver = 0x020321C2,
         yOver = 0x020321CA,
-        xBoat = 0x02032242,
-        yBoat = 0x0203224A,
         xTown = 0x020322F6,
         yTown = 0x020322FE,
         xTownBoat = 0x02032376,
@@ -54,15 +52,14 @@ function TLA:ship_checks()
     check_hover_pp(self)
 end
 
-function TLA:teleport_boat()
+function TLA:teleport_ship()
     if self:key_pressed("L") and self:key_pressed("B") and
         self.map:is_overworld(self) and
         bit.band(bit.rshift(self:read_byte(0x02000060), 6), 1) == 1 and
         self:read_word(0x020004B6) == 0 then
-        self:write_word(self.coordinates.xBoat,
-                        self:read_word(self.coordinates.xOver))
-        self:write_word(self.coordinates.yBoat,
-                        self:read_word(self.coordinates.yOver))
+        self.ship:set_overworld_location(self, self:read_word(
+                                             self.coordinates.xOver),
+                                         self:read_word(self.coordinates.yOver))
     end
 end
 

@@ -26,14 +26,26 @@ function Game:fast_travel()
         camSpeed = speed
     end
 
+    function move_coordinates(coordinates, speed)
+        local x = coordinates:get_x(self)
+        local y = coordinates:get_y(self)
+        if self:key_pressed("down") then y = y + speed end
+        if self:key_pressed("up") then y = y - speed end
+        if self:key_pressed("left") then x = x - speed end
+        if self:key_pressed("right") then x = x + speed end
+        coordinates:set_x(self, x)
+        coordinates:set_y(self, y)
+        camSpeed = speed
+    end
+
     if self.emulator:key_pressed("L") then
         if self.map:is_overworld(self) then
             if self.move_type:is_overworld_ship(self) then
-                move(self.coordinates.xBoat, self.coordinates.yBoat,
-                     settings.boatSpeed)
+                move_coordinates(self.ship.overworld_location,
+                                 settings.boatSpeed)
             elseif self.move_type:is_hover_ship(self) then
-                move(self.coordinates.xBoat, self.coordinates.yBoat,
-                     settings.hoverBoatSpeed)
+                move_coordinates(self.ship.overworld_location,
+                                 settings.hoverBoatSpeed)
             elseif self.emulator:key_pressed("B") then
                 move(self.coordinates.xOver, self.coordinates.yOver,
                      settings.overRunSpeed)
@@ -69,7 +81,7 @@ function Game:lock_zoom()
     if self.map:is_overworld(self) then self:write_byte(self.zoomLock, 2) end
 end
 
-function Game:teleport_boat() end
+function Game:teleport_ship() end
 
 -- Press A on world map to teleport to cursor
 local switch = false
@@ -82,10 +94,8 @@ function Game:teleport_to_cursor()
         local x = self:calculate_map_x(xCursor)
         local y = self:calculate_map_y(yCursor)
 
-        self.move_type:read(self)
         if self.move_type:is_ship(self) then
-            self:write_word(self.coordinates.xBoat, x)
-            self:write_word(self.coordinates.yBoat, y)
+            self.ship:set_overworld_location(self, x, y)
         else
             self:write_word(self.coordinates.xOver, x)
             self:write_word(self.coordinates.yOver, y)
