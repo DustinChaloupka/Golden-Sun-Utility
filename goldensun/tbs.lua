@@ -13,6 +13,7 @@ local TBS = Game.new {
         yMapCursor = 0x0201000A
     },
     encounters = 0x02000478,
+    map = require("goldensun.memory.tbs.map"),
     mapFlag = 0x02030CB6,
     move_type = require("goldensun.memory.tbs.movetype"),
     rom = 0x646C6F47,

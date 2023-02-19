@@ -20,22 +20,35 @@ local MoveType = Chunk.new {
     slippery_ground = 11
 }
 
-function MoveType:is_normal() return self.value == self.normal end
-function MoveType:is_overworld() return self.value == self.overworld end
-function MoveType:is_climbing_wall() return self.value == self.climbing_wall end
-function MoveType:is_climbing_rope() return self.value == self.climbing_rope end
-function MoveType:is_walking_rope() return self.value == self.walking_rope end
-function MoveType:is_sand() return self.value == self.sand end
-function MoveType:is_normal_ship() return self.value == self.normal_ship end
-function MoveType:is_overworld_ship() return self.value == self.overworld_ship end
-function MoveType:is_hover_ship() return self.value == self.hover_ship end
-function MoveType:is_ship()
-    return self:is_normal_ship() or self:is_overworld_ship() or
-               self:is_hover_ship()
+function MoveType:is_normal(game) return self:read(game) == self.normal end
+function MoveType:is_overworld(game) return self:read(game) == self.overworld end
+function MoveType:is_climbing_wall(game)
+    return self:read(game) == self.climbing_wall
 end
-function MoveType:is_overworld_sand() return self.value == self.overworld_sand end
-function MoveType:is_hover() return self.value == self.hover end
-function MoveType:is_slippery_ground() return self.value == self.slippery_ground end
+function MoveType:is_climbing_rope(game)
+    return self:read(game) == self.climbing_rope
+end
+function MoveType:is_walking_rope(game)
+    return self:read(game) == self.walking_rope
+end
+function MoveType:is_sand(game) return self:read(game) == self.sand end
+function MoveType:is_normal_ship(game) return
+    self:read(game) == self.normal_ship end
+function MoveType:is_overworld_ship(game)
+    return self:read(game) == self.overworld_ship
+end
+function MoveType:is_hover_ship(game) return self:read(game) == self.hover_ship end
+function MoveType:is_ship(game)
+    return self:is_normal_ship(game) or self:is_overworld_ship(game) or
+               self:is_hover_ship(game)
+end
+function MoveType:is_overworld_sand(game)
+    return self:read(game) == self.overworld_sand
+end
+function MoveType:is_hover(game) return self:read(game) == self.hover end
+function MoveType:is_slippery_ground(game)
+    return self:read(game) == self.slippery_ground
+end
 
 setmetatable(movetype, {__index = MoveType})
 

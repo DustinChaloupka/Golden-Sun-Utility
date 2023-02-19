@@ -27,13 +27,11 @@ function Game:fast_travel()
     end
 
     if self.emulator:key_pressed("L") then
-        local mapNumber = self:read_word(self.map)
-        self.move_type:read(self)
-        if mapNumber == 2 then
-            if self.move_type:is_overworld_ship() then
+        if self.map:is_overworld(self) then
+            if self.move_type:is_overworld_ship(self) then
                 move(self.coordinates.xBoat, self.coordinates.yBoat,
                      settings.boatSpeed)
-            elseif self.move_type:is_hover_ship() then
+            elseif self.move_type:is_hover_ship(self) then
                 move(self.coordinates.xBoat, self.coordinates.yBoat,
                      settings.hoverBoatSpeed)
             elseif self.emulator:key_pressed("B") then
@@ -48,7 +46,7 @@ function Game:fast_travel()
             local yCamera = self:read_dword(self.camera) + 0xA
             move(xCamera, yCamera, camSpeed - 1)
         else
-            if self.move_type:is_normal_ship() then
+            if self.move_type:is_normal_ship(self) then
                 move(self.coordinates.xTownBoat, self.coordinates.yTownBoat,
                      settings.townSpeed)
             else
@@ -68,8 +66,7 @@ function Game:is_battle()
 end
 
 function Game:lock_zoom()
-    local mapNumber = self:read_word(self.map)
-    if self and mapNumber == 2 then self:write_byte(self.zoomLock, 2) end
+    if self.map:is_overworld(self) then self:write_byte(self.zoomLock, 2) end
 end
 
 function Game:teleport_boat() end
@@ -86,7 +83,7 @@ function Game:teleport_to_cursor()
         local y = self:calculate_map_y(yCursor)
 
         self.move_type:read(self)
-        if self.move_type:is_ship() then
+        if self.move_type:is_ship(self) then
             self:write_word(self.coordinates.xBoat, x)
             self:write_word(self.coordinates.yBoat, y)
         else

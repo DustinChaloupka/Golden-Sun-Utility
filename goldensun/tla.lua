@@ -17,29 +17,46 @@ local TLA = Game.new {
         yMapCursor = 0x0202A00A
     },
     encounters = 0x02000498,
-    map = 0x02000420,
+    field_flags = require("goldensun.tla.fieldflags"),
+    map = require("goldensun.memory.tla.map"),
     mapFlag = 0x02030CA2,
     move_type = require("goldensun.memory.tla.movetype"),
+    party = require("goldensun.tla.party"),
+    player = require("goldensun.tla.player"),
+    ship = require("goldensun.tla.ship"),
     rom = 0x444C4F47,
     zoomLock = 0x03001169
 }
 
+local function check_hover_pp(self)
+    if self.move_type:is_hover_ship(self) then
+        local player_id = self.party:player_ids(self)[0]
+        local player = require("goldensun.tla.player")
+        player.id = player_id
+        if player:get_current_pp(self) < 1 then
+            player:set_current_pp(self, 1)
+        end
+    end
+end
+
+local function check_ship_map_enter(self)
+    if self.map:is_normal_ship(self) and not self.ship:is_aboard(self) then
+        self.ship:board(self)
+        self.field_flags:trigger_exit(self)
+    end
+end
+
 function TLA:calculate_map_x(cursor) return bit.lshift(cursor + 269, 14) / 853 end
 function TLA:calculate_map_y(cursor) return bit.lshift(cursor + 112, 14) / 640 end
 
+function TLA:ship_checks()
+    check_ship_map_enter(self)
+    check_hover_pp(self)
+end
+
 function TLA:teleport_boat()
-    local mapNumber = self:read_word(self.map)
-    if (mapNumber == 0xc5 or mapNumber == 0xC6 or mapNumber == 0x10C) and
-        self:read_word(0x020004B6) ~= 1 then
-        self:write_word(0x020004B6, 1)
-        self:write_word(0x02030158, 0x3E7)
-    end
-    if movementType == 8 then
-        local playerPP = 0x02000520 + 0x3A + 0x14C * self:read_byte(0x02000458)
-        if self:read_word(playerPP) < 1 then self:write_word(playerPP, 1) end
-    end
-    -- Hold L and press B when in a menu to teleport the boat to you
-    if self:key_pressed("L") and self:key_pressed("B") and mapNumber == 2 and
+    if self:key_pressed("L") and self:key_pressed("B") and
+        self.map:is_overworld(self) and
         bit.band(bit.rshift(self:read_byte(0x02000060), 6), 1) == 1 and
         self:read_word(0x020004B6) == 0 then
         self:write_word(self.coordinates.xBoat,
