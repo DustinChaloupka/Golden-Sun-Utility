@@ -4,18 +4,13 @@ local Game = require("goldensun.game")
 local TBS = Game.new {
     camera = 0x03002000,
     collision = {0x0800F3B0},
-    coordinates = {
-        xOver = 0x02030DAE,
-        yOver = 0x02030DB6,
-        xTown = 0x02030EC6,
-        yTown = 0x02030ECE,
-        xMapCursor = 0x02010006,
-        yMapCursor = 0x0201000A
-    },
+    coordinates = {xMapCursor = 0x02010006, yMapCursor = 0x0201000A},
     encounters = 0x02000478,
+    field_player = require("goldensun.tbs.fieldplayer"),
     map = require("goldensun.memory.tbs.map"),
     mapFlag = 0x02030CB6,
     move_type = require("goldensun.memory.tbs.movetype"),
+    player = require("goldensun.tbs.player"),
     rom = 0x646C6F47,
     zoom_lock = require("goldensun.memory.tbs.zoomlock")
 }
