@@ -15,7 +15,7 @@ local TLA = Game.new {
     player = require("goldensun.tla.player"),
     ship = require("goldensun.tla.ship"),
     rom = 0x444C4F47,
-    zoomLock = 0x03001169
+    zoom_lock = require("goldensun.memory.tla.zoomlock")
 }
 
 local function check_hover_pp(self)

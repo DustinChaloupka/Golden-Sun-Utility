@@ -17,7 +17,7 @@ local TBS = Game.new {
     mapFlag = 0x02030CB6,
     move_type = require("goldensun.memory.tbs.movetype"),
     rom = 0x646C6F47,
-    zoomLock = 0x03001CF5
+    zoom_lock = require("goldensun.memory.tbs.zoomlock")
 }
 
 -- what is this actually doing?

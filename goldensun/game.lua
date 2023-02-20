@@ -77,7 +77,7 @@ function Game:is_battle()
 end
 
 function Game:lock_zoom()
-    if self.map:is_overworld(self) then self:write_byte(self.zoomLock, 2) end
+    if self.map:is_overworld(self) then self.zoom_lock:write(self, 2) end
 end
 
 function Game:teleport_ship() end
