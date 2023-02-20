@@ -12,20 +12,8 @@ function Game:key_pressed(...) return self.emulator:key_pressed(...) end
 
 -- Hold L to go fast
 local settings = require("config.settings")
-local camSpeed
+local cam_speed
 function Game:fast_travel()
-    function move(xAddr, yAddr, speed)
-        local x = self:read_word(xAddr)
-        local y = self:read_word(yAddr)
-        if self:key_pressed("down") then y = y + speed end
-        if self:key_pressed("up") then y = y - speed end
-        if self:key_pressed("left") then x = x - speed end
-        if self:key_pressed("right") then x = x + speed end
-        self:write_word(xAddr, x)
-        self:write_word(yAddr, y)
-        camSpeed = speed
-    end
-
     function move_coordinates(coordinates, speed)
         local x = coordinates:get_x(self)
         local y = coordinates:get_y(self)
@@ -35,7 +23,7 @@ function Game:fast_travel()
         if self:key_pressed("right") then x = x + speed end
         coordinates:set_x(self, x)
         coordinates:set_y(self, y)
-        camSpeed = speed
+        cam_speed = speed
     end
 
     if self.emulator:key_pressed("L") then
@@ -54,9 +42,7 @@ function Game:fast_travel()
                                  settings.overWorldSpeed)
             end
 
-            local xCamera = self:read_dword(self.camera) + 0x2
-            local yCamera = self:read_dword(self.camera) + 0xA
-            move(xCamera, yCamera, camSpeed - 1)
+            move_coordinates(self.camera:get_location(self), cam_speed - 1)
         else
             if self.move_type:is_normal_ship(self) then
                 move_coordinates(self.ship.normal_location, settings.townSpeed)
@@ -97,11 +83,7 @@ function Game:teleport_to_cursor()
             self.field_player:set_overworld_location(self, location)
         end
 
-        local xCamera = self:read_dword(self.camera) + 0x2
-        local yCamera = self:read_dword(self.camera) + 0xA
-
-        self:write_word(xCamera, location.x)
-        self:write_word(yCamera, location.y)
+        self.camera:set_location(self, location)
         switch = true
     end
 

@@ -2,7 +2,7 @@ local tla = {}
 
 local Game = require("goldensun.game")
 local TLA = Game.new {
-    camera = 0x03001300,
+    camera = require("goldensun.memory.tla.camera"),
     collision = {0x08027A52, 0x0802860C, 0x08028B9A},
     encounters = 0x02000498,
     field_flags = require("goldensun.tla.fieldflags"),
