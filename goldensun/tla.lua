@@ -4,13 +4,13 @@ local Game = require("goldensun.game")
 local TLA = Game.new {
     camera = 0x03001300,
     collision = {0x08027A52, 0x0802860C, 0x08028B9A},
-    coordinates = {xMapCursor = 0x0202A006, yMapCursor = 0x0202A00A},
     encounters = 0x02000498,
     field_flags = require("goldensun.tla.fieldflags"),
     field_player = require("goldensun.tla.fieldplayer"),
     map = require("goldensun.memory.tla.map"),
     mapFlag = 0x02030CA2,
     move_type = require("goldensun.memory.tla.movetype"),
+    overworld_map = require("goldensun.tla.overworldmap"),
     party = require("goldensun.tla.party"),
     player = require("goldensun.tla.player"),
     ship = require("goldensun.tla.ship"),
@@ -36,8 +36,13 @@ local function check_ship_map_enter(self)
     end
 end
 
-function TLA:calculate_map_x(cursor) return bit.lshift(cursor + 269, 14) / 853 end
-function TLA:calculate_map_y(cursor) return bit.lshift(cursor + 112, 14) / 640 end
+-- what are these values?
+function TLA:calculate_map_location(location)
+    return {
+        x = bit.lshift(location.x + 269, 14) / 853,
+        y = bit.lshift(location.y + 112, 14) / 640
+    }
+end
 
 function TLA:ship_checks()
     check_ship_map_enter(self)

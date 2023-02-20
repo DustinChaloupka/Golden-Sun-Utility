@@ -84,16 +84,12 @@ function Game:teleport_ship() end
 
 -- Press A on world map to teleport to cursor
 local switch = false
-local xCursor
-local yCursor
+local cursor_location
 function Game:teleport_to_cursor()
     local mapState = bit.band(self:read_byte(self.mapFlag), 1)
     if mapState == 0 then switch = false end
     if mapState == 1 and switch == false and self:key_pressed("A") == true then
-        local location = {
-            x = self:calculate_map_x(xCursor),
-            y = self:calculate_map_y(yCursor)
-        }
+        local location = self:calculate_map_location(cursor_location)
 
         if self.move_type:is_ship(self) then
             self.ship:set_overworld_location(self, location)
@@ -109,8 +105,7 @@ function Game:teleport_to_cursor()
         switch = true
     end
 
-    xCursor = self:read_word(self.coordinates.xMapCursor)
-    yCursor = self:read_word(self.coordinates.yMapCursor)
+    cursor_location = self.overworld_map:get_cursor_location(self)
 end
 
 function game.new(o)
