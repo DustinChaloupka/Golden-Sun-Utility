@@ -18,9 +18,7 @@ function Game:fast_travel()
 
         self.camera:add_speed(self, speed)
 
-        if settings.encountersIfHoldingL == false then
-            self:write_word(self.encounters, 0)
-        end
+        self.encounters:disable_if_fast_travel(self)
     end
 end
 
