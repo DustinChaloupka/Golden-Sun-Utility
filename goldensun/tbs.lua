@@ -7,7 +7,6 @@ local TBS = Game.new {
     encounters = require("goldensun.memory.tbs.encounters"),
     field_player = require("goldensun.tbs.fieldplayer"),
     map = require("goldensun.memory.tbs.map"),
-    mapFlag = 0x02030CB6,
     move_type = require("goldensun.memory.tbs.movetype"),
     overworld_map = require("goldensun.tbs.overworldmap"),
     player = require("goldensun.tbs.player"),

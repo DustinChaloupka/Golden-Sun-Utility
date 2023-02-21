@@ -8,7 +8,6 @@ local TLA = Game.new {
     field_flags = require("goldensun.tla.fieldflags"),
     field_player = require("goldensun.tla.fieldplayer"),
     map = require("goldensun.memory.tla.map"),
-    mapFlag = 0x02030CA2,
     move_type = require("goldensun.memory.tla.movetype"),
     overworld_map = require("goldensun.tla.overworldmap"),
     party = require("goldensun.tla.party"),
