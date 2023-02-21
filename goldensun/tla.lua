@@ -13,7 +13,7 @@ local TLA = Game.new {
     party = require("goldensun.tla.party"),
     player = require("goldensun.tla.player"),
     ship = require("goldensun.tla.ship"),
-    rom = 0x444C4F47,
+    rom = require("goldensun.memory.tla.rom"),
     zoom = require("goldensun.memory.tla.zoom")
 }
 

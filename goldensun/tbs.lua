@@ -10,7 +10,7 @@ local TBS = Game.new {
     move_type = require("goldensun.memory.tbs.movetype"),
     overworld_map = require("goldensun.tbs.overworldmap"),
     player = require("goldensun.tbs.player"),
-    rom = 0x646C6F47,
+    rom = require("goldensun.memory.tbs.rom"),
     zoom = require("goldensun.memory.tbs.zoom")
 }
 

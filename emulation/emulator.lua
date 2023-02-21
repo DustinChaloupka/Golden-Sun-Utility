@@ -2,8 +2,6 @@ local emulator = {}
 
 local Emulator = {controller = joypad.get(0)}
 
-function Emulator:current_rom(rom) return self.memory.readdword(rom) end
-
 function Emulator:frameadvance()
     if self.emulation then self.emulation.frameadvance() end
 end

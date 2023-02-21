@@ -1,4 +1,4 @@
-local game = {rom = 0x080000A0}
+local game = {rom = require("goldensun.memory.rom")}
 
 local Game = {}
 
@@ -24,6 +24,8 @@ end
 function Game:is_battle()
     return bit.band(bit.rshift(self:read_byte(0x02000060), 3), 1) == 1
 end
+
+function Game:is_current_rom() return self.rom:is_current_rom(self) end
 
 function Game:lock_zoom()
     if self.map:is_overworld(self) then self.zoom:lock(self) end

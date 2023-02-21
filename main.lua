@@ -8,22 +8,22 @@ elseif client then
     emulator = require("emulation.bizhawk")
 end
 
-local game = require("goldensun.game")
 local tbs = require("goldensun.tbs")
 local tla = require("goldensun.tla")
+tbs.emulator = emulator
+tla.emulator = emulator
 
-local currentRom = emulator:current_rom(game.rom)
-if currentRom == tbs.rom then
+local game
+if tbs.is_current_rom(tbs) then
     print("Loading TBS...")
     game = tbs
     tla = nil
-elseif currentRom == tla.rom then
+elseif tla.is_current_rom(tla) then
     print("Loading TLA...")
     game = tla
     tbs = nil
 end
 
-game.emulator = emulator
 while true do
     game.emulator:load_joypad(0)
 
