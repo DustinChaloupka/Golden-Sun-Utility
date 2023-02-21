@@ -11,7 +11,6 @@ function Game:write_byte(...) return self.emulator.memory.writebyte(...) end
 function Game:key_pressed(...) return self.emulator:key_pressed(...) end
 
 -- Hold L to go fast
-local settings = require("config.settings")
 function Game:fast_travel()
     if self.emulator:key_pressed("L") then
         local speed = self.move_type:speed_up(self)
@@ -27,7 +26,7 @@ function Game:is_battle()
 end
 
 function Game:lock_zoom()
-    if self.map:is_overworld(self) then self.zoom_lock:write(self, 2) end
+    if self.map:is_overworld(self) then self.zoom:lock(self) end
 end
 
 function Game:teleport_ship() end

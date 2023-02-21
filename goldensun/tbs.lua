@@ -12,7 +12,7 @@ local TBS = Game.new {
     overworld_map = require("goldensun.tbs.overworldmap"),
     player = require("goldensun.tbs.player"),
     rom = 0x646C6F47,
-    zoom_lock = require("goldensun.memory.tbs.zoomlock")
+    zoom = require("goldensun.memory.tbs.zoom")
 }
 
 -- what are these values?
