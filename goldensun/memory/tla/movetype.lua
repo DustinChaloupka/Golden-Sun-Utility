@@ -50,6 +50,44 @@ function MoveType:is_slippery_ground(game)
     return self:read(game) == self.slippery_ground
 end
 
+local function get_speed(game, speed)
+    local s = {x = 0, y = 0, z = 0}
+    if game:key_pressed("down") then s.y = s.y + speed end
+    if game:key_pressed("up") then s.y = s.y - speed end
+    if game:key_pressed("left") then s.x = s.x - speed end
+    if game:key_pressed("right") then s.x = s.x + speed end
+    return s
+end
+
+local settings = require("config.settings")
+function MoveType:speed_up(game)
+    local speed
+    local location
+    if self:is_overworld_ship(game) then
+        speed = get_speed(game, settings.boat_speed)
+        location = game.ship.overworld_location
+    elseif self:is_hover_ship(game) then
+        speed = get_speed(game, settings.hover_boat_speed)
+        location = game.ship.overworld_location
+    elseif self:is_overworld(game) and game:key_pressed("B") then
+        speed = get_speed(game, settings.overworld_run_speed)
+        location = game.field_player.overworld_location
+    elseif self:is_overworld(game) then
+        speed = get_speed(game, settings.overworld_speed)
+        location = game.field_player.overworld_location
+    else
+        speed = get_speed(game, settings.town_speed)
+        if self:is_normal(game) then
+            location = game.field_player.normal_location
+        elseif self:is_normal_ship(game) then
+            location = game.ship.normal_location
+        end
+    end
+
+    location:add_speed(game, speed)
+    return speed
+end
+
 setmetatable(movetype, {__index = MoveType})
 
 return movetype

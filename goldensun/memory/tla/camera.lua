@@ -24,6 +24,11 @@ function Camera:set_location(game, location)
     self.location:set_location(game, location)
 end
 
+function Camera:add_speed(game, speed)
+    update_location(self, game)
+    self.location:add_speed(game, speed)
+end
+
 setmetatable(camera, {__index = Camera})
 
 return camera

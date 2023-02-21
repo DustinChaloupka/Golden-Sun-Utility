@@ -17,6 +17,14 @@ function Coordinates:set_location(game, location)
     self:set_z(game, location.z)
 end
 
+function Coordinates:add_speed(game, speed)
+    local location = self:get_location(game)
+    location.x = location.x + speed.x
+    location.y = location.y + speed.y
+    location.z = location.z + speed.z
+    self:set_location(game, location)
+end
+
 function coordinates.new(o)
     local self = o or {}
     setmetatable(self, {__index = Coordinates})

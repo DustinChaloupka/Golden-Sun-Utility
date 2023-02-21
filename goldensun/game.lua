@@ -12,45 +12,11 @@ function Game:key_pressed(...) return self.emulator:key_pressed(...) end
 
 -- Hold L to go fast
 local settings = require("config.settings")
-local cam_speed
 function Game:fast_travel()
-    function move_coordinates(coordinates, speed)
-        local x = coordinates:get_x(self)
-        local y = coordinates:get_y(self)
-        if self:key_pressed("down") then y = y + speed end
-        if self:key_pressed("up") then y = y - speed end
-        if self:key_pressed("left") then x = x - speed end
-        if self:key_pressed("right") then x = x + speed end
-        coordinates:set_x(self, x)
-        coordinates:set_y(self, y)
-        cam_speed = speed
-    end
-
     if self.emulator:key_pressed("L") then
-        if self.map:is_overworld(self) then
-            if self.move_type:is_overworld_ship(self) then
-                move_coordinates(self.ship.overworld_location,
-                                 settings.boatSpeed)
-            elseif self.move_type:is_hover_ship(self) then
-                move_coordinates(self.ship.overworld_location,
-                                 settings.hoverBoatSpeed)
-            elseif self.emulator:key_pressed("B") then
-                move_coordinates(self.field_player.overworld_location,
-                                 settings.overRunSpeed)
-            else
-                move_coordinates(self.field_player.overworld_location,
-                                 settings.overWorldSpeed)
-            end
+        local speed = self.move_type:speed_up(self)
 
-            move_coordinates(self.camera:get_location(self), cam_speed - 1)
-        else
-            if self.move_type:is_normal_ship(self) then
-                move_coordinates(self.ship.normal_location, settings.townSpeed)
-            else
-                move_coordinates(self.field_player.normal_location,
-                                 settings.townSpeed)
-            end
-        end
+        self.camera:add_speed(self, speed)
 
         if settings.encountersIfHoldingL == false then
             self:write_word(self.encounters, 0)

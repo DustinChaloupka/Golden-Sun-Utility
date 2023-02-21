@@ -31,23 +31,27 @@ end
 function MoveType:is_walking_rope(game)
     return self:read(game) == self.walking_rope
 end
-function MoveType:is_sand(game) return self:read(game) == self.sand end
-function MoveType:is_normal_ship(game) return
-    self:read(game) == self.normal_ship end
-function MoveType:is_overworld_ship(game)
-    return self:read(game) == self.overworld_ship
-end
-function MoveType:is_hover_ship(game) return self:read(game) == self.hover_ship end
-function MoveType:is_ship(game)
-    return self:is_normal_ship(game) or self:is_overworld_ship(game) or
-               self:is_hover_ship(game)
-end
-function MoveType:is_overworld_sand(game)
-    return self:read(game) == self.overworld_sand
-end
-function MoveType:is_hover(game) return self:read(game) == self.hover end
 function MoveType:is_slippery_ground(game)
     return self:read(game) == self.slippery_ground
+end
+
+local settings = require("config.settings")
+function MoveType:speed_up(game)
+    local speed
+    local location
+    if self:is_overworld(game) and game:key_pressed("B") then
+        speed = get_speed(game, settings.overworld_run_speed)
+        location = game.field_player.overworld_location
+    elseif self:is_overworld(game) then
+        speed = get_speed(game, settings.overworld_speed)
+        location = game.field_player.overworld_location
+    else
+        speed = get_speed(game, settings.town_speed)
+        location = game.field_player.normal_location
+    end
+
+    location:add_speed(game, speed)
+    return speed
 end
 
 setmetatable(movetype, {__index = MoveType})

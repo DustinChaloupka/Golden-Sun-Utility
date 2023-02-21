@@ -2,7 +2,7 @@ local tbs = {}
 
 local Game = require("goldensun.game")
 local TBS = Game.new {
-    camera = require("goldesun.memory.tbs.camera"),
+    camera = require("goldensun.memory.tbs.camera"),
     collision = {0x0800F3B0},
     encounters = 0x02000478,
     field_player = require("goldensun.tbs.fieldplayer"),
