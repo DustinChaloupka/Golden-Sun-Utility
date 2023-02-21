@@ -1,4 +1,4 @@
-local game = {rom = require("goldensun.memory.rom")}
+local game = {}
 
 local Game = {}
 
