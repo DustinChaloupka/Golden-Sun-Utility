@@ -2,7 +2,7 @@ local emulator = nil
 
 if vba then
     print("Loading VBA...")
-    emulator = require("emulation.virtualboyadvanced")
+    emulator = require("emulation.visualboyadvanced")
 elseif client then
     print("Loading BizHawk...")
     emulator = require("emulation.bizhawk")
