@@ -1,9 +1,10 @@
 local ship = {}
 
 local Ship = {
-    boarding = require("goldensun.memory.tla.boarding"),
-    normal_location = require("goldensun.memory.tla.ship.normallocation"),
-    overworld_location = require("goldensun.memory.tla.ship.overworldlocation")
+    boarding = require("goldensun.memory.game.tla.boarding"),
+    normal_location = require("goldensun.memory.game.tla.ship.normallocation"),
+    overworld_location = require(
+        "goldensun.memory.game.tla.ship.overworldlocation")
 }
 
 function Ship:board(game) self.boarding:board(game) end

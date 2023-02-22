@@ -10,7 +10,7 @@ end
 
 function encounters.new(o)
     local self = o or {}
-    setmetatable(self, {__index = self})
+    setmetatable(self, {__index = Encounters})
     self.__index = self
     return self
 end

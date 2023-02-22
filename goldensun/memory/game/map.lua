@@ -7,7 +7,7 @@ function Map:is_overworld(game) return self:read(game) == self.world end
 
 function map.new(o)
     local self = o or {}
-    setmetatable(map, {__index = Map})
+    setmetatable(self, {__index = Map})
     self.__index = self
     return self
 end

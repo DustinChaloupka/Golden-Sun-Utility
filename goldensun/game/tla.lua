@@ -2,18 +2,18 @@ local tla = {}
 
 local Game = require("goldensun.game")
 local TLA = Game.new {
-    camera = require("goldensun.memory.tla.camera"),
-    encounters = require("goldensun.memory.tla.encounters"),
+    camera = require("goldensun.memory.game.tla.camera"),
+    encounters = require("goldensun.memory.game.tla.encounters"),
     field_flags = require("goldensun.game.tla.fieldflags"),
     field_player = require("goldensun.game.tla.fieldplayer"),
-    map = require("goldensun.memory.tla.map"),
-    move_type = require("goldensun.memory.tla.movetype"),
+    map = require("goldensun.memory.game.tla.map"),
+    move_type = require("goldensun.memory.game.tla.movetype"),
     overworld_map = require("goldensun.game.tla.overworldmap"),
     party = require("goldensun.game.tla.party"),
     player = require("goldensun.game.tla.player"),
     ship = require("goldensun.game.tla.ship"),
-    rom = require("goldensun.memory.tla.rom"),
-    zoom = require("goldensun.memory.tla.zoom")
+    rom = require("goldensun.memory.game.tla.rom"),
+    zoom = require("goldensun.memory.game.tla.zoom")
 }
 
 local function check_hover_pp(self)
