@@ -8,8 +8,8 @@ elseif client then
     emulator = require("emulation.bizhawk")
 end
 
-local tbs = require("goldensun.tbs")
-local tla = require("goldensun.tla")
+local tbs = require("goldensun.game.tbs")
+local tla = require("goldensun.game.tla")
 tbs.emulator = emulator
 tla.emulator = emulator
 

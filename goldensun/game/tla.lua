@@ -3,16 +3,15 @@ local tla = {}
 local Game = require("goldensun.game")
 local TLA = Game.new {
     camera = require("goldensun.memory.tla.camera"),
-    collision = {0x08027A52, 0x0802860C, 0x08028B9A},
     encounters = require("goldensun.memory.tla.encounters"),
-    field_flags = require("goldensun.tla.fieldflags"),
-    field_player = require("goldensun.tla.fieldplayer"),
+    field_flags = require("goldensun.game.tla.fieldflags"),
+    field_player = require("goldensun.game.tla.fieldplayer"),
     map = require("goldensun.memory.tla.map"),
     move_type = require("goldensun.memory.tla.movetype"),
-    overworld_map = require("goldensun.tla.overworldmap"),
-    party = require("goldensun.tla.party"),
-    player = require("goldensun.tla.player"),
-    ship = require("goldensun.tla.ship"),
+    overworld_map = require("goldensun.game.tla.overworldmap"),
+    party = require("goldensun.game.tla.party"),
+    player = require("goldensun.game.tla.player"),
+    ship = require("goldensun.game.tla.ship"),
     rom = require("goldensun.memory.tla.rom"),
     zoom = require("goldensun.memory.tla.zoom")
 }
@@ -20,7 +19,7 @@ local TLA = Game.new {
 local function check_hover_pp(self)
     if self.move_type:is_hover_ship(self) then
         local player_id = self.party:player_ids(self)[0]
-        local player = require("goldensun.tla.player")
+        local player = require("goldensun.game.tla.player")
         player.id = player_id
         if player:get_current_pp(self) < 1 then
             player:set_current_pp(self, 1)

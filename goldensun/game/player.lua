@@ -1,8 +1,6 @@
 local player = {}
 
-local Player = {
-    character_data = require("goldensun.memory.tla.player.characterdata")
-}
+local Player = {}
 
 function Player:get_current_pp(game)
     return self.character_data:get_current_pp(game, self.id)
@@ -12,6 +10,11 @@ function Player:set_current_pp(game, value)
     self.character_data:set_current_pp(game, self.id, value)
 end
 
-setmetatable(player, {__index = Player})
+function player.new(o)
+    local self = o or {}
+    setmetatable(self, {__index = Player})
+    self.__index = self
+    return self
+end
 
 return player

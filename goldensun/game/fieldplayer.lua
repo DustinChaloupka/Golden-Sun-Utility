@@ -1,9 +1,6 @@
 local fieldplayer = {}
 
-local FieldPlayer = {
-    normal_location = require("goldensun.memory.tla.player.normallocation"),
-    overworld_location = require("goldensun.memory.tla.player.overworldlocation")
-}
+local FieldPlayer = {}
 
 function FieldPlayer:get_normal_location(game)
     return self.overworld_location:get_location(game)
@@ -21,6 +18,11 @@ function FieldPlayer:set_normal_location(game, location)
     self.normal_location:set_location(game, location)
 end
 
-setmetatable(fieldplayer, {__index = FieldPlayer})
+function fieldplayer.new(o)
+    local self = o or {}
+    setmetatable(self, {__index = FieldPlayer})
+    self.__index = self
+    return self
+end
 
 return fieldplayer
