@@ -21,6 +21,15 @@ function Game:fast_travel()
     end
 end
 
+function Game:maybe_get_teleport_location()
+    if self.overworld_map:is_teleport_available(self) and self:key_pressed("A") then
+        local cursor_location = self.overworld_map:get_teleport_location(self)
+        local location = self:calculate_map_location(cursor_location)
+
+        return location
+    end
+end
+
 function Game:is_in_battle() return self.state:is_battle(self) end
 function Game:is_current_rom() return self.rom:is_current_rom(self) end
 function Game:is_in_menu() return self.state:is_menu(self) end
@@ -29,20 +38,12 @@ function Game:lock_zoom()
     if self.map:is_overworld(self) then self.zoom:lock(self) end
 end
 
-function Game:teleport_ship() end
-
 -- Press A on world map to teleport to cursor
 function Game:teleport_to_cursor()
-    if self.overworld_map:is_teleport_available(self) and self:key_pressed("A") then
-        local cursor_location = self.overworld_map:get_teleport_location(self)
-        local location = self:calculate_map_location(cursor_location)
+    local location = self:maybe_get_teleport_location()
 
-        if self.move_type:is_ship(self) then
-            self.ship:set_overworld_location(self, location)
-        else
-            self.field_player:set_overworld_location(self, location)
-        end
-
+    if location then
+        self.field_player:set_overworld_location(self, location)
         self.camera:set_location(self, location)
     end
 end

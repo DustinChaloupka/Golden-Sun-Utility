@@ -57,6 +57,20 @@ function TLA:teleport_ship()
     end
 end
 
+-- Press A on world map to teleport to cursor
+function TLA:teleport_to_cursor()
+    local location = self:maybe_get_teleport_location()
+
+    if location then
+        if self.move_type:is_ship(self) then
+            self.ship:set_overworld_location(self, location)
+        else
+            self.field_player:set_overworld_location(self, location)
+        end
+        self.camera:set_location(self, location)
+    end
+end
+
 setmetatable(tla, {__index = TLA})
 
 return tla
