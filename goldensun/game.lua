@@ -1,6 +1,6 @@
 local game = {}
 
-local Game = {}
+local Game = {state = require("goldensun.memory.game.state")}
 
 function Game:read_word(...) return self.emulator.memory.readword(...) end
 function Game:read_dword(...) return self.emulator.memory.readdword(...) end
@@ -21,11 +21,9 @@ function Game:fast_travel()
     end
 end
 
-function Game:is_battle()
-    return bit.band(bit.rshift(self:read_byte(0x02000060), 3), 1) == 1
-end
-
+function Game:is_in_battle() return self.state:is_battle(self) end
 function Game:is_current_rom() return self.rom:is_current_rom(self) end
+function Game:is_in_menu() return self.state:is_menu(self) end
 
 function Game:lock_zoom()
     if self.map:is_overworld(self) then self.zoom:lock(self) end

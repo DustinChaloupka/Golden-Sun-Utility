@@ -27,7 +27,7 @@ end
 while true do
     game.emulator:load_joypad(0)
 
-    if not game:is_battle() then
+    if not game:is_in_battle() then
         game:lock_zoom()
         game:ship_checks()
         game:teleport_ship()

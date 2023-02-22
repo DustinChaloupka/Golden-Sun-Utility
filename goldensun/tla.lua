@@ -50,9 +50,8 @@ end
 
 function TLA:teleport_ship()
     if self:key_pressed("L") and self:key_pressed("B") and
-        self.map:is_overworld(self) and
-        bit.band(bit.rshift(self:read_byte(0x02000060), 6), 1) == 1 and
-        self:read_word(0x020004B6) == 0 then
+        self.map:is_overworld(self) and self:is_in_menu() and
+        not self.ship:is_aboard(self) then
         self.ship:set_overworld_location(self,
                                          self.field_player:get_overworld_location(
                                              self))
