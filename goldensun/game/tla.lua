@@ -16,7 +16,7 @@ local TLA = Game.new {
     zoom = require("goldensun.memory.game.tla.zoom")
 }
 
-local function check_hover_pp(self)
+function TLA:check_hover_pp()
     if self.move_type:is_hover_ship(self) then
         local player_id = self.party:player_ids(self)[0]
         local player = require("goldensun.game.tla.player")
@@ -27,7 +27,7 @@ local function check_hover_pp(self)
     end
 end
 
-local function check_ship_map_enter(self)
+function TLA:check_ship_map_enter()
     if self.map:is_normal_ship(self) and not self.ship:is_aboard(self) then
         self.ship:board(self)
         self.field_flags:trigger_exit(self)
@@ -42,12 +42,13 @@ function TLA:calculate_map_location(location)
     }
 end
 
-function TLA:ship_checks()
-    check_ship_map_enter(self)
-    check_hover_pp(self)
+function TLA:specific_checks()
+    self:check_ship_map_enter()
+    self:check_hover_pp()
+    self:teleport_ship()
 end
 
-function TLA:teleport_ship()
+function TLA:teleport_ship(game)
     if self:key_pressed("L") and self:key_pressed("B") and
         self.map:is_overworld(self) and self:is_in_menu() and
         not self.ship:is_aboard(self) then

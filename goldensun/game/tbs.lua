@@ -22,6 +22,8 @@ function TBS:calculate_map_location(location)
     }
 end
 
+function TBS:specific_checks() end
+
 setmetatable(tbs, {__index = TBS})
 
 return tbs

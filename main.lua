@@ -29,10 +29,9 @@ while true do
 
     if not game:is_in_battle() then
         game:lock_zoom()
-        game:ship_checks()
-        game:teleport_ship()
         game:fast_travel()
         game:teleport_to_cursor()
+        game:specific_checks()
     end
 
     game.emulator:frameadvance()
