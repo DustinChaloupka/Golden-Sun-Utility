@@ -2,10 +2,10 @@ local emulator = nil
 
 if vba then
     print("Loading VBA...")
-    emulator = require("emulation.visualboyadvanced")
+    emulator = require("emulation.emulator.visualboyadvanced")
 elseif client then
     print("Loading BizHawk...")
-    emulator = require("emulation.bizhawk")
+    emulator = require("emulation.emulator.bizhawk")
 end
 
 local tbs = require("goldensun.game.tbs")
@@ -28,6 +28,7 @@ while true do
     game.emulator:load_joypad(0)
 
     if not game:is_in_battle() then
+        if not game:is_in_menu() then game:encounter_checks() end
         game:lock_zoom()
         game:fast_travel()
         game:teleport_to_cursor()

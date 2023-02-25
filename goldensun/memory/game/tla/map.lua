@@ -7,7 +7,8 @@ local Map = require("goldensun.memory.game.map").new {
     world = 2,
     sea_of_time_a = 197,
     sea_of_time_b = 198,
-    northern_reaches = 268
+    northern_reaches = 268,
+    battle = 510
 }
 
 function Map:is_normal_ship(game)

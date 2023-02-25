@@ -10,6 +10,12 @@ function Game:read_byte(...) return self.emulator.memory.readbyte(...) end
 function Game:write_byte(...) return self.emulator.memory.writebyte(...) end
 function Game:key_pressed(...) return self.emulator:key_pressed(...) end
 
+-- Show information around encounters
+function Game:encounter_checks()
+    local step_count = self.encounters:get_step_count(self)
+    self.emulator.gui:draw_step_count(step_count)
+end
+
 -- Hold L to go fast
 function Game:fast_travel()
     if self.emulator:key_pressed("L") then
@@ -30,7 +36,10 @@ function Game:maybe_get_teleport_location()
     end
 end
 
-function Game:is_in_battle() return self.state:is_battle(self) end
+-- The state takes a bit to change, but the map changes right away?
+function Game:is_in_battle()
+    return self.state:is_battle(self) or self.map:is_battle(self)
+end
 function Game:is_current_rom() return self.rom:is_current_rom(self) end
 function Game:is_in_menu() return self.state:is_menu(self) end
 
