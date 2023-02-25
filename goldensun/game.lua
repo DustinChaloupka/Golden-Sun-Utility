@@ -35,7 +35,9 @@ function Game:is_current_rom() return self.rom:is_current_rom(self) end
 function Game:is_in_menu() return self.state:is_menu(self) end
 
 function Game:lock_zoom()
-    if self.map:is_overworld(self) then self.zoom:lock(self) end
+    if not self:is_in_menu() and self.map:is_overworld(self) then
+        self.zoom:lock(self)
+    end
 end
 
 -- Press A on world map to teleport to cursor
