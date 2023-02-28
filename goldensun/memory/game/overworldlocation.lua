@@ -3,8 +3,8 @@ local overworldlocation = {}
 local Coordinates = require("goldensun.memory.coordinates")
 local OverworldLocation = Coordinates.new()
 
-function OverworldLocation:get_z(game) return 0 end
-function OverworldLocation:set_z(game, z) end
+function OverworldLocation:get_z() return 0 end
+function OverworldLocation:set_z(z) end
 
 function overworldlocation.new(o)
     local self = o or {}

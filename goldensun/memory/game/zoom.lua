@@ -3,7 +3,7 @@ local zoom = {}
 local Chunk = require("goldensun.memory.chunk")
 local Zoom = Chunk.new()
 
-function Zoom:lock(game) self:write(game, self.locked) end
+function Zoom:lock() self:write(self.locked) end
 
 function zoom.new(o)
     local self = o or {}

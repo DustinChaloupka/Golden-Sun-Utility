@@ -2,34 +2,26 @@ local game = {}
 
 local Game = {state = require("goldensun.memory.game.state")}
 
-function Game:read_word(...) return self.emulator.memory.readword(...) end
-function Game:read_dword(...) return self.emulator.memory.readdword(...) end
-function Game:write_word(...) return self.emulator.memory.writeword(...) end
-function Game:write_dword(...) return self.emulator.memory.writedword(...) end
-function Game:read_byte(...) return self.emulator.memory.readbyte(...) end
-function Game:write_byte(...) return self.emulator.memory.writebyte(...) end
-function Game:key_pressed(...) return self.emulator:key_pressed(...) end
-
 -- Show information around encounters
 function Game:encounter_checks()
-    local step_count = self.encounters:get_step_count(self)
-    self.emulator.gui:draw_step_count(step_count)
+    local step_count = self.encounters:get_step_count()
+    emulator.gui:draw_step_count(step_count)
 end
 
 -- Hold L to go fast
 function Game:fast_travel()
-    if self.emulator:key_pressed("L") then
-        local speed = self.move_type:speed_up(self)
+    if emulator:key_pressed("L") then
+        local speed = self.move_type:speed_up()
 
-        self.camera:add_speed(self, speed)
+        self.camera:add_speed(speed)
 
-        self.encounters:disable_if_fast_travel(self)
+        self.encounters:disable_if_fast_travel()
     end
 end
 
 function Game:maybe_get_teleport_location()
-    if self.overworld_map:is_teleport_available(self) and self:key_pressed("A") then
-        local cursor_location = self.overworld_map:get_teleport_location(self)
+    if self.overworld_map:is_teleport_available() and emulator:key_pressed("A") then
+        local cursor_location = self.overworld_map:get_teleport_location()
         local location = self:calculate_map_location(cursor_location)
 
         return location
@@ -38,14 +30,14 @@ end
 
 -- The state takes a bit to change, but the map changes right away?
 function Game:is_in_battle()
-    return self.state:is_battle(self) or self.map:is_battle(self)
+    return self.state:is_battle() or self.map:is_battle()
 end
-function Game:is_current_rom() return self.rom:is_current_rom(self) end
-function Game:is_in_menu() return self.state:is_menu(self) end
+function Game:is_current_rom() return self.rom:is_current_rom() end
+function Game:is_in_menu() return self.state:is_menu() end
 
 function Game:lock_zoom()
-    if not self:is_in_menu() and self.map:is_overworld(self) then
-        self.zoom:lock(self)
+    if not self:is_in_menu() and self.map:is_overworld() then
+        self.zoom:lock()
     end
 end
 
@@ -54,8 +46,8 @@ function Game:teleport_to_cursor()
     local location = self:maybe_get_teleport_location()
 
     if location then
-        self.field_player:set_overworld_location(self, location)
-        self.camera:set_location(self, location)
+        self.field_player:set_overworld_location(location)
+        self.camera:set_location(location)
     end
 end
 

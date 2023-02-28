@@ -17,20 +17,18 @@ local TLA = Game.new {
 }
 
 function TLA:check_hover_pp()
-    if self.move_type:is_hover_ship(self) then
-        local player_id = self.party:player_ids(self)[0]
+    if self.move_type:is_hover_ship() then
+        local player_id = self.party:player_ids()[0]
         local player = require("goldensun.game.tla.player")
         player.id = player_id
-        if player:get_current_pp(self) < 1 then
-            player:set_current_pp(self, 1)
-        end
+        if player:get_current_pp() < 1 then player:set_current_pp(1) end
     end
 end
 
 function TLA:check_ship_map_enter()
-    if self.map:is_normal_ship(self) and not self.ship:is_aboard(self) then
-        self.ship:board(self)
-        self.field_flags:trigger_exit(self)
+    if self.map:is_normal_ship() and not self.ship:is_aboard() then
+        self.ship:board()
+        self.field_flags:trigger_exit()
     end
 end
 
@@ -48,13 +46,12 @@ function TLA:specific_checks()
     self:teleport_ship()
 end
 
-function TLA:teleport_ship(game)
-    if self:key_pressed("L") and self:key_pressed("B") and
-        self.map:is_overworld(self) and self:is_in_menu() and
-        not self.ship:is_aboard(self) then
-        self.ship:set_overworld_location(self,
-                                         self.field_player:get_overworld_location(
-                                             self))
+function TLA:teleport_ship()
+    if emulator:key_pressed("L") and emulator:key_pressed("B") and
+        self.map:is_overworld() and self:is_in_menu() and
+        not self.ship:is_aboard() then
+        self.ship:set_overworld_location(
+            self.field_player:get_overworld_location())
     end
 end
 
@@ -63,12 +60,12 @@ function TLA:teleport_to_cursor()
     local location = self:maybe_get_teleport_location()
 
     if location then
-        if self.move_type:is_ship(self) then
-            self.ship:set_overworld_location(self, location)
+        if self.move_type:is_ship() then
+            self.ship:set_overworld_location(location)
         else
-            self.field_player:set_overworld_location(self, location)
+            self.field_player:set_overworld_location(location)
         end
-        self.camera:set_location(self, location)
+        self.camera:set_location(location)
     end
 end
 

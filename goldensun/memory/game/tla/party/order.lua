@@ -3,9 +3,9 @@ local order = {}
 local Chunk = require("goldensun.memory.chunk")
 local Order = Chunk.new {address = 0x02000458, size = 8}
 
-function Order:get_ids(game)
+function Order:get_ids()
     local player_ids = {}
-    for i = 0, 7, 1 do player_ids[i] = self:read_offset(game, i) end
+    for i = 0, 7, 1 do player_ids[i] = self:read_offset(i) end
     return player_ids
 end
 

@@ -11,8 +11,8 @@ local Map = require("goldensun.memory.game.map").new {
     battle = 510
 }
 
-function Map:is_normal_ship(game)
-    local value = self:read(game)
+function Map:is_normal_ship()
+    local value = self:read()
     return
         value == self.sea_of_time_a or value == self.sea_of_time_b or value ==
             self.northern_reaches

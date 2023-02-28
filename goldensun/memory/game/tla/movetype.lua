@@ -21,46 +21,42 @@ local MoveType = require("goldensun.memory.game.movetype").new {
 local MoveTypeTla = {}
 setmetatable(MoveTypeTla, {__index = MoveType})
 
-function MoveTypeTla:is_sand(game) return self:read(game) == self.sand end
-function MoveTypeTla:is_normal_ship(game)
-    return self:read(game) == self.normal_ship
+function MoveTypeTla:is_sand() return self:read() == self.sand end
+function MoveTypeTla:is_normal_ship() return self:read() == self.normal_ship end
+function MoveTypeTla:is_overworld_ship()
+    return self:read() == self.overworld_ship
 end
-function MoveTypeTla:is_overworld_ship(game)
-    return self:read(game) == self.overworld_ship
+function MoveTypeTla:is_hover_ship() return self:read() == self.hover_ship end
+function MoveTypeTla:is_ship()
+    return self:is_normal_ship() or self:is_overworld_ship() or
+               self:is_hover_ship()
 end
-function MoveTypeTla:is_hover_ship(game)
-    return self:read(game) == self.hover_ship
+function MoveTypeTla:is_overworld_sand()
+    return self:read() == self.overworld_sand
 end
-function MoveTypeTla:is_ship(game)
-    return self:is_normal_ship(game) or self:is_overworld_ship(game) or
-               self:is_hover_ship(game)
-end
-function MoveTypeTla:is_overworld_sand(game)
-    return self:read(game) == self.overworld_sand
-end
-function MoveTypeTla:is_hover(game) return self:read(game) == self.hover end
+function MoveTypeTla:is_hover() return self:read() == self.hover end
 
 local settings = require("config.settings")
-function MoveTypeTla:speed_up(game)
+function MoveTypeTla:speed_up()
     local speed
     local location
-    if self:is_overworld_ship(game) then
-        speed = self:get_speed(game, settings.boat_speed)
+    if self:is_overworld_ship() then
+        speed = self:get_speed(settings.boat_speed)
         location = game.ship.overworld_location
-    elseif self:is_hover_ship(game) then
-        speed = self:get_speed(game, settings.hover_boat_speed)
+    elseif self:is_hover_ship() then
+        speed = self:get_speed(settings.hover_boat_speed)
         location = game.ship.overworld_location
     elseif self:is_normal_ship(game) then
-        speed = self:get_speed(game, settings.town_speed)
+        speed = self:get_speed(settings.town_speed)
         location = game.ship.normal_location
     end
 
     if speed and location then
-        location:add_speed(game, speed)
+        location:add_speed(speed)
         return speed
     end
 
-    return MoveType:speed_up(game)
+    return MoveType:speed_up()
 end
 
 setmetatable(movetype, {__index = MoveTypeTla})

@@ -2,7 +2,7 @@ local party = {}
 
 local Party = {}
 
-function Party:player_ids(game) return self.order:get_ids(game) end
+function Party:player_ids() return self.order:get_ids() end
 
 function party.new(o)
     local self = o or {}

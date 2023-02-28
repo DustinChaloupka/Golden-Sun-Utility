@@ -3,49 +3,40 @@ local movetype = {}
 local Chunk = require("goldensun.memory.chunk")
 local MoveType = Chunk.new()
 
-function MoveType:is_normal(game) return self:read(game) == self.normal end
-function MoveType:is_overworld(game) return self:read(game) == self.overworld end
-function MoveType:is_climbing_wall(game)
-    return self:read(game) == self.climbing_wall
-end
-function MoveType:is_climbing_rope(game)
-    return self:read(game) == self.climbing_rope
-end
-function MoveType:is_walking_rope(game)
-    return self:read(game) == self.walking_rope
-end
-function MoveType:is_overworld_sand(game)
-    return self:read(game) == self.overworld_sand
-end
-function MoveType:is_slippery_ground(game)
-    return self:read(game) == self.slippery_ground
-end
+function MoveType:is_normal() return self:read() == self.normal end
+function MoveType:is_overworld() return self:read() == self.overworld end
+function MoveType:is_climbing_wall() return self:read() == self.climbing_wall end
+function MoveType:is_climbing_rope() return self:read() == self.climbing_rope end
+function MoveType:is_walking_rope() return self:read() == self.walking_rope end
+function MoveType:is_overworld_sand() return self:read() == self.overworld_sand end
+function MoveType:is_slippery_ground() return
+    self:read() == self.slippery_ground end
 
-function MoveType:get_speed(game, speed)
+function MoveType:get_speed(speed)
     local s = {x = 0, y = 0, z = 0}
-    if game:key_pressed("down") then s.y = s.y + speed end
-    if game:key_pressed("up") then s.y = s.y - speed end
-    if game:key_pressed("left") then s.x = s.x - speed end
-    if game:key_pressed("right") then s.x = s.x + speed end
+    if emulator:key_pressed("down") then s.y = s.y + speed end
+    if emulator:key_pressed("up") then s.y = s.y - speed end
+    if emulator:key_pressed("left") then s.x = s.x - speed end
+    if emulator:key_pressed("right") then s.x = s.x + speed end
     return s
 end
 
 local settings = require("config.settings")
-function MoveType:speed_up(game)
+function MoveType:speed_up()
     local speed
     local location
-    if self:is_overworld(game) and game:key_pressed("B") then
-        speed = self:get_speed(game, settings.overworld_run_speed)
+    if self:is_overworld() and emulator:key_pressed("B") then
+        speed = self:get_speed(settings.overworld_run_speed)
         location = game.field_player.overworld_location
-    elseif self:is_overworld(game) then
-        speed = self:get_speed(game, settings.overworld_speed)
+    elseif self:is_overworld() then
+        speed = self:get_speed(settings.overworld_speed)
         location = game.field_player.overworld_location
-    elseif self:is_normal(game) then
-        speed = self:get_speed(game, settings.town_speed)
+    elseif self:is_normal() then
+        speed = self:get_speed(settings.town_speed)
         location = game.field_player.normal_location
     end
 
-    location:add_speed(game, speed)
+    location:add_speed(speed)
     return speed
 end
 

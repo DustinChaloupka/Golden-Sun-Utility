@@ -3,8 +3,8 @@ local normallocation = {}
 local Coordinates = require("goldensun.memory.coordinates")
 local NormalLocation = Coordinates.new()
 
-function NormalLocation:get_z(game) return 0 end
-function NormalLocation:set_z(game, z) end
+function NormalLocation:get_z() return 0 end
+function NormalLocation:set_z(z) end
 
 function normallocation.new(o)
     local self = o or {}

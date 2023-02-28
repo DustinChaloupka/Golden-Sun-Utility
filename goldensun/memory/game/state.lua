@@ -9,12 +9,12 @@ local State = Chunk.new({
     menu_flag = 6
 })
 
-function State:is_battle(game)
-    return bit.band(bit.rshift(self:read(game), self.battle_flag), 1) == 1
+function State:is_battle()
+    return bit.band(bit.rshift(self:read(), self.battle_flag), 1) == 1
 end
 
-function State:is_menu(game)
-    return bit.band(bit.rshift(self:read(game), self.menu_flag), 1) == 1
+function State:is_menu()
+    return bit.band(bit.rshift(self:read(), self.menu_flag), 1) == 1
 end
 
 setmetatable(state, {__index = State})

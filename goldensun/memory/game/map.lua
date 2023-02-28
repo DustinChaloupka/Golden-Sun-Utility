@@ -3,8 +3,8 @@ local map = {}
 local Chunk = require("goldensun.memory.chunk")
 local Map = Chunk.new()
 
-function Map:is_battle(game) return self:read(game) == self.battle end
-function Map:is_overworld(game) return self:read(game) == self.world end
+function Map:is_battle() return self:read() == self.battle end
+function Map:is_overworld() return self:read() == self.world end
 
 function map.new(o)
     local self = o or {}

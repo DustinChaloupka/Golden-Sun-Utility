@@ -2,27 +2,27 @@ local coordinates = {}
 
 local Coordinates = {}
 
-function Coordinates:get_x(game) return self.x:read(game) end
-function Coordinates:get_y(game) return self.y:read(game) end
-function Coordinates:get_z(game) return self.z:read(game) end
-function Coordinates:set_x(game, x) self.x:write(game, x) end
-function Coordinates:set_y(game, y) self.y:write(game, y) end
-function Coordinates:set_z(game, z) self.z:write(game, z) end
-function Coordinates:get_location(game)
-    return {x = self:get_x(game), y = self:get_y(game), z = self:get_z(game)}
+function Coordinates:get_x() return self.x:read() end
+function Coordinates:get_y() return self.y:read() end
+function Coordinates:get_z() return self.z:read() end
+function Coordinates:set_x(x) self.x:write(x) end
+function Coordinates:set_y(y) self.y:write(y) end
+function Coordinates:set_z(z) self.z:write(z) end
+function Coordinates:get_location()
+    return {x = self:get_x(), y = self:get_y(), z = self:get_z()}
 end
-function Coordinates:set_location(game, location)
-    self:set_x(game, location.x)
-    self:set_y(game, location.y)
-    self:set_z(game, location.z)
+function Coordinates:set_location(location)
+    self:set_x(location.x)
+    self:set_y(location.y)
+    self:set_z(location.z)
 end
 
-function Coordinates:add_speed(game, speed)
-    local location = self:get_location(game)
+function Coordinates:add_speed(speed)
+    local location = self:get_location()
     location.x = location.x + speed.x
     location.y = location.y + speed.y
     location.z = location.z + speed.z
-    self:set_location(game, location)
+    self:set_location(location)
 end
 
 function coordinates.new(o)

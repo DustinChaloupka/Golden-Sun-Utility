@@ -7,8 +7,8 @@ local Location = Coordinates.new {
     y_offset = 0xA
 }
 
-function Location:get_z(game) return 0 end
-function Location:set_z(game, z) end
+function Location:get_z() return 0 end
+function Location:set_z(z) end
 
 function location.new(o)
     self = o or {}

@@ -6,21 +6,21 @@ local OverworldMap = {
     has_closed = true
 }
 
-function OverworldMap:get_cursor_location(game)
-    return self.cursor_location:get_location(game)
+function OverworldMap:get_cursor_location()
+    return self.cursor_location:get_location()
 end
 
-function OverworldMap:get_teleport_location(game)
+function OverworldMap:get_teleport_location()
     self.has_closed = false
-    return self:get_cursor_location(game)
+    return self:get_cursor_location()
 end
 
-function OverworldMap:is_open(game) return self.map_flag:is_enabled(game) end
+function OverworldMap:is_open() return self.map_flag:is_enabled() end
 
-function OverworldMap:is_teleport_available(game)
-    if self:is_open(game) and self.has_closed then
+function OverworldMap:is_teleport_available()
+    if self:is_open() and self.has_closed then
         return true
-    elseif not self:is_open(game) and not self.has_closed then
+    elseif not self:is_open() and not self.has_closed then
         self.has_closed = true
     end
 
