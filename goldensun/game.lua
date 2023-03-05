@@ -6,10 +6,7 @@ local Game = {
 }
 
 -- Show information around encounters
-function Game:encounter_checks()
-    local step_count = self.encounters:get_step_count()
-    emulator.gui:draw_step_count(step_count)
-end
+function Game:encounter_checks() self.encounters:draw() end
 
 -- Hold L to go fast
 function Game:fast_travel()

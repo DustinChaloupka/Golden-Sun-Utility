@@ -9,8 +9,6 @@ local Encounters = require("goldensun.memory.game.encounters").new {
     size = 8
 }
 
--- gui.text(0, 20, "Encounter: " .. (memory.readword(0x0200049A)), encounterColor)
-
 setmetatable(encounters, {__index = Encounters})
 
 return encounters

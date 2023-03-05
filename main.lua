@@ -1,4 +1,5 @@
 emulator = nil
+drawing = nil
 
 if vba then
     print("Loading VBA...")
@@ -7,6 +8,8 @@ elseif client then
     print("Loading BizHawk...")
     emulator = require("emulation.emulator.bizhawk")
 end
+
+drawing = emulator.gui
 
 local tbs = require("goldensun.game.tbs")
 local tla = require("goldensun.game.tla")
@@ -23,6 +26,7 @@ elseif tla.is_current_rom(tla) then
 end
 
 while true do
+    drawing:reset()
     emulator:load_joypad(0)
 
     if not game:is_in_battle() then
@@ -33,5 +37,6 @@ while true do
         game:specific_checks()
     end
 
+    drawing:update()
     emulator:frameadvance()
 end

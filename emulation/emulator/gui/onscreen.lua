@@ -2,9 +2,9 @@ local onscreen = gui
 
 local OnScreen = {}
 
-function OnScreen:draw_step_count(step_count)
-    self.text(0, 20, "Encounter: " .. step_count)
-end
+function OnScreen:update() end
+function OnScreen:reset() end
+function OnScreen:set_text(text, x, y) self.text(x, y, text) end
 
 setmetatable(onscreen, {__index = OnScreen})
 
