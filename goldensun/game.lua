@@ -1,6 +1,9 @@
 local game = {}
 
-local Game = {state = require("goldensun.memory.game.state")}
+local Game = {
+    state = require("goldensun.memory.game.state"),
+    transition = require("goldensun.memory.game.transition")
+}
 
 -- Show information around encounters
 function Game:encounter_checks()
@@ -10,7 +13,7 @@ end
 
 -- Hold L to go fast
 function Game:fast_travel()
-    if emulator:key_pressed("L") then
+    if emulator:key_pressed("L") and not self.transition:is_in_progress() then
         local speed = self.move_type:speed_up()
 
         if speed then self.camera:add_speed(speed) end
