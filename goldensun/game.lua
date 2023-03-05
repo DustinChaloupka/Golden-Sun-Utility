@@ -13,7 +13,7 @@ function Game:fast_travel()
     if emulator:key_pressed("L") then
         local speed = self.move_type:speed_up()
 
-        self.camera:add_speed(speed)
+        if speed then self.camera:add_speed(speed) end
 
         self.encounters:disable_if_fast_travel()
     end

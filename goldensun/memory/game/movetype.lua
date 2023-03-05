@@ -36,7 +36,7 @@ function MoveType:speed_up()
         location = game.field_player.normal_location
     end
 
-    location:add_speed(speed)
+    if location then location:add_speed(speed) end
     return speed
 end
 
