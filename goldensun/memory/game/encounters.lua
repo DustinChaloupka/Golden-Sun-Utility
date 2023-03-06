@@ -1,6 +1,6 @@
 local encounters = {}
 
-local Encounters = {ui = {x = 0, y = 20}}
+local Encounters = {}
 
 function Encounters:disable() self.lock:write(0) end
 
@@ -10,8 +10,8 @@ function Encounters:disable_if_fast_travel()
 end
 
 function Encounters:draw()
-    drawing:set_text("Step Count: " .. self.step_count:read(), self.ui.x,
-                     self.ui.y)
+    self.step_count:draw()
+    self.step_rate:draw()
 end
 
 function encounters.new(o)
