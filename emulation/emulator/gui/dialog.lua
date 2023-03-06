@@ -6,11 +6,17 @@ forms.setproperty(Dialog.form, "Left", client.xpos() + client.screenwidth() + 20
 forms.setproperty(Dialog.form, "Top", client.ypos())
 Dialog.picture_box = dialog.pictureBox(Dialog.form, 0, 0, Dialog.width,
                                        Dialog.height)
-forms.setDefaultTextBackground(Dialog.picture_box, 0)
+forms.setDefaultTextBackground(Dialog.picture_box, "transparent")
+forms.setDefaultBackgroundColor(Dialog.picture_box, "black")
+forms.setDefaultForegroundColor(Dialog.picture_box, "black")
 
 function Dialog:update() self.refresh(self.picture_box) end
-function Dialog:reset() self.clear(self.picture_box, 0) end
-function Dialog:set_text(text, x, y) self.drawText(self.picture_box, x, y, text) end
+function Dialog:reset()
+    self.drawRectangle(self.picture_box, 0, 0, Dialog.width, Dialog.height)
+end
+function Dialog:set_text(text, x, y, forecolor)
+    self.drawText(self.picture_box, x, y, text, forecolor)
+end
 
 setmetatable(dialog, {__index = Dialog})
 

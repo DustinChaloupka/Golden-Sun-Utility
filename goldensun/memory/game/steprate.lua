@@ -4,7 +4,7 @@ local Chunk = require("goldensun.memory.chunk")
 local StepRate = Chunk.new({ui = {x = 0, y = 10}})
 
 function StepRate:draw()
-    drawing:set_text("Step Rate: " .. self:read(), self.ui.x, self.ui.y)
+    drawing:set_text("Step Rate: " .. self:read(), self.ui.x, self.ui.y, "white")
 end
 
 -- Normalizes the step rate value to something between 0 and 30, 0 being
