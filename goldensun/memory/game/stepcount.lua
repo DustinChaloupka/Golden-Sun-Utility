@@ -3,12 +3,12 @@ local stepcount = {}
 local Chunk = require("goldensun.memory.chunk")
 local StepCount = Chunk.new({ui = {x = 0, y = 0}})
 
-local previousCounterValue = 0
+local previousCounter = 0
 function StepCount:draw()
-    local counterValue = self.counter:read()
-    local color = "white"
-    if counterValue ~= previousCounterValue then color = "green" end
-    previousCounterValue = counterValue
+    local counter = self.counter:read()
+    local color = 0xFFFFFF
+    if counter ~= previousCounter then color = 0x00FF00 end
+    previousCounter = counter
 
     drawing:set_text("Step Count: " .. self:read(), self.ui.x, self.ui.y, color)
 end

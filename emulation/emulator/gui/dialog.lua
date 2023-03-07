@@ -14,8 +14,14 @@ function Dialog:update() self.refresh(self.picture_box) end
 function Dialog:reset()
     self.drawRectangle(self.picture_box, 0, 0, Dialog.width, Dialog.height)
 end
-function Dialog:set_text(text, x, y, forecolor)
-    self.drawText(self.picture_box, x, y, text, forecolor)
+function Dialog:get_hex_color(color, transparency)
+    local t = 0xFF000000
+    if transparency then t = transparency end
+    return color + t
+end
+function Dialog:set_text(text, x, y, forecolor, transparency)
+    self.drawText(self.picture_box, x, y, text,
+                  self:get_hex_color(forecolor, transparency))
 end
 
 setmetatable(dialog, {__index = Dialog})

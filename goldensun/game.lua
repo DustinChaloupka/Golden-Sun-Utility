@@ -6,7 +6,9 @@ local Game = {
 }
 
 -- Show information around encounters
-function Game:encounter_checks() self.encounters:draw() end
+function Game:encounter_checks()
+    self.encounters:draw(self.move_type:is_overworld())
+end
 
 -- Hold L to go fast
 function Game:fast_travel()

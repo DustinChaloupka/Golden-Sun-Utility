@@ -9,9 +9,9 @@ function Encounters:disable_if_fast_travel()
     if not settings.encounters_if_fast_travel then self:disable() end
 end
 
-function Encounters:draw()
+function Encounters:draw(is_overworld)
     self.step_count:draw()
-    self.step_rate:draw()
+    self.step_rate:draw(is_overworld)
 end
 
 function encounters.new(o)
