@@ -3,7 +3,7 @@ local bizhawk = {emulation = emu}
 local Emulator = require("emulation.emulator")
 local BizHawk = Emulator.new {
     controller = joypad.get(),
-    controller_keys = {
+    controller_buttons = {
         down = "Down",
         up = "Up",
         left = "Left",
@@ -19,9 +19,11 @@ BizHawk.memory.readdword = memory.read_u32_le
 BizHawk.memory.writeword = memory.write_s16_le
 
 function BizHawk:load_joypad(joypad_number) self.controller = joypad.get() end
-function BizHawk:key_pressed(key)
-    local checking = key
-    if self.controller_keys[key] then checking = self.controller_keys[key] end
+function BizHawk:button_pressed(button)
+    local checking = button
+    if self.controller_buttons[button] then
+        checking = self.controller_buttons[button]
+    end
 
     return self.controller and self.controller[checking]
 end

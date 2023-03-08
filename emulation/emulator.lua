@@ -1,6 +1,6 @@
 local emulator = {}
 
-local Emulator = {controller = joypad.get(0)}
+local Emulator = {checking = {}, controller = joypad.get(0)}
 
 function Emulator:read_word(...) return self.memory.readword(...) end
 function Emulator:read_dword(...) return self.memory.readdword(...) end
@@ -18,8 +18,23 @@ function Emulator:load_joypad(joypad_number)
     self.controller = joypad.get(joypad_number)
 end
 
+function Emulator:load_input() self.input = input.get() end
+
 function Emulator:key_pressed(key)
-    return self.controller and self.controller[key]
+    if self.checking[key] and self.input[key] then
+        return false
+    elseif self.input[key] then
+        self.checking[key] = true
+        return true
+    else
+        self.checking[key] = false
+    end
+
+    return false
+end
+
+function Emulator:button_pressed(button)
+    return self.controller and self.controller[button]
 end
 
 function emulator.new(o)

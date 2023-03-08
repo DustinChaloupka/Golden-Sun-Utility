@@ -14,10 +14,10 @@ function MoveType:is_slippery_ground() return
 
 function MoveType:get_speed(speed)
     local s = {x = 0, y = 0, z = 0}
-    if emulator:key_pressed("down") then s.y = s.y + speed end
-    if emulator:key_pressed("up") then s.y = s.y - speed end
-    if emulator:key_pressed("left") then s.x = s.x - speed end
-    if emulator:key_pressed("right") then s.x = s.x + speed end
+    if emulator:button_pressed("down") then s.y = s.y + speed end
+    if emulator:button_pressed("up") then s.y = s.y - speed end
+    if emulator:button_pressed("left") then s.x = s.x - speed end
+    if emulator:button_pressed("right") then s.x = s.x + speed end
     return s
 end
 
@@ -25,7 +25,7 @@ local settings = require("config.settings")
 function MoveType:speed_up()
     local speed
     local location
-    if self:is_overworld() and emulator:key_pressed("B") then
+    if self:is_overworld() and emulator:button_pressed("B") then
         speed = self:get_speed(settings.overworld_run_speed)
         location = game.field_player.overworld_location
     elseif self:is_overworld() then

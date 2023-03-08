@@ -47,7 +47,7 @@ function TLA:specific_checks()
 end
 
 function TLA:teleport_ship()
-    if emulator:key_pressed("L") and emulator:key_pressed("B") and
+    if emulator:button_pressed("L") and emulator:button_pressed("B") and
         self.map:is_overworld() and self:is_in_menu() and
         not self.ship:is_aboard() then
         self.ship:set_overworld_location(

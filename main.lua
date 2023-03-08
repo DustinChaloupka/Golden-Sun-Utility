@@ -28,6 +28,7 @@ end
 while true do
     drawing:reset()
     emulator:load_joypad(0)
+    emulator:load_input()
 
     if not game:is_in_battle() then
         if not game:is_in_menu() then game:encounter_checks() end

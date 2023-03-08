@@ -5,24 +5,34 @@ local Game = {
     transition = require("goldensun.memory.game.transition")
 }
 
--- Show information around encounters
+-- Manage encounters
 function Game:encounter_checks()
+    if emulator:key_pressed("E") then
+        self.encounters:set_disabled(not self.encounters.is_disabled)
+    end
+
+    self.encounters:maybe_disable()
+
     self.encounters:draw(self.move_type:is_overworld())
 end
 
 -- Hold L to go fast
+local settings = require("config.settings")
 function Game:fast_travel()
-    if emulator:key_pressed("L") and not self.transition:is_in_progress() then
+    if emulator:button_pressed("L") and not self.transition:is_in_progress() then
         local speed = self.move_type:speed_up()
 
         if speed then self.camera:add_speed(speed) end
 
-        self.encounters:disable_if_fast_travel()
+        if not settings.encounters_if_fast_travel then
+            self.encounters:disable()
+        end
     end
 end
 
 function Game:maybe_get_teleport_location()
-    if self.overworld_map:is_teleport_available() and emulator:key_pressed("A") then
+    if self.overworld_map:is_teleport_available() and
+        emulator:button_pressed("A") then
         local cursor_location = self.overworld_map:get_teleport_location()
         local location = self:calculate_map_location(cursor_location)
 
