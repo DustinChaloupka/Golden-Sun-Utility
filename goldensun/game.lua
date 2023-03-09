@@ -13,14 +13,15 @@ function Game:encounter_checks()
 
     self.encounters:maybe_disable()
 
-    self.encounters:draw(self.move_type:is_overworld())
+    self.encounters:draw(self.movement.type:is_overworld())
 end
 
+function Game:movement_checks() self.movement.tick:draw() end
 -- Hold L to go fast
 local settings = require("config.settings")
 function Game:fast_travel()
     if emulator:button_pressed("L") and not self.transition:is_in_progress() then
-        local speed = self.move_type:speed_up()
+        local speed = self.movement.type:speed_up()
 
         if speed then self.camera:add_speed(speed) end
 

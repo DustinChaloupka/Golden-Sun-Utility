@@ -7,7 +7,7 @@ local TLA = Game.new {
     field_flags = require("goldensun.game.tla.fieldflags"),
     field_player = require("goldensun.game.tla.fieldplayer"),
     map = require("goldensun.memory.game.tla.map"),
-    move_type = require("goldensun.memory.game.tla.movetype"),
+    movement = require("goldensun.memory.game.tla.movement"),
     overworld_map = require("goldensun.game.tla.overworldmap"),
     party = require("goldensun.game.tla.party"),
     player = require("goldensun.game.tla.player"),
@@ -17,7 +17,7 @@ local TLA = Game.new {
 }
 
 function TLA:check_hover_pp()
-    if self.move_type:is_hover_ship() then
+    if self.movement.type:is_hover_ship() then
         local player_id = self.party:player_ids()[0]
         local player = require("goldensun.game.tla.player")
         player.id = player_id
@@ -60,7 +60,7 @@ function TLA:teleport_to_cursor()
     local location = self:maybe_get_teleport_location()
 
     if location then
-        if self.move_type:is_ship() then
+        if self.movement.type:is_ship() then
             self.ship:set_overworld_location(location)
         else
             self.field_player:set_overworld_location(location)

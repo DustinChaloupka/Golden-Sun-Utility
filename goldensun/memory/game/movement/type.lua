@@ -1,18 +1,17 @@
-local movetype = {}
+local type = {}
 
 local Chunk = require("goldensun.memory.chunk")
-local MoveType = Chunk.new()
+local Type = Chunk.new()
 
-function MoveType:is_normal() return self:read() == self.normal end
-function MoveType:is_overworld() return self:read() == self.overworld end
-function MoveType:is_climbing_wall() return self:read() == self.climbing_wall end
-function MoveType:is_climbing_rope() return self:read() == self.climbing_rope end
-function MoveType:is_walking_rope() return self:read() == self.walking_rope end
-function MoveType:is_overworld_sand() return self:read() == self.overworld_sand end
-function MoveType:is_slippery_ground() return
-    self:read() == self.slippery_ground end
+function Type:is_normal() return self:read() == self.normal end
+function Type:is_overworld() return self:read() == self.overworld end
+function Type:is_climbing_wall() return self:read() == self.climbing_wall end
+function Type:is_climbing_rope() return self:read() == self.climbing_rope end
+function Type:is_walking_rope() return self:read() == self.walking_rope end
+function Type:is_overworld_sand() return self:read() == self.overworld_sand end
+function Type:is_slippery_ground() return self:read() == self.slippery_ground end
 
-function MoveType:get_speed(speed)
+function Type:get_speed(speed)
     local s = {x = 0, y = 0, z = 0}
     if emulator:button_pressed("down") then s.y = s.y + speed end
     if emulator:button_pressed("up") then s.y = s.y - speed end
@@ -22,7 +21,7 @@ function MoveType:get_speed(speed)
 end
 
 local settings = require("config.settings")
-function MoveType:speed_up()
+function Type:speed_up()
     local speed
     local location
     if self:is_overworld() and emulator:button_pressed("B") then
@@ -40,11 +39,11 @@ function MoveType:speed_up()
     return speed
 end
 
-function movetype.new(o)
+function type.new(o)
     local self = o or {}
-    setmetatable(self, {__index = MoveType})
+    setmetatable(self, {__index = Type})
     self.__index = self
     return self
 end
 
-return movetype
+return type

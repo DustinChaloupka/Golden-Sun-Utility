@@ -16,8 +16,10 @@ function Dialog:reset()
 end
 function Dialog:get_hex_color(color, transparency)
     local t = 0xFF000000
+    local c = 0xFFFFFF
+    if color then c = color end
     if transparency then t = transparency end
-    return color + t
+    return c + t
 end
 function Dialog:set_text(text, x, y, forecolor, transparency)
     self.drawText(self.picture_box, x, y, text,

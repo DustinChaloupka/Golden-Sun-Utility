@@ -31,7 +31,10 @@ while true do
     emulator:load_input()
 
     if not game:is_in_battle() then
-        if not game:is_in_menu() then game:encounter_checks() end
+        if not game:is_in_menu() then
+            game:encounter_checks()
+            game:movement_checks()
+        end
         game:lock_zoom()
         game:fast_travel()
         game:teleport_to_cursor()

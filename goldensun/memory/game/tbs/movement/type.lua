@@ -1,6 +1,6 @@
-local movetype = {}
+local type = {}
 
-local MoveType = require("goldensun.memory.game.movetype").new {
+local Type = require("goldensun.memory.game.movement.type").new {
     address = 0x02000432,
     size = 8,
 
@@ -19,6 +19,6 @@ local MoveType = require("goldensun.memory.game.movetype").new {
     slippery_ground = 11
 }
 
-setmetatable(movetype, {__index = MoveType})
+setmetatable(type, {__index = Type})
 
-return movetype
+return type

@@ -1,6 +1,6 @@
-local movetype = {}
+local type = {}
 
-local MoveType = require("goldensun.memory.game.movetype").new {
+local Type = require("goldensun.memory.game.movement.type").new {
     address = 0x02000452,
     size = 8,
 
@@ -18,26 +18,22 @@ local MoveType = require("goldensun.memory.game.movetype").new {
     slippery_ground = 11
 }
 
-local MoveTypeTla = {}
-setmetatable(MoveTypeTla, {__index = MoveType})
+local TypeTla = {}
+setmetatable(TypeTla, {__index = Type})
 
-function MoveTypeTla:is_sand() return self:read() == self.sand end
-function MoveTypeTla:is_normal_ship() return self:read() == self.normal_ship end
-function MoveTypeTla:is_overworld_ship()
-    return self:read() == self.overworld_ship
-end
-function MoveTypeTla:is_hover_ship() return self:read() == self.hover_ship end
-function MoveTypeTla:is_ship()
+function TypeTla:is_sand() return self:read() == self.sand end
+function TypeTla:is_normal_ship() return self:read() == self.normal_ship end
+function TypeTla:is_overworld_ship() return self:read() == self.overworld_ship end
+function TypeTla:is_hover_ship() return self:read() == self.hover_ship end
+function TypeTla:is_ship()
     return self:is_normal_ship() or self:is_overworld_ship() or
                self:is_hover_ship()
 end
-function MoveTypeTla:is_overworld_sand()
-    return self:read() == self.overworld_sand
-end
-function MoveTypeTla:is_hover() return self:read() == self.hover end
+function TypeTla:is_overworld_sand() return self:read() == self.overworld_sand end
+function TypeTla:is_hover() return self:read() == self.hover end
 
 local settings = require("config.settings")
-function MoveTypeTla:speed_up()
+function TypeTla:speed_up()
     local speed
     local location
     if self:is_overworld_ship() then
@@ -56,9 +52,9 @@ function MoveTypeTla:speed_up()
         return speed
     end
 
-    return MoveType:speed_up()
+    return Type:speed_up()
 end
 
-setmetatable(movetype, {__index = MoveTypeTla})
+setmetatable(type, {__index = TypeTla})
 
-return movetype
+return type
