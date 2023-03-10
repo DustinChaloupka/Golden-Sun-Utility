@@ -7,12 +7,14 @@ function Encounters:disable() self.lock:write(0) end
 function Encounters:maybe_disable() if self.is_disabled then self:disable() end end
 
 function Encounters:draw(is_overworld)
-    if self.is_analysis_enabled then
-        -- draw analysis
-    else
+    if not self.is_analysis_enabled then
         self.step_count:draw()
         self.step_rate:draw(is_overworld)
     end
+end
+
+function Encounters:draw_analysis(front_line_level)
+    if self.is_analysis_enabled then end
 end
 
 function Encounters:set_analysis_enabled(is_enabled)

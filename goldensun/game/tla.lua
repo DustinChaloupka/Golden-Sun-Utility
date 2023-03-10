@@ -10,7 +10,6 @@ local TLA = Game.new {
     movement = require("goldensun.memory.game.tla.movement"),
     overworld_map = require("goldensun.game.tla.overworldmap"),
     party = require("goldensun.game.tla.party"),
-    player = require("goldensun.game.tla.player"),
     ship = require("goldensun.game.tla.ship"),
     random_number = {
         battle = require("goldensun.memory.game.tla.randomnumber.battle"),
@@ -22,9 +21,7 @@ local TLA = Game.new {
 
 function TLA:check_hover_pp()
     if self.movement.type:is_hover_ship() then
-        local player_id = self.party:player_ids()[0]
-        local player = require("goldensun.game.tla.player")
-        player.id = player_id
+        local player = self.party:get_players()[1]
         if player:get_current_pp() < 1 then player:set_current_pp(1) end
     end
 end

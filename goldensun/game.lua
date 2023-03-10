@@ -24,11 +24,14 @@ function Game:encounter_checks()
     end
 
     self.encounters:draw(self.movement.type:is_overworld())
+    self.encounters:draw_analysis(self.party:get_front_total_level())
 end
 
 function Game:movement_checks() self.movement:draw() end
 
 function Game:random_number_checks()
+    if emulator:key_pressed("G") then self.random_number.general:advance(1) end
+
     self.random_number.battle:draw()
     self.random_number.general:draw()
 end

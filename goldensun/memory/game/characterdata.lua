@@ -14,6 +14,11 @@ function CharacterData:set_current_pp(player_id, value)
                                     self.current_pp_offset, self.current_pp_size)
 end
 
+function CharacterData:get_level(player_id)
+    return self:read_offset_with_size(player_id * self.total_offset +
+                                          self.level_offset, self.level_size)
+end
+
 function characterdata.new(o)
     local self = o or {}
     setmetatable(self, {__index = CharacterData})
