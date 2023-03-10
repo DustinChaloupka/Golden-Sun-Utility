@@ -13,10 +13,26 @@ function Game:encounter_checks()
 
     self.encounters:maybe_disable()
 
+    if emulator:key_pressed("M") then
+        self.encounters:set_analysis_enabled(not self.encounters
+                                                 .is_analysis_enabled)
+        self.movement:set_analysis_enabled(not self.movement.is_analysis_enabled)
+        self.random_number.battle:set_analysis_enabled(
+            not self.random_number.battle.is_analysis_enabled)
+        self.random_number.general:set_analysis_enabled(
+            not self.random_number.general.is_analysis_enabled)
+    end
+
     self.encounters:draw(self.movement.type:is_overworld())
 end
 
-function Game:movement_checks() self.movement.tick:draw() end
+function Game:movement_checks() self.movement:draw() end
+
+function Game:random_number_checks()
+    self.random_number.battle:draw()
+    self.random_number.general:draw()
+end
+
 -- Hold L to go fast
 local settings = require("config.settings")
 function Game:fast_travel()

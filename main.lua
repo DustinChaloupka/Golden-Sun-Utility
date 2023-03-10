@@ -30,6 +30,7 @@ while true do
     emulator:load_joypad(0)
     emulator:load_input()
 
+    game:random_number_checks()
     if not game:is_in_battle() then
         if not game:is_in_menu() then
             game:encounter_checks()

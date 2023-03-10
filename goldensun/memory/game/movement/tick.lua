@@ -1,7 +1,7 @@
 local tick = {}
 
 local Chunk = require("goldensun.memory.chunk")
-local Tick = Chunk.new({ui = {x = 0, y = 40}})
+local Tick = Chunk.new({ui = {x = 0, y = 20}})
 
 function Tick:draw()
     drawing:set_text("Movement Tick: " .. (math.floor(self:read() / 0xFFF)),

@@ -1,6 +1,6 @@
 local movement = {}
 
-local Movement = {
+local Movement = require("goldensun.memory.game.movement").new {
     tick = require("goldensun.memory.game.tbs.movement.tick"),
     type = require("goldensun.memory.game.tbs.movement.type")
 }

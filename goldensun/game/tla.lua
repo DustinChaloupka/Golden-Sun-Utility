@@ -12,6 +12,10 @@ local TLA = Game.new {
     party = require("goldensun.game.tla.party"),
     player = require("goldensun.game.tla.player"),
     ship = require("goldensun.game.tla.ship"),
+    random_number = {
+        battle = require("goldensun.memory.game.tla.randomnumber.battle"),
+        general = require("goldensun.memory.game.tla.randomnumber.general")
+    },
     rom = require("goldensun.memory.game.tla.rom"),
     zoom = require("goldensun.memory.game.tla.zoom")
 }

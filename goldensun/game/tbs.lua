@@ -9,6 +9,10 @@ local TBS = Game.new {
     movement = require("goldensun.memory.game.tbs.movement"),
     overworld_map = require("goldensun.game.tbs.overworldmap"),
     player = require("goldensun.game.tbs.player"),
+    random_number = {
+        battle = require("goldensun.memory.game.tbs.randomnumber.battle"),
+        general = require("goldensun.memory.game.tbs.randomnumber.general")
+    },
     rom = require("goldensun.memory.game.tbs.rom"),
     zoom = require("goldensun.memory.game.tbs.zoom")
 }

@@ -2,7 +2,7 @@ local steprate = {}
 
 local Chunk = require("goldensun.memory.chunk")
 local StepRate = Chunk.new {
-    ui = {x = 0, y = 10},
+    ui = {x = 0, y = 0},
     current_rate = "",
     color = 0xFFFFFF
 }

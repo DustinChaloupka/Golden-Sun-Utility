@@ -1,7 +1,7 @@
 local stepcount = {}
 
 local Chunk = require("goldensun.memory.chunk")
-local StepCount = Chunk.new({ui = {x = 0, y = 0}})
+local StepCount = Chunk.new({ui = {x = 0, y = 10}})
 
 local previousCounter = 0
 function StepCount:draw()
