@@ -31,6 +31,15 @@ function Game:movement_checks() self.movement:draw() end
 
 function Game:random_number_checks()
     if emulator:key_pressed("G") then self.random_number.general:advance(1) end
+    if emulator:key_pressed("H") then self.random_number.general:rewind(1) end
+    if emulator:key_pressed("B") then self.random_number.battle:advance(1) end
+    if emulator:key_pressed("N") then self.random_number.battle:rewind(1) end
+    if emulator:key_pressed("R") then
+        local grn_advance = math.random(1, 100)
+        local brn_advance = math.random(1, 100)
+        self.random_number.general:advance(grn_advance)
+        self.random_number.battle:advance(brn_advance)
+    end
 
     self.random_number.battle:draw()
     self.random_number.general:draw()

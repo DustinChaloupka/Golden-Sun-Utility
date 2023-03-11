@@ -16,7 +16,8 @@ local BizHawk = Emulator.new {
 }
 BizHawk.memory.readword = memory.read_u16_le
 BizHawk.memory.readdword = memory.read_u32_le
-BizHawk.memory.writeword = memory.write_s16_le
+BizHawk.memory.writeword = memory.write_u16_le
+BizHawk.memory.writedword = memory.write_u32_le
 
 function BizHawk:load_joypad(joypad_number) self.controller = joypad.get() end
 function BizHawk:button_pressed(button)
