@@ -29,16 +29,30 @@ function StepRate:draw(is_overworld)
     end
 end
 
--- Normalizes the step rate value to something between 0 and 30, 0 being
--- a slow rate, 30 being a fast rate
-function StepRate:read()
-    local value = self:read_offset(0)
-    if value == 0 then return "" end
+function StepRate:normalize(rate)
+    if rate == 0 then return "" end
 
     -- Unsure how all of these were calculated
-    if value >= 0xFFFF0000 then value = value - 0xFFFFFFFF end
-    return math.floor((0xFFFF - value) / 0xFF0)
+    if rate >= 0xFFFF0000 then rate = rate - 0xFFFFFFFF end
+    return math.floor((0xFFFF - rate) / 0xFF0)
 end
+
+function StepRate:prediction(rn)
+    rn:next(1)
+    local rate1 = math.floor(rn:generate())
+    rn:next(1)
+    local rate2 = math.floor(rn:generate())
+    rn:next(1)
+    local rate3 = math.floor(rn:generate())
+    rn:next(1)
+    local rate4 = math.floor(rn:generate())
+    local prediction = math.floor(rate1 - rate2 + rate3 - rate4) / 2
+    return self:normalize(prediction)
+end
+
+-- Normalizes the step rate value to something between 0 and 30, 0 being
+-- a slow rate, 30 being a fast rate
+function StepRate:read() return self:normalize(self:read_offset(0)) end
 
 function steprate.new(o)
     local self = o or {}

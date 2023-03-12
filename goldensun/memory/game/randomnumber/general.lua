@@ -6,7 +6,7 @@ local General = require("goldensun.memory.game.randomnumber").new {
 }
 
 function General:draw_analysis()
-    local text = "GRN: " .. self:read()
+    local text = "GRN: " .. self.value
     if self.frame_counter > 0 then
         text = text .. " " .. self.count_symbol .. self.count_change
         self.frame_counter = self.frame_counter - 1

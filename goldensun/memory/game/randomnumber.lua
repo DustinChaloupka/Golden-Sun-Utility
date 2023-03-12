@@ -16,30 +16,41 @@ local RandomNumber = Chunk.new {
     },
     max = 0x80000000,
 
-    frame_counter = 0
+    frame_counter = 0,
+
+    value = 0
 }
 
-function RandomNumber:advance(count)
-    local rn = self:read()
+-- This is the actual value used in calculating things
+function RandomNumber:generate() return
+    bit.rshift(bit.lshift(self.value, 8), 16) end
+
+function RandomNumber:next(count)
     for i = 1, count do
-        local first_factor_advance = self.advancing.first_factor * rn
-        local second_factor_advance = self.advancing.second_factor * rn
+        local first_factor_advance = self.advancing.first_factor * self.value
+        local second_factor_advance = self.advancing.second_factor * self.value
         second_factor_advance = bit.band(second_factor_advance, 0xFFFF)
         local factor_advance = first_factor_advance + second_factor_advance *
                                    0x10000
         factor_advance = bit.band(factor_advance, 0xFFFFFFFF)
         local increase_advance = factor_advance + self.advancing.interval
-        rn = bit.band(increase_advance, 0xFFFFFFFF)
+        self.value = bit.band(increase_advance, 0xFFFFFFFF)
     end
+end
 
-    self:write(rn)
+function RandomNumber:advance(count)
+    self.value = self:read()
+    self:next(count)
+
+    self:write(self.value)
     self.frame_counter = 30
     self.count_change = count
     self.count_symbol = "+"
 end
 
 function RandomNumber:increase(count)
-    self:write((self:read() + count) % self.max)
+    self.value = self:read() + count
+    self:write(self.value % self.max)
     self.frame_counter = 30
     self.count_change = count
     self.count_symbol = "+"
@@ -47,7 +58,8 @@ end
 
 -- Don't fully understand how this works, but it does, so the names might be misleading
 function RandomNumber:rewind(count)
-    local rn = self:read()
+    self.value = self:read()
+    local rn = self.value
     for i = 1, count do
         local decrease = bit.band(rn - self.advancing.interval, 0xFFFFFFFF)
 
@@ -74,14 +86,14 @@ function RandomNumber:rewind(count)
                 rn = rn + 2 ^ (bit_location - 1)
             end
 
-            remainder = math.floor(
-                            (final_rn_bits[bit_location] + matching_bits) / 2)
+            remainder = bit.rshift(final_rn_bits[bit_location] + matching_bits,
+                                   1)
         end
 
-        rn = bit.band(rn, 0xFFFFFFFF)
+        self.value = bit.band(rn, 0xFFFFFFFF)
     end
 
-    self:write(rn)
+    self:write(self.value)
     self.frame_counter = 30
     self.count_change = count
     self.count_symbol = "-"
@@ -92,10 +104,11 @@ function RandomNumber:set_analysis_enabled(is_enabled)
 end
 
 function RandomNumber:draw()
+    self.value = self:read()
     if self.is_analysis_enabled then
         self:draw_analysis()
     else
-        local text = self.letter_prefix .. "RN: " .. self:read()
+        local text = self.letter_prefix .. "RN: " .. self.value
         if self.frame_counter > 0 then
             text = text .. " " .. self.count_symbol .. self.count_change
             self.frame_counter = self.frame_counter - 1

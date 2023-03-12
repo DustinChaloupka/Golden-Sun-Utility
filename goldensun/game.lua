@@ -14,8 +14,8 @@ function Game:encounter_checks()
     self.encounters:maybe_disable()
 
     if emulator:key_pressed("M") then
-        self.encounters:set_analysis_enabled(not self.encounters
-                                                 .is_analysis_enabled)
+        self.encounters:set_analysis_enabled(
+            not self.encounters.analysis.is_enabled)
         self.movement:set_analysis_enabled(not self.movement.is_analysis_enabled)
         self.random_number.battle:set_analysis_enabled(
             not self.random_number.battle.is_analysis_enabled)
@@ -24,7 +24,8 @@ function Game:encounter_checks()
     end
 
     self.encounters:draw(self.movement.type:is_overworld())
-    self.encounters:draw_analysis(self.party:get_front_total_level())
+    self.encounters:draw_analysis(self.party:get_front_total_level(),
+                                  self.random_number.general)
 end
 
 function Game:movement_checks() self.movement:draw() end
