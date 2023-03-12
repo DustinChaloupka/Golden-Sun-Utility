@@ -7,26 +7,31 @@ local StepRate = Chunk.new {
     color = 0xFFFFFF
 }
 
-function StepRate:draw(is_overworld)
-    drawing:set_text("Step Rate: " .. self.current_rate, self.ui.x, self.ui.y,
-                     self.color)
-
-    local rate = self:read() -- normalized
-    if rate ~= self.current_rate then
-        self.current_rate = rate
-
-        -- Rate of change in color to go with rate of 0-30? Old Utility script did, but was
-        -- really difficult to understand and used RGB tables
-        if rate == "" then
-            self.color = 0xFFFFFF
-        elseif rate <= 10 then
-            self.color = 0x0000FF
-        elseif rate <= 20 then
-            self.color = 0x00FF00
-        elseif rate <= 30 then
-            self.color = 0xFF0000
-        end
+-- Rate of change in color to go with rate of 0-30? Old utility script did, but was
+-- really difficult to understand and used RGB tables
+local function get_color(rate)
+    if rate == "" then
+        return 0xFFFFFF
+    elseif rate <= 10 then
+        return 0x0000FF
+    elseif rate <= 20 then
+        return 0x00FF00
+    elseif rate <= 30 then
+        return 0xFF0000
     end
+end
+
+function StepRate:draw_analysis(rn, item, x, y)
+    local rate, color = self:prediction(rn)
+    drawing:set_text("+" .. item .. " Rate:" .. rate, x, y, color)
+end
+
+function StepRate:draw()
+    local rate = self:read() -- normalized
+    local color = get_color(rate)
+    if rate ~= self.current_rate then self.current_rate = rate end
+
+    drawing:set_text("Step Rate: " .. rate, self.ui.x, self.ui.y, color)
 end
 
 function StepRate:normalize(rate)
@@ -47,7 +52,8 @@ function StepRate:prediction(rn)
     rn:next(1)
     local rate4 = math.floor(rn:generate())
     local prediction = math.floor(rate1 - rate2 + rate3 - rate4) / 2
-    return self:normalize(prediction)
+    local rate = self:normalize(prediction)
+    return rate, get_color(rate)
 end
 
 -- Normalizes the step rate value to something between 0 and 30, 0 being

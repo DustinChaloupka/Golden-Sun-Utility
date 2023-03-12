@@ -22,10 +22,9 @@ function Encounters:draw_analysis(front_line_level, grn)
                 value = grn.value
             })
             rn:next(i)
-            drawing:set_text("+" .. i .. " Rate:" ..
-                                 self.step_rate:prediction(rn),
-                             self.analysis.ui.x + i * self.analysis.ui.interval,
-                             self.analysis.ui.y)
+            self.step_rate:draw_analysis(rn, i, self.analysis.ui.x + i *
+                                             self.analysis.ui.interval,
+                                         self.analysis.ui.y)
             rn = nil
         end
     end
