@@ -1,7 +1,7 @@
 local group = {}
 
 local Chunk = require("goldensun.memory.chunk")
-local Group = Chunk.new()
+local Group = Chunk.new({total_enemy_count = 0})
 
 function Group:get_data(offset, size, i)
     return self:read_offset_with_size(
@@ -16,6 +16,8 @@ function Group:get_max(i) return
     self:get_data(self.max_offset, self.max_size, i) end
 
 function Group:get_enemies()
+    if self.enemies then return self.enemies end
+
     local enemies = {}
     for i = 0, 4 do
         local enemy_id = self:get_id(i)
@@ -26,6 +28,64 @@ function Group:get_enemies()
     end
 
     return enemies
+end
+
+function Group:get_total_enemy_count() return self.total_enemy_count end
+
+function Group:set_enemy_counts(rn)
+    if not self.enemies then self.enemies = self:get_enemies() end
+
+    for _, enemy in pairs(self.enemies) do
+        enemy:set_count(rn)
+        for _ = 1, enemy:get_count() do
+            self.total_enemy_count = self.total_enemy_count + 1
+        end
+    end
+end
+
+function Group:set_rn_advances_to_flee(rn, comparing_level)
+    local total_enemy_level = self:total_enemy_level()
+    local fleeRate = 5000 + math.floor(500 * comparing_level / 4) -
+                         math.floor(
+                             500 * total_enemy_level / self.total_enemy_count)
+    if fleeRate > 0 then
+        for i = 0, 99 do
+            rn:next(1)
+            if rn:distribution(10000) < fleeRate then
+                self.rn_advances_to_flee = i
+                break
+            end
+        end
+    end
+end
+
+function Group:get_rn_advances_to_flee() return
+    self.rn_advances_to_flee or "N/A" end
+
+-- Is this always done just 10 times between all 5 or 6 slots?
+function Group:shuffle(rn)
+    for _ = 1, 10 do
+        rn:next(1)
+        local a = rn:distribution(5) + 1
+        rn:next(1)
+        local b = rn:distribution(5) + 1
+        local enemy = self.enemies[a]
+        self.enemies[a] = self.enemies[b]
+        self.enemies[b] = enemy
+    end
+end
+
+function Group:total_enemy_level()
+    local level = 0
+    for _, enemy in pairs(self.enemies) do
+        for i = 1, enemy:get_count() do
+            if #enemy:get_name() < 14 or i == 1 then
+                level = level + enemy:get_level()
+            end
+        end
+    end
+
+    return level
 end
 
 function group.new(o)

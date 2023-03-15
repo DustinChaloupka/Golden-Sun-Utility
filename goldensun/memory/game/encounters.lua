@@ -4,7 +4,12 @@ local Chunk = require("goldensun.memory.chunk")
 local Encounters = Chunk.new {
     analysis = {
         is_enabled = false,
-        ui = {x = {pos = 10, interval = 55}, y = {pos = 10, interval = 10}}
+        ui = {
+            x = {pos = 10, interval = 55},
+            y = {pos = 10, interval = 10},
+            -- Max number of enemies in an encounter group?
+            last_row_interval = 4
+        }
     }
 }
 
@@ -21,6 +26,8 @@ end
 
 function Encounters:draw_analysis(grn, zone, front_line_level)
     if self.analysis.is_enabled then
+        if zone <= 0 then return end
+
         local encounters = self:lookup(grn, zone, front_line_level)
         for i = 0, 3 do
             local rn = require("goldensun.memory.game.randomnumber").new {
@@ -33,11 +40,51 @@ function Encounters:draw_analysis(grn, zone, front_line_level)
 
             rn = nil
 
-            for j, enemy in ipairs(encounters[i + 1]) do
-                drawing:set_text(enemy, self.analysis.ui.x.pos + i *
-                                     self.analysis.ui.x.interval, self.analysis
-                                     .ui.y.pos + self.analysis.ui.y.interval * j)
+            local enemy_group = encounters[i + 1]
+            local enemy_interval = 0
+            for _, enemy in ipairs(enemy_group:get_enemies()) do
+                local name = enemy:get_name()
+                for _ = 1, enemy:get_count() do
+                    enemy_interval = enemy_interval + 1
+                    drawing:set_text(name, self.analysis.ui.x.pos + i *
+                                         self.analysis.ui.x.interval,
+                                     self.analysis.ui.y.pos +
+                                         self.analysis.ui.y.interval *
+                                         enemy_interval)
+                end
             end
+
+            drawing:set_text(enemy_group:get_rn_advances_to_flee() .. " AC",
+                             self.analysis.ui.x.pos + i *
+                                 self.analysis.ui.x.interval,
+                             self.analysis.ui.y.pos +
+                                 self.analysis.ui.y.interval *
+                                 self.analysis.ui.last_row_interval)
+        end
+    end
+end
+
+-- Is this accurate?
+function Encounters:get_current_rate_distribution(zone)
+    local distribution = 0
+    for i = 0, 7 do
+        -- what do these offset values mean?
+        local rate = self:read_offset(28 * zone + 20 + i)
+        distribution = distribution + rate
+    end
+
+    return distribution
+end
+
+function Encounters:get_group_id(rn, zone, distribution)
+    rn:next(1)
+    local group_rng = rn:distribution(distribution)
+    for i = 0, 7 do
+        -- where do these offset values mean?
+        local rate = self:read_offset(28 * zone + 20 + i)
+        group_rng = group_rng - rate
+        if group_rng < 0 then
+            return self:read_offset_with_size(28 * zone + 4 + 2 * i, 16)
         end
     end
 end
@@ -52,75 +99,18 @@ function Encounters:lookup(grn, zone, front_line_level)
 
         rn:next(i - 1)
 
-        -- what is this?
-        local rateSum = 0
-        for j = 0, 7 do
-            -- where do these offset numbers come from?
-            local rate = self:read_offset(28 * zone + 20 + j)
-            rateSum = rateSum + rate
-        end
-
-        -- what are these doing?
-        rn:next(1)
-        local rnMultiplier = rn:distribution(rateSum)
-        local group = 0
-        for j = 0, 7 do
-            local rate = self:read_offset(28 * zone + 20 + j)
-            rnMultiplier = rnMultiplier - rate
-            if rnMultiplier < 0 then
-                group = self:read_offset_with_size(28 * zone + 4 + 2 * j, 16)
-                break
-            end
-        end
-
-        -- Calculates the enemy quantities
+        local rate_distribution = self:get_current_rate_distribution(zone)
+        local group_id = self:get_group_id(rn, zone, rate_distribution)
         local enemy_group =
             require("goldensun.memory.game.tla.enemy.group").new {
-                group_id = group
+                group_id = group_id
             }
 
-        local enemies = enemy_group:get_enemies()
-        for _, enemy in pairs(enemies) do enemy:set_count(rn) end
+        enemy_group:set_enemy_counts(rn)
+        enemy_group:shuffle(rn)
+        enemy_group:set_rn_advances_to_flee(rn, front_line_level)
 
-        -- Swaps them 10 times
-        for _ = 1, 10 do
-            rn:next(1)
-            local a = rn:distribution(5) + 1
-            rn:next(1)
-            local b = rn:distribution(5) + 1
-            local temp = enemies[a]
-            enemies[a] = enemies[b]
-            enemies[b] = temp
-        end
-
-        local enemy_order = {}
-        local total_enemy_level = 0
-        local total_enemy_count = 0
-        for _, enemy in pairs(enemies) do
-            for j = 1, enemy:get_count() do
-                total_enemy_count = total_enemy_count + 1
-                local name = enemy:get_name()
-                enemy_order[total_enemy_count] = name
-                if #name < 14 or j == 1 then
-                    total_enemy_level = total_enemy_level + enemy:get_level()
-                end
-            end
-        end
-
-        -- Calculates Attack Cancels to flee
-        -- local fleeRate = 5000 + math.floor(500 * PCLV / 4) -
-        --                     math.floor(500 * totalEnemyLvl / enemyCount)
-        -- attackCancels = "N/A"
-        -- if fleeRate > 0 then
-        --    for i = 0, 99 do
-        --        if grn(10000) < fleeRate then
-        --            attackCancels = i
-        --            break
-        --        end
-        --    end
-        -- end
-        -- return nextEncounter, attackCancels
-        all_encounters[i] = enemy_order
+        all_encounters[i] = enemy_group
     end
 
     return all_encounters

@@ -5,14 +5,7 @@ local Game = {
     transition = require("goldensun.memory.game.transition")
 }
 
--- Manage encounters
-function Game:encounter_checks()
-    if emulator:key_pressed("E") then
-        self.encounters:set_disabled(not self.encounters.is_disabled)
-    end
-
-    self.encounters:maybe_disable()
-
+function Game:check_analysis_trigger()
     if emulator:key_pressed("M") then
         self.encounters:set_analysis_enabled(
             not self.encounters.analysis.is_enabled)
@@ -22,6 +15,15 @@ function Game:encounter_checks()
         self.random_number.general:set_analysis_enabled(
             not self.random_number.general.is_analysis_enabled)
     end
+end
+
+-- Manage encounters
+function Game:encounter_checks()
+    if emulator:key_pressed("E") then
+        self.encounters:set_disabled(not self.encounters.is_disabled)
+    end
+
+    self.encounters:maybe_disable()
 
     self.encounters:draw(self.movement.type:is_overworld())
     self.encounters:draw_analysis(self.random_number.general,
