@@ -28,6 +28,8 @@ function Encounters:draw_analysis(grn, zone, front_line_level)
     if self.analysis.is_enabled then
         if zone <= 0 then return end
 
+        self.step_count:draw_analysis()
+
         local encounters = self:lookup(grn, zone, front_line_level)
         for i = 0, 3 do
             local rn = require("goldensun.memory.game.randomnumber").new {
