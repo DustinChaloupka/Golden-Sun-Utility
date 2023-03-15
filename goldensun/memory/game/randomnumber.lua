@@ -4,8 +4,8 @@ local Chunk = require("goldensun.memory.chunk")
 local RandomNumber = Chunk.new {
     advancing = {
         factor = 0x41c64e6d,
-        first_factor = 0x4e6d,
-        second_factor = 0x41c6,
+        lower_factor = 0x4e6d,
+        upper_factor = 0x41c6,
         interval = 0x3039,
 
         -- binary representation of factor
@@ -25,12 +25,23 @@ local RandomNumber = Chunk.new {
 function RandomNumber:generate() return
     bit.rshift(bit.lshift(self.value, 8), 16) end
 
+-- This generates a number between 0-distribution?
+function RandomNumber:distribution(distribution)
+    local rng = self:generate()
+    if distribution then
+        return bit.rshift(rng * distribution, 16)
+    else
+        -- Is this just the 0-100 case?
+        return bit.rshift(rng, 8)
+    end
+end
+
 function RandomNumber:next(count)
     for i = 1, count do
-        local first_factor_advance = self.advancing.first_factor * self.value
-        local second_factor_advance = self.advancing.second_factor * self.value
-        second_factor_advance = bit.band(second_factor_advance, 0xFFFF)
-        local factor_advance = first_factor_advance + second_factor_advance *
+        local lower_factor_advance = self.advancing.lower_factor * self.value
+        local upper_factor_advance = self.advancing.upper_factor * self.value
+        upper_factor_advance = bit.band(upper_factor_advance, 0xFFFF)
+        local factor_advance = lower_factor_advance + upper_factor_advance *
                                    0x10000
         factor_advance = bit.band(factor_advance, 0xFFFFFFFF)
         local increase_advance = factor_advance + self.advancing.interval

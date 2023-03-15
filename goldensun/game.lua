@@ -24,8 +24,9 @@ function Game:encounter_checks()
     end
 
     self.encounters:draw(self.movement.type:is_overworld())
-    self.encounters:draw_analysis(self.party:get_front_total_level(),
-                                  self.random_number.general)
+    self.encounters:draw_analysis(self.random_number.general,
+                                  self.map:get_zone(),
+                                  self.party:get_front_total_level())
 end
 
 function Game:movement_checks() self.movement:draw() end

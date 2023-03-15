@@ -5,7 +5,7 @@ local Order = Chunk.new()
 
 function Order:get_ids()
     local player_ids = {}
-    for i = 0, 7, 1 do table.insert(player_ids, self:read_offset(i)) end
+    for i = 0, 7 do table.insert(player_ids, self:read_offset(i)) end
     return player_ids
 end
 

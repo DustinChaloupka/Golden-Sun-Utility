@@ -4,6 +4,8 @@ local Map = require("goldensun.memory.game.map").new {
     address = 0x02000420,
     size = 16,
 
+    zone = require("goldensun.memory.game.tla.map.zone"),
+
     world = 2,
     sea_of_time_a = 197,
     sea_of_time_b = 198,
