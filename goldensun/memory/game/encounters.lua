@@ -6,9 +6,9 @@ local Encounters = Chunk.new {
         is_enabled = false,
         ui = {
             x = {pos = 10, interval = 55},
-            y = {pos = 10, interval = 10},
+            y = {pos = 10, interval = 10, row_interval = 75},
             -- Max number of enemies in an encounter group?
-            last_row_interval = 4
+            last_row_interval = 6
         }
     }
 }
@@ -31,37 +31,47 @@ function Encounters:draw_analysis(grn, zone, front_line_level)
         self.step_count:draw_analysis()
 
         local encounters = self:lookup(grn, zone, front_line_level)
-        for i = 0, 3 do
+        for i, enemy_group in ipairs(encounters) do
             local rn = require("goldensun.memory.game.randomnumber").new {
                 value = grn.value
             }
-            rn:next(i)
-            self.step_rate:draw_analysis(rn, i, self.analysis.ui.x.pos + i *
+
+            local n = i - 1
+            local column_number = math.mod(n, 4)
+            local row_interval = 0
+            if i >= 5 then
+                row_interval = self.analysis.ui.y.row_interval
+            end
+
+            rn:next(n)
+            self.step_rate:draw_analysis(rn, n, self.analysis.ui.x.pos +
+                                             column_number *
                                              self.analysis.ui.x.interval,
-                                         self.analysis.ui.y.pos)
+                                         self.analysis.ui.y.pos + row_interval)
 
             rn = nil
 
-            local enemy_group = encounters[i + 1]
             local enemy_interval = 0
             for _, enemy in ipairs(enemy_group:get_enemies()) do
                 local name = enemy:get_name()
                 for _ = 1, enemy:get_count() do
                     enemy_interval = enemy_interval + 1
-                    drawing:set_text(name, self.analysis.ui.x.pos + i *
+                    drawing:set_text(name, self.analysis.ui.x.pos +
+                                         column_number *
                                          self.analysis.ui.x.interval,
                                      self.analysis.ui.y.pos +
                                          self.analysis.ui.y.interval *
-                                         enemy_interval)
+                                         enemy_interval + row_interval)
                 end
             end
 
             drawing:set_text(enemy_group:get_rn_advances_to_flee() .. " AC",
-                             self.analysis.ui.x.pos + i *
+                             self.analysis.ui.x.pos + column_number *
                                  self.analysis.ui.x.interval,
                              self.analysis.ui.y.pos +
                                  self.analysis.ui.y.interval *
-                                 self.analysis.ui.last_row_interval)
+                                 self.analysis.ui.last_row_interval +
+                                 row_interval)
         end
     end
 end
@@ -93,7 +103,7 @@ end
 
 function Encounters:lookup(grn, zone, front_line_level)
     local all_encounters = {}
-    for i = 1, 10 do
+    for i = 1, 8 do
         local rn = require("goldensun.memory.game.randomnumber").new {
             value = grn.value
         }
