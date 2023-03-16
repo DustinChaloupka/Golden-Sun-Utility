@@ -26,11 +26,15 @@ end
 
 function Encounters:draw_analysis(grn, zone, front_line_level)
     if self.analysis.is_enabled then
-        if zone <= 0 then return end
-
+        -- This is kind of a hack to allow drawing the steprate still
+        -- without knowing the encounters on the world map
+        local encounters = {{}, {}, {}, {}, {}, {}, {}, {}}
         self.step_count:draw_analysis()
 
-        local encounters = self:lookup(grn, zone, front_line_level)
+        if zone > 0 then
+            encounters = self:lookup(grn, zone, front_line_level)
+        end
+
         for i, enemy_group in ipairs(encounters) do
             local rn = require("goldensun.memory.game.randomnumber").new {
                 value = grn.value
@@ -51,27 +55,29 @@ function Encounters:draw_analysis(grn, zone, front_line_level)
 
             rn = nil
 
-            local enemy_interval = 0
-            for _, enemy in ipairs(enemy_group:get_enemies()) do
-                local name = enemy:get_name()
-                for _ = 1, enemy:get_count() do
-                    enemy_interval = enemy_interval + 1
-                    drawing:set_text(name, self.analysis.ui.x.pos +
-                                         column_number *
-                                         self.analysis.ui.x.interval,
-                                     self.analysis.ui.y.pos +
-                                         self.analysis.ui.y.interval *
-                                         enemy_interval + row_interval)
+            if enemy_group.group_id then
+                local enemy_interval = 0
+                for _, enemy in ipairs(enemy_group:get_enemies()) do
+                    local name = enemy:get_name()
+                    for _ = 1, enemy:get_count() do
+                        enemy_interval = enemy_interval + 1
+                        drawing:set_text(name, self.analysis.ui.x.pos +
+                                             column_number *
+                                             self.analysis.ui.x.interval,
+                                         self.analysis.ui.y.pos +
+                                             self.analysis.ui.y.interval *
+                                             enemy_interval + row_interval)
+                    end
                 end
-            end
 
-            drawing:set_text(enemy_group:get_rn_advances_to_flee() .. " AC",
-                             self.analysis.ui.x.pos + column_number *
-                                 self.analysis.ui.x.interval,
-                             self.analysis.ui.y.pos +
-                                 self.analysis.ui.y.interval *
-                                 self.analysis.ui.last_row_interval +
-                                 row_interval)
+                drawing:set_text(enemy_group:get_rn_advances_to_flee() .. " AC",
+                                 self.analysis.ui.x.pos + column_number *
+                                     self.analysis.ui.x.interval,
+                                 self.analysis.ui.y.pos +
+                                     self.analysis.ui.y.interval *
+                                     self.analysis.ui.last_row_interval +
+                                     row_interval)
+            end
         end
     end
 end
