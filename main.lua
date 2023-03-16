@@ -32,15 +32,20 @@ while true do
 
     game:random_number_checks()
     game:check_analysis_trigger()
+    game:battle_timer_check()
     if not game:is_in_battle() then
         if not game:is_in_menu() then
             game:encounter_checks()
             game:movement_checks()
         end
+
+        game:map_checks()
         game:lock_zoom()
         game:fast_travel()
         game:teleport_to_cursor()
         game:specific_checks()
+    else
+        game:battle_checks()
     end
 
     drawing:update()

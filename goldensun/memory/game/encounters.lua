@@ -134,14 +134,14 @@ function Encounters:lookup(grn, zone, front_line_level)
     return all_encounters
 end
 
-function Encounters:set_analysis_enabled(is_enabled)
-    self.analysis.is_enabled = is_enabled
+function Encounters:toggle_analysis_enabled()
+    self.analysis.is_enabled = not self.analysis.is_enabled
 end
 
-function Encounters:set_disabled(is_disabled)
+function Encounters:toggle_disabled()
+    self.is_disabled = not self.is_disabled
     print("Encounters " ..
-              string.format(is_disabled and "disabled" or "enabled"))
-    self.is_disabled = is_disabled
+              string.format(self.is_disabled and "disabled" or "enabled"))
 end
 
 function encounters.new(o)

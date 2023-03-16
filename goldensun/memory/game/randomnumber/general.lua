@@ -2,7 +2,12 @@ local general = {}
 
 local General = require("goldensun.memory.game.randomnumber").new {
     letter_prefix = "G",
-    ui = {analysis = {x = 140, y = 0}, x = 0, y = 30}
+    ui = {analysis = {x = 140, y = 0}, x = 0, y = 30},
+    analysis = {is_enabled = false},
+
+    frame_counter = 0,
+
+    value = 0
 }
 
 function General:draw_analysis()

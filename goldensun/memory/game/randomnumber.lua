@@ -14,11 +14,7 @@ local RandomNumber = Chunk.new {
             1, 1, 0, 0, 0, 0, 0, 1, 0
         }
     },
-    max = 0x80000000,
-
-    frame_counter = 0,
-
-    value = 0
+    max = 0x80000000
 }
 
 -- This is the actual value used in calculating things
@@ -110,13 +106,13 @@ function RandomNumber:rewind(count)
     self.count_symbol = "-"
 end
 
-function RandomNumber:set_analysis_enabled(is_enabled)
-    self.is_analysis_enabled = is_enabled
+function RandomNumber:toggle_analysis_enabled()
+    self.analysis.is_enabled = not self.analysis.is_enabled
 end
 
 function RandomNumber:draw()
     self.value = self:read()
-    if self.is_analysis_enabled then
+    if self.analysis.is_enabled then
         self:draw_analysis()
     else
         local text = self.letter_prefix .. "RN: " .. self.value

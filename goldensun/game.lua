@@ -2,26 +2,22 @@ local game = {}
 
 local Game = {
     state = require("goldensun.memory.game.state"),
-    transition = require("goldensun.memory.game.transition")
+    transition = require("goldensun.memory.game.transition"),
+    timer = {battle = require("goldensun.game.timer.battle")}
 }
 
 function Game:check_analysis_trigger()
     if emulator:key_pressed("M") then
-        self.encounters:set_analysis_enabled(
-            not self.encounters.analysis.is_enabled)
-        self.movement:set_analysis_enabled(not self.movement.is_analysis_enabled)
-        self.random_number.battle:set_analysis_enabled(
-            not self.random_number.battle.is_analysis_enabled)
-        self.random_number.general:set_analysis_enabled(
-            not self.random_number.general.is_analysis_enabled)
+        self.encounters:toggle_analysis_enabled()
+        self.movement:toggle_analysis_enabled()
+        self.random_number.battle:toggle_analysis_enabled()
+        self.random_number.general:toggle_analysis_enabled()
     end
 end
 
 -- Manage encounters
 function Game:encounter_checks()
-    if emulator:key_pressed("E") then
-        self.encounters:set_disabled(not self.encounters.is_disabled)
-    end
+    if emulator:key_pressed("E") then self.encounters:toggle_disabled() end
 
     self.encounters:maybe_disable()
 
@@ -62,6 +58,13 @@ function Game:fast_travel()
         end
     end
 end
+
+function Game:battle_checks() self.timer.battle:draw_battle() end
+function Game:battle_timer_check()
+    if emulator:key_pressed("T") then self.timer.battle:toggle() end
+end
+
+function Game:map_checks() self.timer.battle:draw() end
 
 function Game:maybe_get_teleport_location()
     if self.overworld_map:is_teleport_available() and
