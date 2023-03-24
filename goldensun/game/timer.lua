@@ -12,6 +12,10 @@ function Timer:toggle()
 
 end
 
+function Timer:toggle_analysis_enabled()
+    self.analysis.is_enabled = not self.analysis.is_enabled
+end
+
 function timer.new(o)
     local self = o or {}
     setmetatable(self, {__index = Timer})

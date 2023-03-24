@@ -12,6 +12,7 @@ function Game:check_analysis_trigger()
         self.movement:toggle_analysis_enabled()
         self.random_number.battle:toggle_analysis_enabled()
         self.random_number.general:toggle_analysis_enabled()
+        self.timer.battle:toggle_analysis_enabled()
     end
 end
 

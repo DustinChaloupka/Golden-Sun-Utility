@@ -3,6 +3,8 @@ local battle = {}
 local Battle = require("goldensun.game.timer").new {
     name = "Battle",
 
+    analysis = {is_enabled = false},
+
     color = 0x00FF00,
     frame_counter = 0,
 
@@ -14,7 +16,7 @@ local Battle = require("goldensun.game.timer").new {
 }
 
 function Battle:draw()
-    if self.is_enabled then
+    if not self.analysis.is_enabled and self.is_enabled then
         if self.ticks > 0 then
             self.frame_counter = 360
             self.last_fight = self.ticks
