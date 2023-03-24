@@ -23,7 +23,8 @@ function Game:encounter_checks()
     self.encounters:maybe_disable()
 
     self.encounters:draw(self.movement.type:is_overworld())
-    self.encounters:draw_analysis(self.random_number.general,
+    self.encounters:draw_analysis(self.random_number.battle,
+                                  self.random_number.general,
                                   self.map:get_zone(),
                                   self.party:get_front_total_level())
 end

@@ -24,7 +24,15 @@ function Encounters:draw(is_overworld)
     end
 end
 
-function Encounters:draw_analysis(grn, zone, front_line_level)
+function Encounters:draw_encounter_group_part(text, column_number, row_number,
+                                              group_row_interval)
+    drawing:set_text(text, self.analysis.ui.x.pos + column_number *
+                         self.analysis.ui.x.interval,
+                     self.analysis.ui.y.pos + self.analysis.ui.y.interval *
+                         row_number + group_row_interval)
+end
+
+function Encounters:draw_analysis(brn, grn, zone, front_line_level)
     if self.analysis.is_enabled then
         -- This is kind of a hack to allow drawing the steprate still
         -- without knowing the encounters on the world map
@@ -63,22 +71,28 @@ function Encounters:draw_analysis(grn, zone, front_line_level)
                     local name = enemy:get_name()
                     for _ = 1, enemy:get_count() do
                         enemy_interval = enemy_interval + 1
-                        drawing:set_text(name, self.analysis.ui.x.pos +
-                                             column_number *
-                                             self.analysis.ui.x.interval,
-                                         self.analysis.ui.y.pos +
-                                             self.analysis.ui.y.interval *
-                                             enemy_interval + row_interval)
+                        self:draw_encounter_group_part(name, column_number,
+                                                       enemy_interval,
+                                                       row_interval)
                     end
                 end
 
-                drawing:set_text(enemy_group:get_rn_advances_to_flee() .. " AC",
-                                 self.analysis.ui.x.pos + column_number *
-                                     self.analysis.ui.x.interval,
-                                 self.analysis.ui.y.pos +
-                                     self.analysis.ui.y.interval *
-                                     self.analysis.ui.last_row_interval +
-                                     row_interval)
+                if brn:is_attacks_first() then
+                    self:draw_encounter_group_part("AF", column_number,
+                                                   self.analysis.ui
+                                                       .last_row_interval,
+                                                   row_interval)
+                elseif brn:is_caught_by_surprise() then
+                    self:draw_encounter_group_part("CBS", column_number,
+                                                   self.analysis.ui
+                                                       .last_row_interval,
+                                                   row_interval)
+                else
+                    self:draw_encounter_group_part(
+                        enemy_group:get_rn_advances_to_flee() .. " AC",
+                        column_number, self.analysis.ui.last_row_interval,
+                        row_interval)
+                end
             end
         end
     end
