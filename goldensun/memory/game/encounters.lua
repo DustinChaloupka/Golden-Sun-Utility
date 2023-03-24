@@ -47,6 +47,8 @@ function Encounters:draw_analysis(grn, zone, front_line_level)
                 row_interval = self.analysis.ui.y.row_interval
             end
 
+            if self.step_rate:read() == "" then rn:next(4) end
+
             rn:next(n)
             self.step_rate:draw_analysis(rn, n, self.analysis.ui.x.pos +
                                              column_number *
