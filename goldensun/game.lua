@@ -64,6 +64,7 @@ end
 function Game:battle_checks()
     self.timer.battle:draw_battle()
     self.party:draw_battle()
+    self.encounters:draw_battle()
 end
 
 function Game:battle_timer_check()

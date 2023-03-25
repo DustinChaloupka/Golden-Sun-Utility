@@ -30,9 +30,11 @@ end
 
 function Party:draw_battle()
     local players = self:get_players()
-    for i, player in ipairs(self:get_players()) do
-        if i > 4 then break end
-        player:draw_battle(i)
+    for i = 4, 1, -1 do
+        -- hacky way to only show the player agility from turn data when selecting turn
+        local finished_selecting = i == 4 and players[i]:get_turn_agility(i) > 0
+        if not players[i] or finished_selecting then break end
+        players[i]:draw_battle(i)
     end
 end
 

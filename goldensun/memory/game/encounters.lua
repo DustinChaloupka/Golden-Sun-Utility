@@ -24,6 +24,8 @@ function Encounters:draw(is_overworld)
     end
 end
 
+function Encounters:draw_battle() self.battle_group:draw_battle() end
+
 function Encounters:draw_encounter_group_part(text, column_number, row_number,
                                               group_row_interval)
     drawing:set_text(text, self.analysis.ui.x.pos + column_number *

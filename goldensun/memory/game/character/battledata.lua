@@ -3,6 +3,12 @@ local battle_data = {}
 local Chunk = require("goldensun.memory.chunk")
 local BattleData = Chunk.new()
 
+function BattleData:get_current_hp(slot)
+    return self:read_offset_with_size((slot - 1) * self.total_offset +
+                                          self.current_hp_offset,
+                                      self.current_hp_size)
+end
+
 function BattleData:get_turn_agility(slot)
     local agility = self:read_offset_with_size(
                         (slot - 1) * self.total_offset + self.agility_offset,
