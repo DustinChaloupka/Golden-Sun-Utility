@@ -61,7 +61,11 @@ function Game:fast_travel()
     end
 end
 
-function Game:battle_checks() self.timer.battle:draw_battle() end
+function Game:battle_checks()
+    self.timer.battle:draw_battle()
+    self.party:draw_battle()
+end
+
 function Game:battle_timer_check()
     if emulator:key_pressed("T") then self.timer.battle:toggle() end
 end

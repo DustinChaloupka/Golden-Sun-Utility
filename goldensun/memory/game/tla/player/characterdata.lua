@@ -1,8 +1,13 @@
-local characterdata = {}
+local character_data = {}
 
 local CharacterData = require("goldensun.memory.game.characterdata").new {
+    battle_data = require("goldensun.memory.game.tla.player.battledata"),
+
     address = 0x02000520,
     size = 8,
+
+    agility_offset = 0x40,
+    agility_size = 16,
 
     current_pp_offset = 0x3A,
     current_pp_size = 16,
@@ -13,6 +18,6 @@ local CharacterData = require("goldensun.memory.game.characterdata").new {
     total_offset = 0x14C
 }
 
-setmetatable(characterdata, {__index = CharacterData})
+setmetatable(character_data, {__index = CharacterData})
 
-return characterdata
+return character_data

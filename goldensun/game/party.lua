@@ -28,6 +28,14 @@ function Party:get_front_total_level()
     return total_level
 end
 
+function Party:draw_battle()
+    local players = self:get_players()
+    for i, player in ipairs(self:get_players()) do
+        if i > 4 then break end
+        player:draw_battle(i)
+    end
+end
+
 function party.new(o)
     local self = o or {}
     setmetatable(self, {__index = Party})

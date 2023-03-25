@@ -1,4 +1,4 @@
-local characterdata = {}
+local character_data = {}
 
 local Chunk = require("goldensun.memory.chunk")
 local CharacterData = Chunk.new()
@@ -19,11 +19,15 @@ function CharacterData:get_level(character_id)
                                           self.level_offset, self.level_size)
 end
 
-function characterdata.new(o)
+function CharacterData:get_turn_agility(slot)
+    return self.battle_data:get_turn_agility(slot)
+end
+
+function character_data.new(o)
     local self = o or {}
     setmetatable(self, {__index = CharacterData})
     self.__index = self
     return self
 end
 
-return characterdata
+return character_data
