@@ -5,7 +5,7 @@ local Encounters = Chunk.new {
     analysis = {
         is_enabled = false,
         ui = {
-            x = {pos = 10, interval = 55},
+            x = {pos = 10, interval = 60},
             y = {pos = 10, interval = 10, row_interval = 75},
             -- Max number of enemies in an encounter group?
             last_row_interval = 6
@@ -24,7 +24,13 @@ function Encounters:draw(is_overworld)
     end
 end
 
-function Encounters:draw_battle() self.battle_group:draw_battle() end
+function Encounters:draw_battle(grn, front_average_level)
+    self.battle_group:draw_battle()
+
+    local average_enemy_level = self.battle_group:get_average_enemy_level()
+
+    self.flee_attempt:draw_battle(grn, front_average_level, average_enemy_level)
+end
 
 function Encounters:draw_encounter_group_part(text, column_number, row_number,
                                               group_row_interval)
@@ -34,7 +40,7 @@ function Encounters:draw_encounter_group_part(text, column_number, row_number,
                          row_number + group_row_interval)
 end
 
-function Encounters:draw_analysis(brn, grn, zone, front_line_level)
+function Encounters:draw_analysis(brn, grn, zone, front_average_level)
     if self.analysis.is_enabled then
         -- This is kind of a hack to allow drawing the steprate still
         -- without knowing the encounters on the world map
@@ -42,30 +48,24 @@ function Encounters:draw_analysis(brn, grn, zone, front_line_level)
         self.step_count:draw_analysis()
 
         if zone > 0 then
-            encounters = self:lookup(grn, zone, front_line_level)
+            encounters = self:lookup(grn, zone, front_average_level)
         end
 
         for i, enemy_group in ipairs(encounters) do
-            local rn = require("goldensun.memory.game.randomnumber").new {
-                value = grn.value
-            }
 
             local n = i - 1
             local column_number = math.mod(n, 4)
             local row_interval = 0
+            local row = 0
             if i >= 5 then
                 row_interval = self.analysis.ui.y.row_interval
+                row = 1
             end
 
-            if self.step_rate:read() == "" then rn:next(4) end
+            self.step_rate:draw_analysis(grn, n, column_number, row)
 
-            rn:next(n)
-            self.step_rate:draw_analysis(rn, n, self.analysis.ui.x.pos +
-                                             column_number *
-                                             self.analysis.ui.x.interval,
-                                         self.analysis.ui.y.pos + row_interval)
-
-            rn = nil
+            self:draw_encounter_group_part("+" .. n, column_number, 0,
+                                           row_interval)
 
             if enemy_group.group_id then
                 local enemy_interval = 0
@@ -125,7 +125,7 @@ function Encounters:get_group_id(rn, zone, distribution)
     end
 end
 
-function Encounters:lookup(grn, zone, front_line_level)
+function Encounters:lookup(grn, zone, front_average_level)
     local all_encounters = {}
     for i = 1, 8 do
         local rn = require("goldensun.memory.game.randomnumber").new {
@@ -144,7 +144,8 @@ function Encounters:lookup(grn, zone, front_line_level)
 
         enemy_group:set_enemy_counts(rn)
         enemy_group:shuffle(rn)
-        enemy_group:set_rn_advances_to_flee(rn, front_line_level)
+        enemy_group:set_rn_advances_to_flee(rn, self.flee_attempt,
+                                            front_average_level)
 
         all_encounters[i] = enemy_group
     end

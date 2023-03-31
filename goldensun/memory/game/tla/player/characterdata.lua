@@ -9,6 +9,9 @@ local CharacterData = require("goldensun.memory.game.characterdata").new {
     agility_offset = 0x40,
     agility_size = 16,
 
+    current_hp_offset = 0x38,
+    current_hp_size = 16,
+
     current_pp_offset = 0x3A,
     current_pp_size = 16,
 

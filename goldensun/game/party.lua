@@ -2,10 +2,10 @@ local party = {}
 
 local Party = {}
 
-function Party:player_ids() return self.order:get_ids() end
+function Party:get_player_ids() return self.order:get_ids() end
 
 function Party:get_players()
-    local player_ids = self:player_ids()
+    local player_ids = self:get_player_ids()
     local players = {}
     for i, id in ipairs(player_ids) do
         local player = self:new_player(id)
@@ -22,19 +22,29 @@ function Party:get_front_total_level()
         local player = players[i]
         if not players[i] then break end
 
-        total_level = total_level + player:get_level()
+        if player:get_current_hp() ~= 0 then
+            total_level = total_level + player:get_level()
+        end
     end
 
     return total_level
 end
 
+function Party:get_front_average_level()
+    local front_count = math.min(#self:get_players(), 4)
+    return self:get_front_total_level() / front_count
+end
+
 function Party:draw_battle()
     local players = self:get_players()
     for i = 4, 1, -1 do
-        -- hacky way to only show the player agility from turn data when selecting turn
-        local finished_selecting = i == 4 and players[i]:get_turn_agility(i) > 0
-        if not players[i] or finished_selecting then break end
-        players[i]:draw_battle(i)
+        if players[i] then
+            -- hacky way to only show the player agility from turn data when selecting turn
+            local finished_selecting =
+                i == 4 and players[i]:get_turn_agility(i) > 0
+            if finished_selecting then break end
+            players[i]:draw_battle(i)
+        end
     end
 end
 

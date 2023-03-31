@@ -26,7 +26,7 @@ function Game:encounter_checks()
     self.encounters:draw_analysis(self.random_number.battle,
                                   self.random_number.general,
                                   self.map:get_zone(),
-                                  self.party:get_front_total_level())
+                                  self.party:get_front_average_level())
 end
 
 function Game:movement_checks() self.movement:draw() end
@@ -64,7 +64,8 @@ end
 function Game:battle_checks()
     self.timer.battle:draw_battle()
     self.party:draw_battle()
-    self.encounters:draw_battle()
+    self.encounters:draw_battle(self.random_number.general,
+                                self.party:get_front_average_level())
 end
 
 function Game:battle_timer_check()

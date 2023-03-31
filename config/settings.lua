@@ -6,7 +6,7 @@ local settings = {
     hover_boat_speed = 5,
     encounters_if_fast_travel = false,
 
-    dialog = {width = 500, height = 500, font = {size = 15}}
+    dialog = {width = 600, height = 500, font = {size = 15}}
 }
 
 return settings

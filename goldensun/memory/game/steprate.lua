@@ -2,7 +2,14 @@ local steprate = {}
 
 local Chunk = require("goldensun.memory.chunk")
 local StepRate = Chunk.new {
-    ui = {x = 0, y = 0},
+    ui = {
+        analysis = {
+            x = {pos = 20, interval = 60},
+            y = {pos = 10, interval = 75}
+        },
+        x = 0,
+        y = 0
+    },
     current_rate = "",
     color = 0xFFFFFF
 }
@@ -21,9 +28,19 @@ local function get_color(rate)
     end
 end
 
-function StepRate:draw_analysis(rn, item, x, y)
-    local rate, color = self:prediction(rn)
-    drawing:set_text("+" .. item .. " Rate:" .. rate, x, y, color)
+function StepRate:draw_analysis(grn, advances, column, row)
+    local rate = self:read()
+    if rate == "" then
+        local rn = require("goldensun.memory.game.randomnumber").new {
+            value = grn.value
+        }
+        rn:next(advances)
+        local rate, color = self:prediction(rn)
+        drawing:set_text("Rate:" .. rate, self.ui.analysis.x.pos +
+                             self.ui.analysis.x.interval * column, self.ui
+                             .analysis.y.pos + self.ui.analysis.y.interval * row,
+                         color)
+    end
 end
 
 function StepRate:draw()

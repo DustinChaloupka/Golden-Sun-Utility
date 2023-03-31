@@ -43,20 +43,12 @@ function Group:set_enemy_counts(rn)
     end
 end
 
-function Group:set_rn_advances_to_flee(rn, comparing_level)
-    local total_enemy_level = self:total_enemy_level()
-    local fleeRate = 5000 + math.floor(500 * comparing_level / 4) -
-                         math.floor(
-                             500 * total_enemy_level / self.total_enemy_count)
-    if fleeRate > 0 then
-        for i = 0, 99 do
-            rn:next(1)
-            if rn:distribution(10000) < fleeRate then
-                self.rn_advances_to_flee = i
-                break
-            end
-        end
-    end
+function Group:set_rn_advances_to_flee(rn, flee_attempt, comparing_average_level)
+    local advances = flee_attempt:get_rn_advances_to_flee(rn,
+                                                          comparing_average_level,
+                                                          self:average_enemy_level(),
+                                                          false)
+    if advances < 100 then self.rn_advances_to_flee = advances end
 end
 
 function Group:get_rn_advances_to_flee() return
@@ -73,6 +65,10 @@ function Group:shuffle(rn)
         self.enemies[a] = self.enemies[b]
         self.enemies[b] = enemy
     end
+end
+
+function Group:average_enemy_level()
+    return self:total_enemy_level() / self.total_enemy_count
 end
 
 function Group:total_enemy_level()

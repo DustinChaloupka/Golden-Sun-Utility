@@ -4,6 +4,10 @@ local Player = {
     ui = {battle = {x = {pos = 0, interval = 0}, y = {pos = 40, interval = 10}}}
 }
 
+function Player:get_current_hp()
+    return self.character_data:get_current_hp(self.id)
+end
+
 function Player:get_current_pp()
     return self.character_data:get_current_pp(self.id)
 end

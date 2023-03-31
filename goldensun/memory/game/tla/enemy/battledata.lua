@@ -10,6 +10,12 @@ local BattleData = require("goldensun.memory.game.character.battledata").new {
     current_hp_offset = 0x38,
     current_hp_size = 16,
 
+    level_offset = 0xF,
+    level_size = 8,
+
+    name_offset = 0x0,
+    name_size = 8,
+
     total_offset = 0x14C
 }
 

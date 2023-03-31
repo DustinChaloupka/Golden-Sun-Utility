@@ -3,6 +3,12 @@ local character_data = {}
 local Chunk = require("goldensun.memory.chunk")
 local CharacterData = Chunk.new()
 
+function CharacterData:get_current_hp(character_id)
+    return self:read_offset_with_size(character_id * self.total_offset +
+                                          self.current_hp_offset,
+                                      self.current_hp_size)
+end
+
 function CharacterData:get_current_pp(character_id)
     return self:read_offset_with_size(character_id * self.total_offset +
                                           self.current_pp_offset,
