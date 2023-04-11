@@ -15,8 +15,9 @@ function Party:get_players()
     return players
 end
 
-function Party:get_front_total_level()
+function Party:get_front_average_level()
     local total_level = 0
+    local total_alive = 0
     local players = self:get_players()
     for i = 1, 4 do
         local player = players[i]
@@ -24,15 +25,11 @@ function Party:get_front_total_level()
 
         if player:get_current_hp() ~= 0 then
             total_level = total_level + player:get_level()
+            total_alive = total_alive + 1
         end
     end
 
-    return total_level
-end
-
-function Party:get_front_average_level()
-    local front_count = math.min(#self:get_players(), 4)
-    return self:get_front_total_level() / front_count
+    return total_level / total_alive
 end
 
 function Party:draw_battle()

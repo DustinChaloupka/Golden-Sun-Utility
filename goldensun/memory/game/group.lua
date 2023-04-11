@@ -44,10 +44,10 @@ function Group:set_enemy_counts(rn)
 end
 
 function Group:set_rn_advances_to_flee(rn, flee_attempt, comparing_average_level)
-    local advances = flee_attempt:get_rn_advances_to_flee(rn,
-                                                          comparing_average_level,
-                                                          self:average_enemy_level(),
-                                                          false)
+    local attempt = flee_attempt:get_flee_attempt(comparing_average_level,
+                                                  self:average_enemy_level(),
+                                                  false)
+    local advances = flee_attempt:get_rn_advances_to_flee(rn, attempt)
     if advances < 100 then self.rn_advances_to_flee = advances end
 end
 
