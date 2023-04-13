@@ -1,5 +1,10 @@
 ## Golden Sun Utility Script
 
+### Running
+
+In your emulator, load the `main.lua` file.
+
+
 ### Game Support
 
 This should currently support the following games:
