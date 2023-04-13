@@ -2,7 +2,7 @@
 
 ### Running
 
-In your emulator, load the `main.lua` file.
+Download the files either from the releases page or clone it. In your emulator, load the `main.lua` file.
 
 
 ### Game Support
