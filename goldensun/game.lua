@@ -29,7 +29,11 @@ function Game:encounter_checks()
                                   self.party:get_front_average_level())
 end
 
-function Game:movement_checks() self.movement:draw() end
+function Game:movement_checks()
+    if emulator:key_pressed("P") then self.party:toggle_pp_lock() end
+    self.party:maybe_set_pp()
+    self.movement:draw()
+end
 
 function Game:random_number_checks()
     if emulator:key_pressed("G") then self.random_number.general:advance(1) end

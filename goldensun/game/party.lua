@@ -1,6 +1,6 @@
 local party = {}
 
-local Party = {}
+local Party = {is_pp_locked = false}
 
 function Party:get_player_ids() return self.order:get_ids() end
 
@@ -41,6 +41,21 @@ function Party:draw_battle()
                 i == 4 and players[i]:get_turn_agility(i) > 0
             if finished_selecting then break end
             players[i]:draw_battle(i)
+        end
+    end
+end
+
+function Party:toggle_pp_lock()
+    self.is_pp_locked = not self.is_pp_locked
+    print("PP lock is " ..
+              string.format(self.is_pp_locked and "enabled" or "disabled"))
+end
+function Party:maybe_set_pp()
+    if self.is_pp_locked then
+        for _, player in ipairs(self:get_players()) do
+            if player:is_pp_lock_character() then
+                player:set_current_pp(0x5)
+            end
         end
     end
 end
