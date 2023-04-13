@@ -32,7 +32,7 @@ while true do
 
     game:random_number_checks()
     game:check_analysis_trigger()
-    game:battle_timer_check()
+    game:timer_checks()
     if not game:is_in_battle() then
         if not game:is_in_menu() then
             game:encounter_checks()

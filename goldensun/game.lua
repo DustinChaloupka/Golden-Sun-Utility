@@ -3,7 +3,10 @@ local game = {}
 local Game = {
     state = require("goldensun.memory.game.state"),
     transition = require("goldensun.memory.game.transition"),
-    timer = {battle = require("goldensun.game.timer.battle")}
+    timer = {
+        battle = require("goldensun.game.timer.battle"),
+        general = require("goldensun.game.timer.general")
+    }
 }
 
 function Game:check_analysis_trigger()
@@ -72,8 +75,11 @@ function Game:battle_checks()
                                 self.party:get_front_average_level())
 end
 
-function Game:battle_timer_check()
+function Game:timer_checks()
     if emulator:key_pressed("T") then self.timer.battle:toggle() end
+    if emulator:key_pressed("Q") then self.timer.general:toggle() end
+    if emulator:key_pressed("W") then self.timer.general:toggle_pause() end
+    self.timer.general:draw()
 end
 
 function Game:map_checks() self.timer.battle:draw() end
