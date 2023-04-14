@@ -9,7 +9,12 @@ local Encounters = require("goldensun.memory.game.encounters").new {
     step_rate = require("goldensun.memory.game.tla.encounters.steprate"),
 
     address = 0x080EDACC,
-    size = 8
+    size = 8,
+
+    zone_offset = 0x1C,
+
+    recommended_level_offset = 2,
+    recommended_level_size = 16
 }
 
 setmetatable(encounters, {__index = Encounters})

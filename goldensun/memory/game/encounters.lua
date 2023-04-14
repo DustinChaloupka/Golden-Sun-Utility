@@ -10,18 +10,24 @@ local Encounters = Chunk.new {
             -- Max number of enemies in an encounter group?
             last_row_interval = 6
         }
-    }
+    },
+
+    avoid = {is_enabled = false},
+
+    recommended_level = {ui = {x = {pos = 0}, y = {pos = 150}}}
 }
 
 function Encounters:disable() self.lock:write(0) end
 
 function Encounters:maybe_disable() if self.is_disabled then self:disable() end end
 
-function Encounters:draw(is_overworld)
+function Encounters:draw(is_overworld, zone_id)
     if not self.analysis.is_enabled then
         self.step_count:draw()
         self.step_rate:draw(is_overworld)
     end
+
+    self:draw_recommended_level(zone_id)
 end
 
 function Encounters:draw_battle(grn, front_average_level)
@@ -151,6 +157,22 @@ function Encounters:lookup(grn, zone, front_average_level)
     end
 
     return all_encounters
+end
+
+function Encounters:toggle_avoid_information()
+    self.avoid.is_enabled = not self.avoid.is_enabled
+end
+
+function Encounters:draw_recommended_level(zone_id)
+    if self.avoid.is_enabled then
+        local recommended_level = self:read_offset_with_size(zone_id *
+                                                                 self.zone_offset +
+                                                                 self.recommended_level_offset,
+                                                             self.recommended_level_size)
+        drawing:set_text("Recommended level: " .. recommended_level,
+                         self.recommended_level.ui.x.pos,
+                         self.recommended_level.ui.y.pos)
+    end
 end
 
 function Encounters:toggle_analysis_enabled()

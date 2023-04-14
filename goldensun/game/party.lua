@@ -1,6 +1,11 @@
 local party = {}
 
-local Party = {is_pp_locked = false}
+local Party = {
+    is_pp_locked = false,
+
+    average_level = {ui = {x = {pos = 0}, y = {pos = 140}}},
+    avoid = {is_enabled = false}
+}
 
 function Party:get_player_ids() return self.order:get_ids() end
 
@@ -32,6 +37,19 @@ function Party:get_front_average_level()
     return total_level / total_alive
 end
 
+function Party:get_average_level()
+    local total_level = 0
+    local total_alive = 0
+    for _, player in ipairs(self:get_players()) do
+        if player:get_current_hp() ~= 0 then
+            total_level = total_level + player:get_level()
+            total_alive = total_alive + 1
+        end
+    end
+
+    return total_level / total_alive
+end
+
 function Party:draw_battle()
     local players = self:get_players()
     for i = 4, 1, -1 do
@@ -50,6 +68,7 @@ function Party:toggle_pp_lock()
     print("PP lock is " ..
               string.format(self.is_pp_locked and "enabled" or "disabled"))
 end
+
 function Party:maybe_set_pp()
     if self.is_pp_locked then
         for _, player in ipairs(self:get_players()) do
@@ -57,6 +76,20 @@ function Party:maybe_set_pp()
                 player:set_current_pp(0x5)
             end
         end
+    end
+end
+
+function Party:toggle_avoid_information()
+    self.avoid.is_enabled = not self.avoid.is_enabled
+end
+
+function Party:draw_party_level()
+    if self.avoid.is_enabled then
+        local average_level = self:get_average_level()
+
+        drawing:set_text("Party level: " .. average_level,
+                         self.average_level.ui.x.pos,
+                         self.average_level.ui.y.pos)
     end
 end
 

@@ -22,13 +22,19 @@ end
 -- Manage encounters
 function Game:encounter_checks()
     if emulator:key_pressed("E") then self.encounters:toggle_disabled() end
+    if emulator:key_pressed("L") then
+        self.encounters:toggle_avoid_information()
+        self.party:toggle_avoid_information()
+    end
 
     self.encounters:maybe_disable()
 
-    self.encounters:draw(self.movement.type:is_overworld())
+    local zone_one, zone_two = self.map:get_zones()
+    local zone_id = zone_one ~= 0 and zone_one or zone_two
+    self.encounters:draw(self.movement.type:is_overworld(), zone_id)
+    self.party:draw_party_level()
     self.encounters:draw_analysis(self.random_number.battle,
-                                  self.random_number.general,
-                                  self.map:get_zone(),
+                                  self.random_number.general, zone_id,
                                   self.party:get_front_average_level())
 end
 
