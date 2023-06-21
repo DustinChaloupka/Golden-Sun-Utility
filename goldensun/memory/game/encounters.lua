@@ -9,7 +9,25 @@ local Encounters = Chunk.new {
             y = {pos = 10, interval = 10, row_interval = 75},
             -- Max number of enemies in an encounter group?
             last_row_interval = 6
-        }
+        },
+        psynergy_index = {
+            "Base", "Move", "Lash", "Scoop", "Frost", "Pound", "Growth",
+            "Cyclone", "Douse", "Sand", "Lift"
+        },
+        psynergy = {
+            ["Base"] = 0,
+            ["Move"] = 295,
+            ["Lash"] = 144,
+            ["Scoop"] = 80,
+            ["Frost"] = 96,
+            ["Pound"] = 248,
+            ["Growth"] = 63,
+            ["Cyclone"] = 480,
+            ["Douse"] = 20,
+            ["Sand"] = 256,
+            ["Lift"] = 72
+        },
+        current_psynergy = "Base"
     },
 
     avoid = {is_enabled = false},
@@ -21,13 +39,38 @@ function Encounters:disable() self.lock:write(0) end
 
 function Encounters:maybe_disable() if self.is_disabled then self:disable() end end
 
+function Encounters:next_psynergy_analysis()
+    if not self.analysis.is_enabled then return end
+    for i, psynergy in ipairs(self.analysis.psynergy_index) do
+        if psynergy == self.analysis.current_psynergy then
+            local new_index = i + 1
+            if new_index > 11 then new_index = 1 end
+            self.analysis.current_psynergy =
+                self.analysis.psynergy_index[new_index]
+            return
+        end
+    end
+end
+
+function Encounters:previous_psynergy_analysis()
+    if not self.analysis.is_enabled then return end
+    for i, psynergy in ipairs(self.analysis.psynergy_index) do
+        if psynergy == self.analysis.current_psynergy then
+            local new_index = i - 1
+            if new_index < 1 then new_index = 11 end
+            self.analysis.current_psynergy =
+                self.analysis.psynergy_index[new_index]
+            return
+        end
+    end
+end
+
 function Encounters:draw(is_overworld, zone_id)
     if not self.analysis.is_enabled then
         self.step_count:draw()
         self.step_rate:draw(is_overworld)
+        self:draw_recommended_level(zone_id)
     end
-
-    self:draw_recommended_level(zone_id)
 end
 
 function Encounters:draw_battle(grn, front_average_level)
@@ -48,13 +91,19 @@ end
 
 function Encounters:draw_analysis(brn, grn, zone, front_average_level)
     if self.analysis.is_enabled then
+        local psynergy_advance = self:draw_psynergy_advance()
+        local psynergy_grn = require("goldensun.memory.game.randomnumber").new {
+            value = grn.value
+        }
+        psynergy_grn:next(psynergy_advance)
+
         -- This is kind of a hack to allow drawing the steprate still
         -- without knowing the encounters on the world map
         local encounters = {{}, {}, {}, {}, {}, {}, {}, {}}
         self.step_count:draw_analysis()
 
         if zone > 0 then
-            encounters = self:lookup(grn, zone, front_average_level)
+            encounters = self:lookup(psynergy_grn, zone, front_average_level)
         end
 
         for i, enemy_group in ipairs(encounters) do
@@ -68,7 +117,7 @@ function Encounters:draw_analysis(brn, grn, zone, front_average_level)
                 row = 1
             end
 
-            self.step_rate:draw_analysis(grn, n, column_number, row)
+            self.step_rate:draw_analysis(psynergy_grn, n, column_number, row)
 
             self:draw_encounter_group_part("+" .. n, column_number, 0,
                                            row_interval)
@@ -160,11 +209,12 @@ function Encounters:lookup(grn, zone, front_average_level)
 end
 
 function Encounters:toggle_avoid_information()
+    if self.analysis.is_enabled then return end
     self.avoid.is_enabled = not self.avoid.is_enabled
 end
 
 function Encounters:draw_recommended_level(zone_id)
-    if self.avoid.is_enabled then
+    if self.avoid.is_enabled and not self.analysis.is_enabled then
         local recommended_level = self:read_offset_with_size(zone_id *
                                                                  self.zone_offset +
                                                                  self.recommended_level_offset,
@@ -173,6 +223,11 @@ function Encounters:draw_recommended_level(zone_id)
                          self.recommended_level.ui.x.pos,
                          self.recommended_level.ui.y.pos)
     end
+end
+
+function Encounters:draw_psynergy_advance()
+    drawing:set_text(self.analysis.current_psynergy, 0, 0)
+    return self.analysis.psynergy[self.analysis.current_psynergy]
 end
 
 function Encounters:toggle_analysis_enabled()
