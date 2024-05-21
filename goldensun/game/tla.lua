@@ -36,8 +36,8 @@ end
 -- what are these values?
 function TLA:calculate_map_location(location)
     return {
-        x = bit.lshift(location.x + 269, 14) / 853,
-        y = bit.lshift(location.y + 112, 14) / 640
+        x = emulator:lshift(location.x + 269, 14) / 853,
+        y = emulator:lshift(location.y + 112, 14) / 640
     }
 end
 

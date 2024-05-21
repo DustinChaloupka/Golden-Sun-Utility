@@ -10,11 +10,11 @@ local State = Chunk.new({
 })
 
 function State:is_battle()
-    return bit.band(bit.rshift(self:read(), self.battle_flag), 1) == 1
+    return emulator:band(emulator:rshift(self:read(), self.battle_flag), 1) == 1
 end
 
 function State:is_menu()
-    return bit.band(bit.rshift(self:read(), self.menu_flag), 1) == 1
+    return emulator:band(emulator:rshift(self:read(), self.menu_flag), 1) == 1
 end
 
 setmetatable(state, {__index = State})

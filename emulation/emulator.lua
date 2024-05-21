@@ -37,6 +37,12 @@ function Emulator:button_pressed(button)
     return self.controller and self.controller[button]
 end
 
+function Emulator:band(a, b) return bit.band(a, b) end
+function Emulator:lshift(a, b) return bit.lshift(a, b) end
+function Emulator:rshift(a, b) return bit.rshift(a, b) end
+
+function Emulator:math_mod(a, b) return math.mod(a, b) end
+
 function emulator.new(o)
     local self = o or {}
     setmetatable(self, {__index = Emulator})

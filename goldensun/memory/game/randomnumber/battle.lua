@@ -18,11 +18,11 @@ local Battle = require("goldensun.memory.game.randomnumber").new {
 function Battle:draw_analysis() end
 
 function Battle:is_attacks_first()
-    return bit.band(self:read(), self.attacks_first) == 0
+    return emulator:band(self:read(), self.attacks_first) == 0
 end
 
 function Battle:is_caught_by_surprise()
-    return bit.band(self:read(), self.caught_by_surprise) == 0
+    return emulator:band(self:read(), self.caught_by_surprise) == 0
 end
 
 function battle.new(o)

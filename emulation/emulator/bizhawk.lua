@@ -29,6 +29,28 @@ function BizHawk:button_pressed(button)
     return self.controller and self.controller[checking]
 end
 
+-- convert to signed 32-bit
+local function normalize(n) return (n & 0xFFFFFFFF ~ 0x80000000) - 0x80000000 end
+
+function BizHawk:band(a, b) return normalize(a & b) end
+function BizHawk:lshift(a, b) return normalize(a << b) end
+function BizHawk:rshift(a, b) return normalize(a >> b) end
+-- bit = {
+--     band    = function(a,b) return normalize(a & b) end,
+--     bor     = function(a,b) return normalize(a | b) end,
+--     bnot    = function(a)   return normalize(~a) end,
+--     bxor    = function(a,b) return normalize(a ~ b) end,
+--     ror     = function(a,b) return normalize(a >> b | a << 32-b) end,
+--     rol     = function(a,b) return normalize(a << b | a >> 32-b) end,
+--     lshift  = function(a,b) return normalize(a << b) end,
+--     rshift  = function(a,b) return normalize(a >> b) end,
+--     arshift = function(a,b) return normalize(a >> b) end,
+--     tobit   = function(a)   return normalize(a) end,
+--     tohex   = function(a,n) return ("%%0%dx"):format(n or 8):format(a) end
+-- }
+
+function BizHawk:math_mod(a, b) return math.fmod(a, b) end
+
 setmetatable(bizhawk, {__index = BizHawk})
 
 return bizhawk

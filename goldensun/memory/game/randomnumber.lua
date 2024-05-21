@@ -18,17 +18,18 @@ local RandomNumber = Chunk.new {
 }
 
 -- This is the actual value used in calculating things
-function RandomNumber:generate() return
-    bit.rshift(bit.lshift(self.value, 8), 16) end
+function RandomNumber:generate()
+    return emulator:rshift(emulator:lshift(self.value, 8), 16)
+end
 
 -- This generates a number between 0-distribution?
 function RandomNumber:distribution(distribution)
     local rng = self:generate()
     if distribution then
-        return bit.rshift(rng * distribution, 16)
+        return emulator:rshift(rng * distribution, 16)
     else
         -- Is this just the 0-100 case?
-        return bit.rshift(rng, 8)
+        return emulator:rshift(rng, 8)
     end
 end
 
@@ -36,12 +37,12 @@ function RandomNumber:next(count)
     for i = 1, count do
         local lower_factor_advance = self.advancing.lower_factor * self.value
         local upper_factor_advance = self.advancing.upper_factor * self.value
-        upper_factor_advance = bit.band(upper_factor_advance, 0xFFFF)
+        upper_factor_advance = emulator:band(upper_factor_advance, 0xFFFF)
         local factor_advance = lower_factor_advance + upper_factor_advance *
                                    0x10000
-        factor_advance = bit.band(factor_advance, 0xFFFFFFFF)
+        factor_advance = emulator:band(factor_advance, 0xFFFFFFFF)
         local increase_advance = factor_advance + self.advancing.interval
-        self.value = bit.band(increase_advance, 0xFFFFFFFF)
+        self.value = emulator:band(increase_advance, 0xFFFFFFFF)
     end
 end
 
@@ -68,7 +69,7 @@ function RandomNumber:rewind(count)
     self.value = self:read()
     local rn = self.value
     for i = 1, count do
-        local decrease = bit.band(rn - self.advancing.interval, 0xFFFFFFFF)
+        local decrease = emulator:band(rn - self.advancing.interval, 0xFFFFFFFF)
 
         local final_rn_bits = {
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -79,7 +80,7 @@ function RandomNumber:rewind(count)
         for bit_location = 1, 32 do
             local matching_bits = 0
             local decrease_bit =
-                bit.band(decrease, 2 ^ (bit_location - 1)) == 0 and 0 or 1
+                emulator:band(decrease, 2 ^ (bit_location - 1)) == 0 and 0 or 1
 
             for j = bit_location, 2, -1 do
                 matching_bits = matching_bits +
@@ -93,11 +94,11 @@ function RandomNumber:rewind(count)
                 rn = rn + 2 ^ (bit_location - 1)
             end
 
-            remainder = bit.rshift(final_rn_bits[bit_location] + matching_bits,
-                                   1)
+            remainder = emulator:rshift(final_rn_bits[bit_location] +
+                                            matching_bits, 1)
         end
 
-        self.value = bit.band(rn, 0xFFFFFFFF)
+        self.value = emulator:band(rn, 0xFFFFFFFF)
     end
 
     self:write(self.value)

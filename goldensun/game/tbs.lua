@@ -18,7 +18,7 @@ local TBS = Game.new {
 }
 
 -- what are these values?
-local function cursor_shift(cursor) return bit.lshift(cursor, 8) end
+local function cursor_shift(cursor) return emulator:lshift(cursor, 8) end
 function TBS:calculate_map_location(location)
     return {
         x = cursor_shift(location.x) / 853,
