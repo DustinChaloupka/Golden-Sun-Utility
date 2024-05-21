@@ -40,9 +40,9 @@ function RandomNumber:next(count)
         upper_factor_advance = emulator:band(upper_factor_advance, 0xFFFF)
         local factor_advance = lower_factor_advance + upper_factor_advance *
                                    0x10000
-        factor_advance = emulator:band(factor_advance, 0xFFFFFFFF)
+        factor_advance = factor_advance & 0xFFFFFFFF
         local increase_advance = factor_advance + self.advancing.interval
-        self.value = emulator:band(increase_advance, 0xFFFFFFFF)
+        self.value = increase_advance & 0xFFFFFFFF
     end
 end
 

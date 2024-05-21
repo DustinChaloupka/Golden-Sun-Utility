@@ -30,7 +30,7 @@ function BizHawk:button_pressed(button)
 end
 
 -- convert to signed 32-bit
-local function normalize(n) return (n & 0xFFFFFFFF ~ 0x80000000) - 0x80000000 end
+local function normalize(n) return n & 0xFFFFFFFF end
 
 function BizHawk:band(a, b) return normalize(a & b) end
 function BizHawk:lshift(a, b) return normalize(a << b) end
