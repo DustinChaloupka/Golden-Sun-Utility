@@ -109,7 +109,7 @@ function Encounters:draw_analysis(brn, grn, zone, front_average_level)
         for i, enemy_group in ipairs(encounters) do
 
             local n = i - 1
-            local column_number = math.mod(n, 4)
+            local column_number = emulator:math_mod(n, 4)
             local row_interval = 0
             local row = 0
             if i >= 5 then
