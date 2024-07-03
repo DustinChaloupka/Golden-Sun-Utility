@@ -21,7 +21,7 @@ end
 
 -- Manage encounters
 function Game:encounter_checks()
-    if emulator:key_pressed("E") then self.encounters:toggle_disabled() end
+    -- if emulator:key_pressed("E") then self.encounters:toggle_disabled() end
     if emulator:key_pressed("L") then
         self.encounters:next_psynergy_analysis()
         self.encounters:toggle_avoid_information()
@@ -32,7 +32,7 @@ function Game:encounter_checks()
         self.encounters:previous_psynergy_analysis()
     end
 
-    self.encounters:maybe_disable()
+    -- self.encounters:maybe_disable()
 
     local zone_one, zone_two = self.map:get_zones()
     local zone_id = zone_one ~= 0 and zone_one or zone_two
@@ -46,8 +46,8 @@ function Game:encounter_checks()
 end
 
 function Game:movement_checks()
-    if emulator:key_pressed("P") then self.party:toggle_pp_lock() end
-    self.party:maybe_set_pp()
+    -- if emulator:key_pressed("P") then self.party:toggle_pp_lock() end
+    -- self.party:maybe_set_pp()
     self.movement:draw()
 end
 

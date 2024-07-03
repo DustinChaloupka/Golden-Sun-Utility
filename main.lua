@@ -25,6 +25,15 @@ elseif tla.is_current_rom(tla) then
     tbs = nil
 end
 
+client.SetGameExtraPadding(0, 0, 150, 45)
+gui.defaultTextBackground(0)
+
+require("goldensun.Constants")
+require("goldensun.Encounters")
+require("goldensun.Party")
+require("goldensun.Toggles")
+require("goldensun.Inputs")
+
 while true do
     drawing:reset()
     emulator:load_joypad(0)
@@ -47,6 +56,11 @@ while true do
     else
         game:battle_checks()
     end
+
+    Toggles:draw()
+    Inputs:checkForInput()
+    Party:check()
+    Encounters:check()
 
     drawing:update()
     emulator:frameadvance()

@@ -35,9 +35,9 @@ local Encounters = Chunk.new {
     recommended_level = {ui = {x = {pos = 0}, y = {pos = 150}}}
 }
 
-function Encounters:disable() self.lock:write(0) end
+-- function Encounters:disable() self.lock:write(0) end
 
-function Encounters:maybe_disable() if self.is_disabled then self:disable() end end
+-- function Encounters:maybe_disable() if self.is_disabled then self:disable() end end
 
 function Encounters:next_psynergy_analysis()
     if not self.analysis.is_enabled then return end
@@ -234,11 +234,11 @@ function Encounters:toggle_analysis_enabled()
     self.analysis.is_enabled = not self.analysis.is_enabled
 end
 
-function Encounters:toggle_disabled()
-    self.is_disabled = not self.is_disabled
-    print("Encounters " ..
-              string.format(self.is_disabled and "disabled" or "enabled"))
-end
+-- function Encounters:toggle_disabled()
+--     self.is_disabled = not self.is_disabled
+--     print("Encounters " ..
+--               string.format(self.is_disabled and "disabled" or "enabled"))
+-- end
 
 function encounters.new(o)
     local self = o or {}
