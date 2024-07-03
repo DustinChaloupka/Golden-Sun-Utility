@@ -75,9 +75,9 @@ function Game:fast_travel()
 
         if speed then self.camera:add_speed(speed) end
 
-        if not settings.encounters_if_fast_travel then
-            self.encounters:disable()
-        end
+        -- if not settings.encounters_if_fast_travel then
+        -- self.encounters:disable()
+        -- end
     end
 end
 
