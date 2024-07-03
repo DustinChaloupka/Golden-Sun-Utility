@@ -7,14 +7,15 @@ Toggles.buttons = {
         image = {path = Constants.ButtonImages.NO},
         box = {1, 161, 29, 29},
         onClick = function(self)
-            local new_value = (emulator:read_byte(0x03001238) + 1) % 2
+            local new_value =
+                (emulator:read_byte(GameSettings.DebugMode.address) + 1) % 2
             if new_value == 0 then
                 self.image.path = Constants.ButtonImages.NO
             else
                 self.image.path = Constants.ButtonImages.YES
             end
 
-            emulator:write_byte(0x03001238, new_value)
+            emulator:write_byte(GameSettings.DebugMode.address, new_value)
 
         end
     },

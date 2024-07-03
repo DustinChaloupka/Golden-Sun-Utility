@@ -29,10 +29,13 @@ client.SetGameExtraPadding(0, 0, 150, 45)
 gui.defaultTextBackground(0)
 
 require("goldensun.Constants")
+require("goldensun.GameSettings")
 require("goldensun.Encounters")
 require("goldensun.Party")
 require("goldensun.Toggles")
 require("goldensun.Inputs")
+
+GameSettings:initialize()
 
 while true do
     drawing:reset()
