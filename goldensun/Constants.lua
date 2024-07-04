@@ -1,5 +1,7 @@
 Constants = {}
 
+Constants.Screen = {RIGHT_GAP = 500, DOWN_GAP = 50}
+
 Constants.ButtonTypes = {CHECKBOX = 1, IMAGE = 2}
 
 Constants.ButtonImages = {

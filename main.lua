@@ -25,10 +25,15 @@ elseif tla.is_current_rom(tla) then
     tbs = nil
 end
 
-client.SetGameExtraPadding(0, 0, 150, 45)
-gui.defaultTextBackground(0)
-
 require("goldensun.Constants")
+require("goldensun.Drawing")
+
+client.SetClientExtraPadding(0, 0, Constants.Screen.RIGHT_GAP,
+                             Constants.Screen.DOWN_GAP)
+gui.use_surface("client")
+Constants.Screen.HEIGHT = client.screenheight()
+Constants.Screen.WIDTH = client.screenwidth()
+
 require("goldensun.GameSettings")
 require("goldensun.Encounters")
 require("goldensun.Party")
@@ -39,6 +44,9 @@ GameSettings:initialize()
 
 while true do
     drawing:reset()
+
+    Drawing:drawBackground()
+
     emulator:load_joypad(0)
     emulator:load_input()
 

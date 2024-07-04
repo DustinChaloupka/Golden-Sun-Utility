@@ -4,9 +4,10 @@ local previousMouseInput = {}
 function Inputs:checkForInput()
     local mouseInput = input.getmouse()
     if mouseInput["Left"] and not previousMouseInput["Left"] then
-        local mouse_x = mouseInput["X"]
-        local mouse_y = mouseInput["Y"]
-        Inputs:checkMouseInput(mouse_x, mouse_y)
+        local emu_mouse_x = mouseInput["X"]
+        local emu_mouse_y = mouseInput["Y"]
+        local client_mouse = client.transformPoint(emu_mouse_x, emu_mouse_y)
+        Inputs:checkMouseInput(client_mouse["x"], client_mouse["y"])
     end
     previousMouseInput = mouseInput
 end

@@ -5,7 +5,9 @@ Toggles.buttons = {
         text = "Debug",
         type = Constants.ButtonTypes.IMAGE,
         image = {path = Constants.ButtonImages.NO},
-        box = {1, 161, 29, 29},
+        box = {
+            5, Constants.Screen.HEIGHT - Constants.Screen.DOWN_GAP + 5, 29, 29
+        },
         onClick = function(self)
             local new_value =
                 (emulator:read_byte(GameSettings.DebugMode.address) + 1) % 2
@@ -23,7 +25,9 @@ Toggles.buttons = {
         text = "Encounters",
         type = Constants.ButtonTypes.IMAGE,
         image = {path = Constants.ButtonImages.YES},
-        box = {40, 161, 29, 29},
+        box = {
+            55, Constants.Screen.HEIGHT - Constants.Screen.DOWN_GAP + 5, 29, 29
+        },
         onClick = function(self)
             Encounters.enabled = not Encounters.enabled
             if Encounters.enabled then
@@ -37,7 +41,9 @@ Toggles.buttons = {
         text = "PP Lock",
         type = Constants.ButtonTypes.IMAGE,
         image = {path = Constants.ButtonImages.NO},
-        box = {115, 161, 29, 29},
+        box = {
+            145, Constants.Screen.HEIGHT - Constants.Screen.DOWN_GAP + 5, 29, 29
+        },
         onClick = function(self)
             Party.pp_lock_enabled = not Party.pp_lock_enabled
             if Party.pp_lock_enabled then
@@ -61,6 +67,7 @@ function Toggles:draw()
             gui.drawRectangle(x, y, width, height, button.border_color,
                               button.fill_color)
         end
-        gui.drawText(x - 1, y + height, button.text, nil, nil, 11)
+        gui.drawText(x, y + height + 1, button.text, Drawing.Text.SHADOW_COLOR)
+        gui.drawText(x - 1, y + height, button.text)
     end
 end
