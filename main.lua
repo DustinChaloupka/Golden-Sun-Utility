@@ -38,12 +38,14 @@ require("goldensun.GameSettings")
 require("goldensun.Encounters")
 require("goldensun.Party")
 require("goldensun.Map")
+require("goldensun.State")
 require("goldensun.Toggles")
 require("goldensun.Inputs")
 
 GameSettings:initialize()
 
 while true do
+    State.update()
     drawing:reset()
 
     gui.clearGraphics("emu")

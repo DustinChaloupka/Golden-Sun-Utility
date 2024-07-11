@@ -14,6 +14,10 @@ end
 
 function Inputs:checkMouseInput(mouse_x, mouse_y)
     Inputs:checkButtonsClicked(mouse_x, mouse_y, Toggles.buttons)
+
+    if Map.Overlay.enabled then
+        Inputs:checkButtonsClicked(mouse_x, mouse_y, Map.buttons)
+    end
 end
 
 function isInArea(mouse_x, mouse_y, x, y, width, height)

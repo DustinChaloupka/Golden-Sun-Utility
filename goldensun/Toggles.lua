@@ -83,7 +83,8 @@ function Toggles:draw()
             gui.drawRectangle(x, y, width, height, button.border_color,
                               button.fill_color)
         end
-        gui.drawText(x, y + height + 1, button.text, Drawing.Text.SHADOW_COLOR)
-        gui.drawText(x - 1, y + height, button.text)
+        gui.drawText(x + 1, y + height + 1, button.text,
+                     Drawing.Text.SHADOW_COLOR)
+        gui.drawText(x, y + height, button.text)
     end
 end

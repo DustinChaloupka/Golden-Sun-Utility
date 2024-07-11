@@ -16,11 +16,16 @@ GameSettings.PlayerCharacterData = {
 
 GameSettings.Map = {
     TileAddress = 0x020301A4,
+    LayerAddress = 0x3000020,
 
     TileXOffset = 0x4,
     TileYOffset = 0x200,
     TileOverworldYOffset = 0x80
 }
+
+GameSettings.Layer = {Offset = {0x138, 0x170, 0x1a8}}
+
+GameSettings.State = {address = 0x02000060}
 
 function GameSettings:initialize()
     local isaac_data = GameSettings.PlayerCharacterData.BaseAddress
