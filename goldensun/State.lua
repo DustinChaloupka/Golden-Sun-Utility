@@ -19,3 +19,7 @@ function State.in_menu()
     return emulator:band(emulator:rshift(State.current_state,
                                          State.Flags.in_menu), 1) == 1
 end
+
+function State.on_overworld()
+    return emulator:read_word(GameSettings.Map.Number) == 2
+end

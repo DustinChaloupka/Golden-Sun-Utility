@@ -111,6 +111,11 @@ function get_current_layer_pointer()
 end
 
 function draw_overlay()
+    local tile_y_offset = GameSettings.Map.TileYOffset
+    if State.on_overworld() then
+        tile_y_offset = GameSettings.Map.TileOverworldYOffset
+    end
+
     gui.use_surface("emu")
     for x = -7, 7 do
         for y = -5, 4 do
@@ -128,14 +133,17 @@ function draw_overlay()
 
             tile_pointer = get_current_tile_pointer()
             tile_address = tile_pointer + layer_offset + x *
-                               GameSettings.Map.TileXOffset + y *
-                               GameSettings.Map.TileYOffset
+                               GameSettings.Map.TileXOffset + y * tile_y_offset
             tile = emulator:read_dword(tile_address)
             event = emulator:rshift(tile, 16) & 0xFF
             gui.drawRectangle(Map.Overlay.x + (x * Map.Overlay.tile_width),
                               Map.Overlay.y + (y * Map.Overlay.tile_height),
                               Map.Overlay.tile_width, Map.Overlay.tile_height,
                               Map.Overlay.line_color)
+            gui.drawText(Map.Overlay.x + 1 + 1 + (x * Map.Overlay.tile_width),
+                         Map.Overlay.y + 1 + 1 + (y * Map.Overlay.tile_height),
+                         string.format("%x", event), Drawing.Text.SHADOW_COLOR,
+                         nil, Map.Overlay.text_size)
             gui.drawText(Map.Overlay.x + 1 + (x * Map.Overlay.tile_width),
                          Map.Overlay.y + 1 + (y * Map.Overlay.tile_height),
                          string.format("%x", event), nil, nil,

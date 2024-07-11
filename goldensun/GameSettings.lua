@@ -15,6 +15,7 @@ GameSettings.PlayerCharacterData = {
 }
 
 GameSettings.Map = {
+    Number = 0x02000420, -- 0x02000428 in doc says "current" map and door number
     TileAddress = 0x020301A4,
     LayerAddress = 0x3000020,
 
