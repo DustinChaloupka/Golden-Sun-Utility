@@ -37,6 +37,7 @@ Constants.Screen.WIDTH = client.screenwidth()
 require("goldensun.GameSettings")
 require("goldensun.Encounters")
 require("goldensun.Party")
+require("goldensun.Map")
 require("goldensun.Toggles")
 require("goldensun.Inputs")
 
@@ -45,6 +46,7 @@ GameSettings:initialize()
 while true do
     drawing:reset()
 
+    gui.clearGraphics("emu")
     Drawing:drawBackground()
 
     emulator:load_joypad(0)
@@ -69,6 +71,7 @@ while true do
     end
 
     Toggles:draw()
+    Map:draw()
     Inputs:checkForInput()
     Party:check()
     Encounters:check()

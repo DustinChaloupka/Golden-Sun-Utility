@@ -52,6 +52,22 @@ Toggles.buttons = {
                 self.image.path = Constants.ButtonImages.NO
             end
         end
+    },
+    map_overlay = {
+        text = "Map Overlay",
+        type = Constants.ButtonTypes.IMAGE,
+        image = {path = Constants.ButtonImages.NO},
+        box = {
+            215, Constants.Screen.HEIGHT - Constants.Screen.DOWN_GAP + 5, 29, 29
+        },
+        onClick = function(self)
+            Map.Overlay.enabled = not Map.Overlay.enabled
+            if Map.Overlay.enabled then
+                self.image.path = Constants.ButtonImages.YES
+            else
+                self.image.path = Constants.ButtonImages.NO
+            end
+        end
     }
 }
 

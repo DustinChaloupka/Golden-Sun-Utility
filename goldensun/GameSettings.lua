@@ -14,6 +14,14 @@ GameSettings.PlayerCharacterData = {
     LevelOffset = 0xF
 }
 
+GameSettings.Map = {
+    TileAddress = 0x020301A4,
+
+    TileXOffset = 0x4,
+    TileYOffset = 0x200,
+    TileOverworldYOffset = 0x80
+}
+
 function GameSettings:initialize()
     local isaac_data = GameSettings.PlayerCharacterData.BaseAddress
     local garet_data = GameSettings.PlayerCharacterData.BaseAddress +
