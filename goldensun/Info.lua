@@ -3,7 +3,7 @@ Info = {}
 Info.sections = {
     tile_address = {
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 5},
-        getInfo = function(self)
+        getText = function(self)
             return string.format("Tile Address: 0x%x", emulator:read_dword(
                                      GameSettings.Map.TileAddress))
         end
