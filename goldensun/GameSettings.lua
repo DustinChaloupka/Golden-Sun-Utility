@@ -17,7 +17,7 @@ GameSettings.PlayerCharacterData = {
 GameSettings.Map = {
     Number = 0x02000420, -- 0x02000428 in doc says "current" map and door number
     TileAddress = 0x020301A4,
-    LayerAddress = 0x3000020,
+    LayerAddress = 0x03000020,
 
     TileXOffset = 0x4,
     TileYOffset = 0x200,
@@ -27,6 +27,13 @@ GameSettings.Map = {
 GameSettings.Layer = {Offset = {0x138, 0x170, 0x1a8}}
 
 GameSettings.State = {address = 0x02000060}
+
+GameSettings.RandomNumber = {Battle = 0x020054C8, General = 0x030011BC}
+GameSettings.Movement = {
+    Tick = 0x020301A0,
+    StepRate = 0x02030194,
+    StepCount = 0x0200049A
+}
 
 function GameSettings:initialize()
     local isaac_data = GameSettings.PlayerCharacterData.BaseAddress

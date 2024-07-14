@@ -10,7 +10,8 @@ Map.Overlay = {
     tile_width = 15,
     tile_height = 15,
 
-    line_color = 0xFFFFFFFF
+    line_color = 0xFFFFFFFF,
+    current_tile_color = 0xFF00FF00
 }
 
 Map.buttons = {
@@ -144,9 +145,14 @@ function draw_overlay()
                          Map.Overlay.y + 1 + 1 + (y * Map.Overlay.tile_height),
                          string.format("%x", event), Drawing.Text.SHADOW_COLOR,
                          nil, Map.Overlay.text_size)
+
+            local current_tile_color
+            if x == 0 and y == 0 then
+                current_tile_color = Map.Overlay.current_tile_color
+            end
             gui.drawText(Map.Overlay.x + 1 + (x * Map.Overlay.tile_width),
                          Map.Overlay.y + 1 + (y * Map.Overlay.tile_height),
-                         string.format("%x", event), nil, nil,
+                         string.format("%x", event), current_tile_color, nil,
                          Map.Overlay.text_size)
         end
     end
