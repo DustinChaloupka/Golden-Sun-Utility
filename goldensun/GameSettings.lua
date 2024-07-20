@@ -1,8 +1,21 @@
 GameSettings = {}
 
+GameSettings.RandomModifiers = {Agility = 0.0625}
+
 GameSettings.DebugMode = {address = 0x03001238}
 
 GameSettings.Encounters = {StepCounter = {address = 0x02000498}}
+
+GameSettings.Characters = {
+    [0] = "Isaac",
+    [1] = "Garet",
+    [2] = "Ivan",
+    [3] = "Mia",
+    [4] = "Felix",
+    [5] = "Jenna",
+    [6] = "Sheba",
+    [7] = "Piers"
+}
 
 GameSettings.PlayerCharacterData = {
     BaseAddress = 0x02000520,
@@ -13,6 +26,16 @@ GameSettings.PlayerCharacterData = {
     CurrentPPOffset = 0x3A,
     LevelOffset = 0xF
 }
+
+GameSettings.Character = {}
+for id, name in pairs(GameSettings.Characters) do
+    local base = GameSettings.PlayerCharacterData.BaseAddress +
+                     GameSettings.PlayerCharacterData.CharacterOffset * id
+    GameSettings.Character[name] = {
+        CurrentAgility = base + GameSettings.PlayerCharacterData.AgilityOffset,
+        CurrentPP = base + GameSettings.PlayerCharacterData.CurrentPPOffset
+    }
+end
 
 GameSettings.Map = {
     Number = 0x02000420, -- 0x02000428 in doc says "current" map and door number
@@ -35,34 +58,12 @@ GameSettings.Movement = {
     StepCount = 0x0200049A
 }
 
-function GameSettings:initialize()
-    local isaac_data = GameSettings.PlayerCharacterData.BaseAddress
-    local garet_data = GameSettings.PlayerCharacterData.BaseAddress +
-                           GameSettings.PlayerCharacterData.CharacterOffset
-    local ivan_data = GameSettings.PlayerCharacterData.BaseAddress +
-                          GameSettings.PlayerCharacterData.CharacterOffset * 2
-    local mia_data = GameSettings.PlayerCharacterData.BaseAddress +
-                         GameSettings.PlayerCharacterData.CharacterOffset * 3
-    local felix_data = GameSettings.PlayerCharacterData.BaseAddress +
-                           GameSettings.PlayerCharacterData.CharacterOffset * 4
-    local jenna_data = GameSettings.PlayerCharacterData.BaseAddress +
-                           GameSettings.PlayerCharacterData.CharacterOffset * 5
-    local sheba_data = GameSettings.PlayerCharacterData.BaseAddress +
-                           GameSettings.PlayerCharacterData.CharacterOffset * 6
-    local piers_data = GameSettings.PlayerCharacterData.BaseAddress +
-                           GameSettings.PlayerCharacterData.CharacterOffset * 7
+GameSettings.Battle = {
+    ActiveParty = 0x020300A4,
 
-    GameSettings.Character = {
-        Isaac = {},
-        Garet = {},
-        Ivan = {},
-        Mia = {},
-        Felix = {
-            CurrentPP = felix_data +
-                GameSettings.PlayerCharacterData.CurrentPPOffset
-        },
-        Jenna = {},
-        Sheba = {},
-        Piers = {}
-    }
-end
+    RAM = 0x02030338,
+
+    Slot = {Offset = 0x10, AgilityOffset = 0x04}
+}
+
+function GameSettings.initialize() end

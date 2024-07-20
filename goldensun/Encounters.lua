@@ -1,4 +1,4 @@
-Encounters = {enabled = false}
+Encounters = {enabled = true}
 
 function Encounters:check() if not Encounters.enabled then Encounters:lock() end end
 

@@ -4,6 +4,7 @@ Info.sections = {
     tile_address = {
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 5},
         getText = function(self)
+            if State.in_battle() then return "" end
             return string.format("Tile Address: 0x0%x", emulator:read_dword(
                                      GameSettings.Map.TileAddress))
         end
@@ -66,6 +67,8 @@ Info.sections = {
     step_rate = {
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 50},
         getText = function(self)
+            if State.in_battle() then return "" end
+
             local rate = emulator:read_dword(GameSettings.Movement.StepRate)
             if rate == 0 then return "" end
 
@@ -77,6 +80,7 @@ Info.sections = {
     step_count = {
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 65},
         getText = function(self)
+            if State.in_battle() then return "" end
             return "Step Count: " ..
                        emulator:read_word(GameSettings.Movement.StepCount)
         end
@@ -84,8 +88,53 @@ Info.sections = {
     movement_tick = {
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 80},
         getText = function(self)
+            if State.in_battle() then return "" end
             local counter = emulator:read_word(GameSettings.Movement.Tick)
             return "Movement Tick: " .. (math.floor(counter / 0xFFF))
+        end
+    },
+    player_agilities = {
+        coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 200},
+        getText = function(self)
+            if not State.in_battle() then return "" end
+
+            local turn_agility = {}
+            for battle_slot = 0, 19 do
+                local id = emulator:read_word(
+                               GameSettings.Battle.RAM + battle_slot *
+                                   GameSettings.Battle.Slot.Offset)
+
+                if id <= 7 then
+                    turn_agility[id] = emulator:read_word(GameSettings.Battle
+                                                              .RAM + battle_slot *
+                                                              GameSettings.Battle
+                                                                  .Slot.Offset +
+                                                              GameSettings.Battle
+                                                                  .Slot
+                                                                  .AgilityOffset)
+                end
+            end
+
+            local text = "Player Agilities:\n"
+            for slot = 0, 3 do
+                local id = emulator:read_word(
+                               GameSettings.Battle.ActiveParty + slot * 0x2)
+
+                local name = GameSettings.Characters[id]
+                local current_agility = emulator:read_word(
+                                            GameSettings.Character[name]
+                                                .CurrentAgility)
+                local max_agility = current_agility + current_agility *
+                                        GameSettings.RandomModifiers.Agility
+
+                local turn = turn_agility[id] or "N/A"
+
+                text =
+                    text .. name .. ": " .. turn .. " (" .. current_agility ..
+                        "-" .. math.floor(max_agility) .. ")\n"
+            end
+
+            return text
         end
     }
 }

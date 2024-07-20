@@ -44,7 +44,7 @@ require("goldensun.Toggles")
 require("goldensun.Inputs")
 require("goldensun.RandomNumber")
 
-GameSettings:initialize()
+GameSettings.initialize()
 
 while true do
     State.update()
