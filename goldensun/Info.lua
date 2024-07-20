@@ -98,23 +98,6 @@ Info.sections = {
         getText = function(self)
             if not State.in_battle() then return "" end
 
-            local turn_agility = {}
-            for battle_slot = 0, 19 do
-                local id = emulator:read_word(
-                               GameSettings.Battle.RAM + battle_slot *
-                                   GameSettings.Battle.Slot.Offset)
-
-                if id <= 7 then
-                    turn_agility[id] = emulator:read_word(GameSettings.Battle
-                                                              .RAM + battle_slot *
-                                                              GameSettings.Battle
-                                                                  .Slot.Offset +
-                                                              GameSettings.Battle
-                                                                  .Slot
-                                                                  .AgilityOffset)
-                end
-            end
-
             local text = "Player Agilities:\n"
             for slot = 0, 3 do
                 local id = emulator:read_word(
@@ -127,11 +110,56 @@ Info.sections = {
                 local max_agility = current_agility + current_agility *
                                         GameSettings.RandomModifiers.Agility
 
-                local turn = turn_agility[id] or "N/A"
+                local turn_agility = "N/A"
+                for _, data in pairs(Battle.turn_data) do
+                    if data.id == id then
+                        turn_agility = data.agility
+                    end
+                end
 
-                text =
-                    text .. name .. ": " .. turn .. " (" .. current_agility ..
-                        "-" .. math.floor(max_agility) .. ")\n"
+                text = text .. name .. ": " .. turn_agility .. " (" ..
+                           current_agility .. "-" .. math.floor(max_agility) ..
+                           ")\n"
+            end
+
+            return text
+        end
+    },
+    enemy_stats = {
+        coords = {
+            Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 175, 200
+        },
+        getText = function(self)
+            if not State.in_battle() then return "" end
+
+            local text = "Enemies:\n"
+            for slot = 0, 4 do
+                local base = GameSettings.Battle.Enemy.Address +
+                                 GameSettings.Battle.Enemy.Offset * slot
+                local current_hp = emulator:read_word(base +
+                                                          GameSettings.Battle
+                                                              .Enemy
+                                                              .CurrentHPOffset)
+
+                if current_hp > 0 then
+                    name = ""
+                    for i = 0, 14 do
+                        local byte_letter = emulator:read_byte(base + 0x1 * i)
+                        if byte_letter ~= 0 then
+                            name = name .. string.char(byte_letter)
+                        end
+                    end
+
+                    local max_hp = emulator:read_word(base +
+                                                          GameSettings.Battle
+                                                              .Enemy.MaxHPOffset)
+                    local agility = emulator:read_word(base +
+                                                           GameSettings.Battle
+                                                               .Enemy
+                                                               .AgilityOffset)
+                    text = text .. name .. ":\n  HP: " .. current_hp .. "/" ..
+                               max_hp .. "\n  Agility: " .. agility .. "\n"
+                end
             end
 
             return text

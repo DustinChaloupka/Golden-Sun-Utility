@@ -43,11 +43,13 @@ require("goldensun.State")
 require("goldensun.Toggles")
 require("goldensun.Inputs")
 require("goldensun.RandomNumber")
+require("goldensun.Battle")
 
 GameSettings.initialize()
 
 while true do
     State.update()
+    Battle.update()
     Info.onFrameAdvance()
     drawing:reset()
 

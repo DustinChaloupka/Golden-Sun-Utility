@@ -61,9 +61,15 @@ GameSettings.Movement = {
 GameSettings.Battle = {
     ActiveParty = 0x020300A4,
 
-    RAM = 0x02030338,
+    Turn = {Address = 0x02030338, SlotOffset = 0x10, AgilityOffset = 0x04},
 
-    Slot = {Offset = 0x10, AgilityOffset = 0x04}
+    Enemy = {
+        Address = 0x020308C8,
+        Offset = 0x14C,
+        MaxHPOffset = 0x34,
+        CurrentHPOffset = 0x38,
+        AgilityOffset = 0x1C
+    }
 }
 
 function GameSettings.initialize() end
