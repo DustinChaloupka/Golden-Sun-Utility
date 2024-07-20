@@ -42,11 +42,13 @@ require("goldensun.Info")
 require("goldensun.State")
 require("goldensun.Toggles")
 require("goldensun.Inputs")
+require("goldensun.RandomNumber")
 
 GameSettings:initialize()
 
 while true do
     State.update()
+    Info.onFrameAdvance()
     drawing:reset()
 
     gui.clearGraphics("emu")

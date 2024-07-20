@@ -67,8 +67,8 @@ end
 
 function Encounters:draw(is_overworld, zone_id)
     if not self.analysis.is_enabled then
-        self.step_count:draw()
-        self.step_rate:draw(is_overworld)
+        -- self.step_count:draw()
+        -- self.step_rate:draw(is_overworld)
         self:draw_recommended_level(zone_id)
     end
 end

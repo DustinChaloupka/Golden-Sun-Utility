@@ -9,17 +9,58 @@ Info.sections = {
         end
     },
     brn = {
+        checkInput = function(self, keyInput)
+            local new_value
+            if keyInput["R"] then
+                new_value = RandomNumber.next(self.value, math.random(1, 100))
+            end
+
+            if keyInput["B"] then
+                new_value = RandomNumber.next(self.value, 1)
+            end
+
+            if keyInput["N"] then
+                new_value = RandomNumber.previous(self.value)
+            end
+
+            if new_value ~= nil and self.value ~= new_value then
+                self.value = new_value
+                emulator:write_dword(GameSettings.RandomNumber.Battle, new_value)
+            end
+        end,
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 20},
-        getText = function(self)
-            return "BRN: " ..
-                       emulator:read_dword(GameSettings.RandomNumber.Battle)
+        getText = function(self) return "BRN: " .. self.value end,
+        value = nil,
+        onFrameAdvance = function(self)
+            self.value = emulator:read_dword(GameSettings.RandomNumber.Battle)
         end
     },
     grn = {
+        checkInput = function(self, keyInput)
+            local new_value
+            if keyInput["R"] then
+                new_value = RandomNumber.next(self.value, math.random(1, 100))
+            end
+
+            if keyInput["G"] then
+                new_value = RandomNumber.next(self.value, 1)
+            end
+
+            if keyInput["H"] then
+                new_value = RandomNumber.previous(self.value)
+            end
+
+            if new_value ~= nil and self.value ~= new_value then
+                self.value = new_value
+                emulator:write_dword(GameSettings.RandomNumber.General,
+                                     new_value)
+            end
+        end,
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 35},
-        getText = function(self)
-            return "GRN: " ..
-                       emulator:read_dword(GameSettings.RandomNumber.General)
+        getText = function(self) return "GRN: " .. self.value end,
+        value = nil,
+        onFrameAdvance = function(self)
+            self.value = emulator:read_dword(GameSettings.RandomNumber.General)
         end
     },
     step_rate = {
@@ -53,9 +94,25 @@ function Info.drawSections()
     for _, section in pairs(Info.sections) do
         local x = section.coords[1]
         local y = section.coords[2]
-        local text = section.getText()
+        local text = section:getText()
 
         gui.drawText(x + 1, y + 1, text, Drawing.Text.SHADOW_COLOR)
         gui.drawText(x, y, text)
+
+        if section.buttons ~= nil then
+            Drawing.drawButtons(section.buttons)
+        end
+    end
+end
+
+function Info.onFrameAdvance()
+    for _, section in pairs(Info.sections) do
+        if section.onFrameAdvance ~= nil then section:onFrameAdvance() end
+    end
+end
+
+function Info.checkKeyInputs(keyInput)
+    for _, section in pairs(Info.sections) do
+        if section.checkInput ~= nil then section:checkInput(keyInput) end
     end
 end
