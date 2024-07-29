@@ -4,8 +4,12 @@ Party.Front = {}
 
 function Party.update()
     for slot = 0, 3 do
-        local id = emulator:read_word(GameSettings.Battle.FrontParty + slot *
-                                          0x2)
+        local id
+        if State.in_battle() then
+            id = emulator:read_word(GameSettings.Battle.FrontParty + slot * 0x2)
+        else
+            id = emulator:read_byte(GameSettings.Party.Order + slot)
+        end
 
         if id <= 7 then Party.Front[slot] = id end
     end
@@ -22,7 +26,8 @@ function Party.get_front_average_level()
     local levels = 0
     for _, id in pairs(Party.Front) do
         local name = GameSettings.Characters[id]
-        local current_hp = GameSettings.Character[name].CurrentHP
+        local current_hp = emulator:read_word(
+                               GameSettings.Character[name].CurrentHP)
         if current_hp ~= 0 then
             local level = emulator:read_byte(GameSettings.Character[name].Level)
             alive = alive + 1

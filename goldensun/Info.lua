@@ -91,6 +91,12 @@ Info.sections = {
             return "Movement Tick: " .. (math.floor(counter / 0xFFF))
         end
     },
+    party_average_level = {
+        coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 95},
+        getText = function(self)
+            return "Front Average Level: " .. Party.get_front_average_level()
+        end
+    },
     player_agilities = {
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 200},
         getText = function(self)

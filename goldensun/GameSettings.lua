@@ -39,6 +39,8 @@ for id, name in pairs(GameSettings.Characters) do
     }
 end
 
+GameSettings.Party = {Order = 0x02000458}
+
 GameSettings.Map = {
     Number = 0x02000420, -- 0x02000428 in doc says "current" map and door number
     TileAddress = 0x020301A4,
