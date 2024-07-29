@@ -13,55 +13,53 @@ Info.sections = {
         checkInput = function(self, keyInput)
             local new_value
             if keyInput["R"] then
-                new_value = RandomNumber.next(self.value, math.random(1, 100))
+                new_value = RandomNumber.next(RandomNumber.Battle.Value,
+                                              math.random(1, 100))
             end
 
             if keyInput["B"] then
-                new_value = RandomNumber.next(self.value, 1)
+                new_value = RandomNumber.next(RandomNumber.Battle.Value, 1)
             end
 
             if keyInput["N"] then
-                new_value = RandomNumber.previous(self.value)
+                new_value = RandomNumber.previous(RandomNumber.Battle.Value)
             end
 
-            if new_value ~= nil and self.value ~= new_value then
-                self.value = new_value
+            if new_value ~= nil and RandomNumber.Battle.Value ~= new_value then
+                RandomNumber.Battle.Value = new_value
                 emulator:write_dword(GameSettings.RandomNumber.Battle, new_value)
             end
         end,
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 20},
-        getText = function(self) return "BRN: " .. self.value end,
-        value = nil,
-        onFrameAdvance = function(self)
-            self.value = emulator:read_dword(GameSettings.RandomNumber.Battle)
+        getText = function(self)
+            return "BRN: " .. RandomNumber.Battle.Value
         end
     },
     grn = {
         checkInput = function(self, keyInput)
             local new_value
             if keyInput["R"] then
-                new_value = RandomNumber.next(self.value, math.random(1, 100))
+                new_value = RandomNumber.next(RandomNumber.General.Value,
+                                              math.random(1, 100))
             end
 
             if keyInput["G"] then
-                new_value = RandomNumber.next(self.value, 1)
+                new_value = RandomNumber.next(RandomNumber.General.Value, 1)
             end
 
             if keyInput["H"] then
-                new_value = RandomNumber.previous(self.value)
+                new_value = RandomNumber.previous(RandomNumber.General.Value)
             end
 
-            if new_value ~= nil and self.value ~= new_value then
-                self.value = new_value
+            if new_value ~= nil and RandomNumber.General.Value ~= new_value then
+                RandomNumber.General.Value = new_value
                 emulator:write_dword(GameSettings.RandomNumber.General,
                                      new_value)
             end
         end,
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 35},
-        getText = function(self) return "GRN: " .. self.value end,
-        value = nil,
-        onFrameAdvance = function(self)
-            self.value = emulator:read_dword(GameSettings.RandomNumber.General)
+        getText = function(self)
+            return "GRN: " .. RandomNumber.General.Value
         end
     },
     step_rate = {
@@ -99,10 +97,7 @@ Info.sections = {
             if not State.in_battle() then return "" end
 
             local text = "Player Agilities:\n"
-            for slot = 0, 3 do
-                local id = emulator:read_word(
-                               GameSettings.Battle.ActiveParty + slot * 0x2)
-
+            for slot, id in pairs(Party.Front) do
                 local name = GameSettings.Characters[id]
                 local current_agility = emulator:read_word(
                                             GameSettings.Character[name]
@@ -133,36 +128,72 @@ Info.sections = {
             if not State.in_battle() then return "" end
 
             local text = "Enemies:\n"
-            for slot = 0, 4 do
-                local base = GameSettings.Battle.Enemy.Address +
-                                 GameSettings.Battle.Enemy.Offset * slot
-                local current_hp = emulator:read_word(base +
-                                                          GameSettings.Battle
-                                                              .Enemy
-                                                              .CurrentHPOffset)
-
-                if current_hp > 0 then
-                    name = ""
-                    for i = 0, 14 do
-                        local byte_letter = emulator:read_byte(base + 0x1 * i)
-                        if byte_letter ~= 0 then
-                            name = name .. string.char(byte_letter)
-                        end
-                    end
-
-                    local max_hp = emulator:read_word(base +
-                                                          GameSettings.Battle
-                                                              .Enemy.MaxHPOffset)
-                    local agility = emulator:read_word(base +
-                                                           GameSettings.Battle
-                                                               .Enemy
-                                                               .AgilityOffset)
-                    text = text .. name .. ":\n  HP: " .. current_hp .. "/" ..
-                               max_hp .. "\n  Agility: " .. agility .. "\n"
-                end
+            for slot, enemy in pairs(Enemies.Active) do
+                text = text .. enemy.Name .. ":\n  HP: " .. enemy.CurrentHP ..
+                           "/" .. enemy.MaxHP .. "\n  Agility: " ..
+                           enemy.Agility .. "\n"
             end
 
             return text
+        end
+    },
+    fleeing = {
+        coords = {
+            Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 300, 200
+        },
+        getText = function(self)
+            if not State.in_battle() then return "" end
+
+            local front_average_level = Party.get_front_average_level()
+            local enemy_average_level = Enemies.get_average_level()
+            local current_attempts = emulator:read_byte(GameSettings.Battle
+                                                            .FleeAttempts)
+
+            local level_difference = math.floor(front_average_level * 500) -
+                                         math.floor(enemy_average_level * 500)
+            local attempt = 5000 + (2000 * current_attempts) + level_difference
+
+            -- Not sure the calculations on EV and flee percent are accurate, but they are close
+            local first_rn_advance_success = 0
+            local total_flees = 0
+            local found_flee = false
+            local grn = RandomNumber.next(RandomNumber.General.Value, 1)
+            local rng = RandomNumber.generate(grn)
+            local threshold = RandomNumber.distribution(rng, 10000)
+            for _ = 0, 1000 do
+                if not found_flee and threshold >= attempt then
+                    first_rn_advance_success = first_rn_advance_success + 1
+                elseif not found_flee then
+                    found_flee = true
+                end
+
+                if threshold < attempt then
+                    total_flees = total_flees + 1
+                end
+
+                grn = RandomNumber.next(grn, 1)
+                rng = RandomNumber.generate(grn)
+                threshold = RandomNumber.distribution(rng, 10000)
+            end
+
+            local flee_percent = total_flees / 10
+
+            local flee_probability = flee_percent / 100
+            local ev_tries = 1
+            local turn_probability = 1
+            local ev = flee_probability * ev_tries * turn_probability
+            while flee_probability < 1 do
+                turn_probability = (1 - flee_probability) * turn_probability
+                flee_probability = math.min(flee_probability + 0.2, 1)
+                ev_tries = ev_tries + 1
+                ev = ev + flee_probability * ev_tries * turn_probability
+            end
+
+            ev = math.ceil(ev * 100) / 100
+
+            return "Fleeing:\nACs for Success: " .. first_rn_advance_success ..
+                       "\nPercent for Success: " .. flee_percent ..
+                       "\nEV for Success: " .. ev
         end
     }
 }

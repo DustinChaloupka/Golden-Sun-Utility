@@ -12,6 +12,16 @@ RandomNumber.Advance = {
     }
 }
 
+RandomNumber.General = {}
+RandomNumber.Battle = {}
+
+function RandomNumber.update()
+    RandomNumber.General.Value = emulator:read_dword(
+                                     GameSettings.RandomNumber.General)
+    RandomNumber.Battle.Value = emulator:read_dword(
+                                    GameSettings.RandomNumber.Battle)
+end
+
 function RandomNumber.next(value, count)
     for i = 1, count do
         local lower_factor_advance = RandomNumber.Advance.LowerFactor * value
@@ -28,8 +38,7 @@ function RandomNumber.next(value, count)
 end
 
 function RandomNumber.previous(value)
-    local rn = value
-    local decrease = emulator:band(rn - RandomNumber.Advance.Interval,
+    local decrease = emulator:band(value - RandomNumber.Advance.Interval,
                                    0xFFFFFFFF)
 
     local final_rn_bits = {
@@ -60,4 +69,14 @@ function RandomNumber.previous(value)
     end
 
     return emulator:band(rn, 0xFFFFFFFF)
+end
+
+-- This is the actual value used in calculating things
+function RandomNumber.generate(value)
+    return emulator:rshift(emulator:lshift(value, 8), 16)
+end
+
+-- This coverts the generated number to a value between 0-distribution
+function RandomNumber.distribution(rng, distribution)
+    return emulator:rshift(rng * distribution, 16)
 end

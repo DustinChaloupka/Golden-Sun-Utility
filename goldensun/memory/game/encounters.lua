@@ -78,7 +78,7 @@ function Encounters:draw_battle(grn, front_average_level)
 
     local average_enemy_level = self.battle_group:get_average_enemy_level()
 
-    self.flee_attempt:draw_battle(grn, front_average_level, average_enemy_level)
+    -- self.flee_attempt:draw_battle(grn, front_average_level, average_enemy_level)
 end
 
 function Encounters:draw_encounter_group_part(text, column_number, row_number,
