@@ -105,9 +105,8 @@ function Encounters.update_encounter_groups()
             end
         end
 
-        -- enemies order incorrectly for shuffle?
         local enemies = {}
-        for _, enemy in pairs(group.Enemies) do
+        for _, enemy in ipairs(group.Enemies) do
             if enemy.Min < enemy.Max then
                 encounter_rn = RandomNumber.next(encounter_rn, 1)
                 local count_rng = RandomNumber.generate(encounter_rn)

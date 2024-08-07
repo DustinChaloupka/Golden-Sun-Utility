@@ -581,15 +581,15 @@ function GameSettings.initialize()
                          GameSettings.Encounters.Groups.Offset * i
 
         local enemies = {}
-        for j = 0, 4 do
+        for j = 1, 5 do
             enemies[j] = {
-                ID = emulator:read_word(base + j * 0x2),
+                ID = emulator:read_word(base + (j - 1) * 0x2),
                 Min = emulator:read_byte(base +
                                              GameSettings.Encounters.Groups
-                                                 .MinOffset + j),
+                                                 .MinOffset + (j - 1)),
                 Max = emulator:read_byte(base +
                                              GameSettings.Encounters.Groups
-                                                 .MaxOffset + j)
+                                                 .MaxOffset + (j - 1))
             }
         end
 
