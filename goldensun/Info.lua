@@ -3,14 +3,14 @@ Info = {}
 Info.sections = {
     tile_address = {
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 5},
-        getText = function(self)
+        getText = function()
             if State.in_battle() then return "" end
-            return string.format("Tile Address: 0x0%x", emulator:read_dword(
-                                     GameSettings.Map.TileAddress))
+            return string.format("Tile Address: 0x0%x",
+                                 Map.Tile.CurrentTileAddress)
         end
     },
     brn = {
-        checkInput = function(self, keyInput)
+        checkInput = function(keyInput)
             local new_value
             if keyInput["R"] then
                 new_value = RandomNumber.next(RandomNumber.Battle.Value,
@@ -31,12 +31,10 @@ Info.sections = {
             end
         end,
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 20},
-        getText = function(self)
-            return "BRN: " .. RandomNumber.Battle.Value
-        end
+        getText = function() return "BRN: " .. RandomNumber.Battle.Value end
     },
     grn = {
-        checkInput = function(self, keyInput)
+        checkInput = function(keyInput)
             local new_value
             if keyInput["R"] then
                 new_value = RandomNumber.next(RandomNumber.General.Value,
@@ -58,13 +56,11 @@ Info.sections = {
             end
         end,
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 35},
-        getText = function(self)
-            return "GRN: " .. RandomNumber.General.Value
-        end
+        getText = function() return "GRN: " .. RandomNumber.General.Value end
     },
     step_rate = {
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 50},
-        getText = function(self)
+        getText = function()
             if State.in_battle() then return "" end
 
             local rate = emulator:read_dword(GameSettings.Movement.StepRate)
@@ -77,7 +73,7 @@ Info.sections = {
     },
     step_count = {
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 65},
-        getText = function(self)
+        getText = function()
             if State.in_battle() then return "" end
             return "Step Count: " ..
                        emulator:read_word(GameSettings.Movement.StepCount)
@@ -85,7 +81,7 @@ Info.sections = {
     },
     movement_tick = {
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 80},
-        getText = function(self)
+        getText = function()
             if State.in_battle() then return "" end
             local counter = emulator:read_word(GameSettings.Movement.Tick)
             return "Movement Tick: " .. (math.floor(counter / 0xFFF))
@@ -93,13 +89,74 @@ Info.sections = {
     },
     party_average_level = {
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 95},
-        getText = function(self)
+        getText = function()
             return "Front Average Level: " .. Party.get_front_average_level()
+        end
+    },
+    avoid_threshold = {
+        coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 110},
+        getText = function()
+            if State.in_battle() then return "" end
+            local zone = emulator:read_byte(GameSettings.Map.Zone)
+            if zone == 0 then
+                zone = emulator:read_byte(GameSettings.Map.Zone + 1)
+            end
+
+            return "Avoid Threshold: " ..
+                       GameSettings.Encounters.Data[zone].Level
+        end
+    },
+    map = {
+        coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 210, 5},
+        getText = function()
+            if State.in_battle() then return "" end
+            return "Map: " .. emulator:read_word(GameSettings.Map.Number)
+        end
+    },
+    door = {
+        coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 210, 20},
+        getText = function()
+            if State.in_battle() then return "" end
+            return "Door: " .. emulator:read_byte(GameSettings.Map.Door)
+        end
+    },
+    zone = {
+        coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 210, 35},
+        getText = function()
+            if State.in_battle() then return "" end
+            local zone = emulator:read_byte(GameSettings.Map.Zone)
+            if zone == 0 then
+                zone = emulator:read_byte(GameSettings.Map.Zone + 1)
+            end
+
+            return "Encounter Index: " .. zone
+        end
+    },
+    playerX = {
+        coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 360, 5},
+        getText = function()
+            if State.in_battle() then return "" end
+            return "X: " .. string.format("0x%x", Map.Coordinates.X)
+        end
+    },
+    playerY = {
+        coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 360, 20},
+        getText = function()
+            if State.in_battle() then return "" end
+            return "Y: " .. string.format("0x%x", Map.Coordinates.Y)
+        end
+    },
+    retreat = {
+        coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 210, 50},
+        getText = function()
+            if State.in_battle() then return "" end
+            return "Retreat Map: " ..
+                       emulator:read_word(GameSettings.Map.Retreat)
         end
     },
     player_agilities = {
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 200},
-        getText = function(self)
+        getText = function()
             if not State.in_battle() then return "" end
 
             local text = "Player Agilities:\n"
@@ -126,29 +183,14 @@ Info.sections = {
             return text
         end
     },
-    enemy_stats = {
-        coords = {
-            Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 175, 200
-        },
-        getText = function(self)
-            if not State.in_battle() then return "" end
-
-            local text = "Enemies:\n"
-            for slot, enemy in pairs(Enemies.Active) do
-                text = text .. enemy.Name .. ":\n  HP: " .. enemy.CurrentHP ..
-                           "/" .. enemy.MaxHP .. "\n  Agility: " ..
-                           enemy.Agility .. "\n"
-            end
-
-            return text
-        end
-    },
     fleeing = {
         coords = {
             Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 300, 200
         },
-        getText = function(self)
-            if not State.in_battle() then return "" end
+        getText = function()
+            if not State.in_battle() or State.cannot_flee() then
+                return ""
+            end
 
             local front_average_level = Party.get_front_average_level()
             local enemy_average_level = Enemies.get_average_level()
@@ -157,32 +199,26 @@ Info.sections = {
 
             local level_difference = math.floor(front_average_level * 500) -
                                          math.floor(enemy_average_level * 500)
-            local attempt = 5000 + (2000 * current_attempts) + level_difference
+            local attempt = math.min(10000,
+                                     math.max(0, 5000 + level_difference) +
+                                         (2000 * current_attempts))
 
-            -- Not sure the calculations on EV and flee percent are accurate, but they are close
             local first_rn_advance_success = 0
-            local total_flees = 0
-            local found_flee = false
             local grn = RandomNumber.next(RandomNumber.General.Value, 1)
-            local rng = RandomNumber.generate(grn)
-            local threshold = RandomNumber.distribution(rng, 10000)
-            for _ = 0, 1000 do
-                if not found_flee and threshold >= attempt then
-                    first_rn_advance_success = first_rn_advance_success + 1
-                elseif not found_flee then
-                    found_flee = true
-                end
+            for _ = 0, 100 do
+                local rng = RandomNumber.generate(grn)
+                local threshold = RandomNumber.distribution(rng, 10000)
 
                 if threshold < attempt then
-                    total_flees = total_flees + 1
+                    break
+                else
+                    first_rn_advance_success = first_rn_advance_success + 1
                 end
 
                 grn = RandomNumber.next(grn, 1)
-                rng = RandomNumber.generate(grn)
-                threshold = RandomNumber.distribution(rng, 10000)
             end
 
-            local flee_percent = total_flees / 10
+            local flee_percent = attempt / 100
 
             local flee_probability = flee_percent / 100
             local ev_tries = 1
@@ -205,28 +241,11 @@ Info.sections = {
 }
 
 function Info.drawSections()
-    for _, section in pairs(Info.sections) do
-        local x = section.coords[1]
-        local y = section.coords[2]
-        local text = section:getText()
-
-        gui.drawText(x + 1, y + 1, text, Drawing.Text.SHADOW_COLOR)
-        gui.drawText(x, y, text)
-
-        if section.buttons ~= nil then
-            Drawing.drawButtons(section.buttons)
-        end
-    end
-end
-
-function Info.onFrameAdvance()
-    for _, section in pairs(Info.sections) do
-        if section.onFrameAdvance ~= nil then section:onFrameAdvance() end
-    end
+    for _, section in pairs(Info.sections) do Drawing.drawText(section) end
 end
 
 function Info.checkKeyInputs(keyInput)
     for _, section in pairs(Info.sections) do
-        if section.checkInput ~= nil then section:checkInput(keyInput) end
+        if section.checkInput ~= nil then section.checkInput(keyInput) end
     end
 end

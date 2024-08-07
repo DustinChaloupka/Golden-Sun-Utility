@@ -4,7 +4,35 @@ GameSettings.RandomModifiers = {Agility = 0.0625}
 
 GameSettings.DebugMode = {address = 0x03001238}
 
-GameSettings.Encounters = {StepCounter = {address = 0x02000498}}
+GameSettings.Encounters = {
+    Data = {
+        Address = 0x080EDACC,
+        Offset = 0x1C,
+        LevelOffset = 0x2,
+        GroupIDsOffset = 0x4,
+        GroupRatiosOffset = 0x14
+    },
+    OverworldData = {
+        Address = 0x080EEDBC,
+        Offset = 0x8,
+        TerrainTypeOffset = 0x2,
+        StoryFlagIndexOffset = 0x4,
+        BattleEncountersIndexOffset = 0x6
+    },
+    OverworldShipData = {
+        Address = 0x080EEF34,
+        Offset = 0x8,
+        TerrainTypeOffset = 0x2,
+        StoryFlagIndexOffset = 0x4,
+        BattleEncountersIndexOffset = 0x6
+    },
+    Groups = {
+        Address = 0x0812CE7C,
+        Offset = 0x18,
+        MinOffset = 0xA,
+        MaxOffset = 0xF
+    }
+}
 
 GameSettings.Characters = {
     [0] = "Isaac",
@@ -28,27 +56,34 @@ GameSettings.PlayerCharacterData = {
 }
 
 GameSettings.Character = {}
-for id, name in pairs(GameSettings.Characters) do
-    local base = GameSettings.PlayerCharacterData.BaseAddress +
-                     GameSettings.PlayerCharacterData.CharacterOffset * id
-    GameSettings.Character[name] = {
-        CurrentAgility = base + GameSettings.PlayerCharacterData.AgilityOffset,
-        CurrentHP = base + GameSettings.PlayerCharacterData.CurrentHPOffset,
-        CurrentPP = base + GameSettings.PlayerCharacterData.CurrentPPOffset,
-        Level = base + GameSettings.PlayerCharacterData.LevelOffset
-    }
-end
 
 GameSettings.Party = {Order = 0x02000458}
 
 GameSettings.Map = {
-    Number = 0x02000420, -- 0x02000428 in doc says "current" map and door number
+    Number = 0x02000428,
+    Door = 0x0200042A,
+    Retreat = 0x020004A0,
     TileAddress = 0x020301A4,
-    LayerAddress = 0x03000020,
 
     TileXOffset = 0x4,
     TileYOffset = 0x200,
-    TileOverworldYOffset = 0x80
+    TileOverworldYOffset = 0x80,
+
+    Zone = 0x0203018C,
+
+    Type = 0x0203018A,
+    TerrainType = 0x0802F004,
+
+    NormalX = 0x020322F6,
+    NormalY = 0x020322FE,
+    OverworldX = 0x020321C2,
+    OverworldY = 0x020321CA,
+    NormalShipX = 0x02032376,
+    NormalShipY = 0x0203237E,
+    OverworldShipX = 0x02032242,
+    OverworldShipY = 0x0203224A,
+
+    BattleBackgroundFunction = 0x080CA514
 }
 
 GameSettings.Layer = {Offset = {0x138, 0x170, 0x1a8}}
@@ -58,8 +93,22 @@ GameSettings.State = {address = 0x02000060}
 GameSettings.RandomNumber = {Battle = 0x020054C8, General = 0x030011BC}
 GameSettings.Movement = {
     Tick = 0x020301A0,
+    Type = 0x02000452,
     StepRate = 0x02030194,
-    StepCount = 0x0200049A
+    StepCount = 0x0200049A,
+
+    Normal = 0x0,
+    Overworld = 0x1,
+    ClimbingWall = 0x2,
+    ClimbingRope = 0x3,
+    WalkingRope = 0x4,
+    Sand = 0x5,
+    ShipNormal = 0x6,
+    ShipOverworld = 0x7,
+    ShipHover = 0x8,
+    SandOverworld = 0x9,
+    Hover = 0xA,
+    SlipperyGround = 0xB
 }
 
 GameSettings.Battle = {
@@ -76,12 +125,11 @@ GameSettings.Battle = {
         LevelOffset = 0xF
     },
 
-    FleeAttempts = 0x02030092
+    FleeAttempts = 0x02030092,
+    Type = 0x0200048B
 }
 
-function GameSettings.initialize() end
-
-GameSettings.Enemies = {
+GameSettings.EnemyNames = {
     [1] = "Venus Djinni",
     [2] = "Venus Djinni",
     [3] = "Venus Djinni",
@@ -461,3 +509,157 @@ GameSettings.Enemies = {
     [377] = "Bandit",
     [378] = "Thief"
 }
+
+GameSettings.Enemy = { -- Need to double check all these
+    Address = 0x080B9E7C,
+    Offset = 0x4C,
+    LevelOffset = 0xF,
+    HPOffset = 0x10,
+    AttackOffset = 0x14,
+    DefenseOffset = 0x16,
+    AgilityOffset = 0x18,
+    LuckOffset = 0x1A,
+    TurnOffset = 0x1B,
+    ItemsOffset = 0x1E,
+    ItemQuantityOffset = 0x26,
+    AbilitiesOffset = 0x2E,
+    ExpOffset = 0x48
+}
+
+function GameSettings.initialize()
+    for id, name in pairs(GameSettings.Characters) do
+        local base = GameSettings.PlayerCharacterData.BaseAddress +
+                         GameSettings.PlayerCharacterData.CharacterOffset * id
+        GameSettings.Character[name] = {
+            CurrentAgility = base +
+                GameSettings.PlayerCharacterData.AgilityOffset,
+            CurrentHP = base + GameSettings.PlayerCharacterData.CurrentHPOffset,
+            CurrentPP = base + GameSettings.PlayerCharacterData.CurrentPPOffset,
+            Level = base + GameSettings.PlayerCharacterData.LevelOffset
+        }
+    end
+
+    for id, name in pairs(GameSettings.EnemyNames) do
+        local base = GameSettings.Enemy.Address + id * GameSettings.Enemy.Offset
+
+        local items = {}
+        for i = 0, 3 do
+            local item = emulator:read_word(base +
+                                                GameSettings.Enemy.ItemsOffset +
+                                                i)
+            local quantity = emulator:read_byte(base +
+                                                    GameSettings.Enemy
+                                                        .ItemQuantityOffset + i)
+            items[i] = {[item] = quantity}
+        end
+
+        local abilities = {}
+        for i = 0, 7 do
+            -- Get name somehow?
+            abilities[i] = emulator:read_word(base +
+                                                  GameSettings.Enemy
+                                                      .AbilitiesOffset + i)
+        end
+
+        GameSettings.Enemy[id] = {
+            Name = name,
+            Level = emulator:read_byte(base + GameSettings.Enemy.LevelOffset),
+            HP = emulator:read_word(base + GameSettings.Enemy.HPOffset),
+            Attack = emulator:read_word(base + GameSettings.Enemy.AttackOffset),
+            Defense = emulator:read_word(base + GameSettings.Enemy.DefenseOffset),
+            Agility = emulator:read_word(base + GameSettings.Enemy.AgilityOffset),
+            Luck = emulator:read_byte(base + GameSettings.Enemy.LuckOffset),
+            Turns = emulator:read_byte(base + GameSettings.Enemy.TurnOffset),
+            Items = items,
+            Abilities = abilities,
+            Exp = emulator:read_word(base + GameSettings.Enemy.ExpOffset)
+        }
+    end
+
+    for i = 0, 659 do
+        local base = GameSettings.Encounters.Groups.Address +
+                         GameSettings.Encounters.Groups.Offset * i
+
+        local enemies = {}
+        for j = 0, 4 do
+            enemies[j] = {
+                ID = emulator:read_word(base + j * 0x2),
+                Min = emulator:read_byte(base +
+                                             GameSettings.Encounters.Groups
+                                                 .MinOffset + j),
+                Max = emulator:read_byte(base +
+                                             GameSettings.Encounters.Groups
+                                                 .MaxOffset + j)
+            }
+        end
+
+        GameSettings.Encounters.Groups[i] = {Enemies = enemies}
+    end
+
+    for i = 0, 109 do
+        local base = GameSettings.Encounters.Data.Address +
+                         GameSettings.Encounters.Data.Offset * i
+        local groups = {}
+        for j = 1, 8 do
+            local group_id = emulator:read_word(base +
+                                                    GameSettings.Encounters.Data
+                                                        .GroupIDsOffset +
+                                                    (j - 1) * 0x2)
+            local ratio = emulator:read_byte(base +
+                                                 GameSettings.Encounters.Data
+                                                     .GroupRatiosOffset +
+                                                 (j - 1))
+            groups[j] = {ID = group_id, Ratio = ratio}
+        end
+
+        GameSettings.Encounters.Data[i] = {
+            Rate = emulator:read_word(base),
+            Level = emulator:read_word(base +
+                                           GameSettings.Encounters.Data
+                                               .LevelOffset),
+            Groups = groups
+        }
+    end
+
+    for i = 0, 45 do
+        local base = GameSettings.Encounters.OverworldData.Address +
+                         GameSettings.Encounters.OverworldData.Offset * i
+
+        GameSettings.Encounters.OverworldData[i] = {
+            AreaType = emulator:read_word(base),
+            TerrainType = emulator:read_word(base +
+                                                 GameSettings.Encounters
+                                                     .OverworldData
+                                                     .TerrainTypeOffset),
+            StoryFlagIndex = emulator:read_word(base +
+                                                    GameSettings.Encounters
+                                                        .OverworldData
+                                                        .StoryFlagIndexOffset),
+            BattleEncountersIndex = emulator:read_word(base +
+                                                           GameSettings.Encounters
+                                                               .OverworldData
+                                                               .BattleEncountersIndexOffset)
+        }
+    end
+
+    for i = 0, 2 do
+        local base = GameSettings.Encounters.OverworldShipData.Address +
+                         GameSettings.Encounters.OverworldShipData.Offset * i
+
+        GameSettings.Encounters.OverworldShipData[i] = {
+            AreaType = emulator:read_word(base),
+            TerrainType = emulator:read_word(base +
+                                                 GameSettings.Encounters
+                                                     .OverworldShipData
+                                                     .TerrainTypeOffset),
+            StoryFlagIndex = emulator:read_word(base +
+                                                    GameSettings.Encounters
+                                                        .OverworldShipData
+                                                        .StoryFlagIndexOffset),
+            BattleEncountersIndex = emulator:read_word(base +
+                                                           GameSettings.Encounters
+                                                               .OverworldShipData
+                                                               .BattleEncountersIndexOffset)
+        }
+    end
+end

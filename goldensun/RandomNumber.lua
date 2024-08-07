@@ -23,18 +23,19 @@ function RandomNumber.update()
 end
 
 function RandomNumber.next(value, count)
-    for i = 1, count do
-        local lower_factor_advance = RandomNumber.Advance.LowerFactor * value
-        local upper_factor_advance = RandomNumber.Advance.UpperFactor * value
+    local next_rn = value
+    for _ = 1, count do
+        local lower_factor_advance = RandomNumber.Advance.LowerFactor * next_rn
+        local upper_factor_advance = RandomNumber.Advance.UpperFactor * next_rn
         upper_factor_advance = emulator:band(upper_factor_advance, 0xFFFF)
         local factor_advance = lower_factor_advance + upper_factor_advance *
                                    0x10000
         factor_advance = factor_advance & 0xFFFFFFFF
         local increase_advance = factor_advance + RandomNumber.Advance.Interval
-        return increase_advance & 0xFFFFFFFF
+        next_rn = increase_advance & 0xFFFFFFFF
     end
 
-    return value
+    return next_rn
 end
 
 function RandomNumber.previous(value)

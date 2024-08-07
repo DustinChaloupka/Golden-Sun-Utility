@@ -37,9 +37,9 @@ function Game:encounter_checks()
     local zone_one, zone_two = self.map:get_zones()
     local zone_id = zone_one ~= 0 and zone_one or zone_two
     self.encounters:draw(self.movement.type:is_overworld(), zone_id)
-    if not self.encounters.analysis.is_enabled then
-        self.party:draw_party_level()
-    end
+    -- if not self.encounters.analysis.is_enabled then
+    --    self.party:draw_party_level()
+    -- end
     self.encounters:draw_analysis(self.random_number.battle,
                                   self.random_number.general, zone_id,
                                   self.party:get_front_average_level())

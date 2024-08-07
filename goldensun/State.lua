@@ -20,6 +20,10 @@ function State.in_menu()
                                          State.Flags.in_menu), 1) == 1
 end
 
+function State.cannot_flee()
+    return emulator:read_byte(GameSettings.Battle.Type) == 2
+end
+
 function State.on_overworld()
     return emulator:read_word(GameSettings.Map.Number) == 2
 end

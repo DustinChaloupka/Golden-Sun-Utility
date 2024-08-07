@@ -35,6 +35,10 @@ function Inputs.checkMouseInput(mouse_x, mouse_y)
     if Map.Overlay.enabled then
         Inputs.checkButtonsClicked(mouse_x, mouse_y, Map.buttons)
     end
+
+    if State.in_battle() then
+        Inputs.checkButtonsClicked(mouse_x, mouse_y, Battle.buttons)
+    end
 end
 
 function isInArea(mouse_x, mouse_y, x, y, width, height)

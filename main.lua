@@ -47,14 +47,16 @@ require("goldensun.RandomNumber")
 require("goldensun.Battle")
 
 GameSettings.initialize()
+Map.initialize()
 
 while true do
     State.update()
     Battle.update()
     RandomNumber.update()
+    Map.update()
     Party.update()
+    Encounters.update()
     Enemies.update()
-    Info.onFrameAdvance()
     drawing:reset()
 
     gui.clearGraphics("emu")
@@ -83,9 +85,12 @@ while true do
 
     Toggles:draw()
     Map:draw()
+    Encounters.draw()
     Info.drawSections()
+
+    if State.in_battle() then Battle.draw() end
     Inputs:checkForInput()
-    Encounters:check()
+    Encounters.check()
 
     drawing:update()
     emulator:frameadvance()

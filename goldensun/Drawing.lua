@@ -20,21 +20,32 @@ function Drawing:drawBackground()
 end
 
 function Drawing.drawButtons(buttons)
-    for _, button in pairs(buttons) do
-        local x = button.box[1]
-        local y = button.box[2]
-        local width = button.box[3]
-        local height = button.box[4]
-        if button.type == Constants.ButtonTypes.IMAGE then
-            gui.drawImage(button.image.path, x, y)
-        elseif button.type == Constants.ButtonTypes.CHECKBOX then
-            gui.drawRectangle(x, y, width, height, button.border_color,
-                              button.fill_color)
-        elseif button.type == Constants.ButtonTypes.BORDERED then
-            gui.drawRectangle(x, y, width, height, button.border_color)
-        end
-        gui.drawText(x + 1, y + height + 1, button.text,
-                     Drawing.Text.SHADOW_COLOR)
-        gui.drawText(x, y + height, button.text)
+    for _, button in pairs(buttons) do Drawing.drawButton(button) end
+end
+
+function Drawing.drawButton(button)
+    local x = button.box[1]
+    local y = button.box[2]
+    local width = button.box[3]
+    local height = button.box[4]
+    if button.type == Constants.ButtonTypes.IMAGE then
+        gui.drawImage(button.image.path, x, y)
+    elseif button.type == Constants.ButtonTypes.CHECKBOX then
+        gui.drawRectangle(x, y, width, height, button.border_color,
+                          button.fill_color)
+    elseif button.type == Constants.ButtonTypes.BORDERED then
+        gui.drawRectangle(x + 1, y + 1, width, height, Drawing.Text.SHADOW_COLOR)
+        gui.drawRectangle(x, y, width, height, button.border_color)
     end
+    gui.drawText(x + 3, y + 3, button.getText(), Drawing.Text.SHADOW_COLOR)
+    gui.drawText(x + 2, y + 2, button.getText())
+end
+
+function Drawing.drawText(info)
+    local x = info.coords[1]
+    local y = info.coords[2]
+    local text = info.getText()
+
+    gui.drawText(x + 1, y + 1, text, Drawing.Text.SHADOW_COLOR)
+    gui.drawText(x, y, text)
 end
