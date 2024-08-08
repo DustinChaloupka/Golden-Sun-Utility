@@ -37,7 +37,7 @@ end
 function Encounters.draw()
     if State.in_battle() then return end
 
-    Drawing.drawButtons(Encounters.Info.buttons)
+    Drawing.drawButtons(Encounters.Info.Buttons)
 end
 
 function Encounters.update()
@@ -56,19 +56,22 @@ function Encounters.update()
 end
 
 function Encounters.update_encounter_groups()
-    Encounters.Info.buttons = {}
+    Encounters.Info.Buttons = {}
 
     local zone = Map.get_encounter_index()
 
     if zone == 0 then return end
 
     local encounter_data = GameSettings.Encounters.Data[zone]
-    for i = 0, 7 do
-        local encounter_rn = RandomNumber.next(RandomNumber.General.Value, i)
+    for i = 1, 8 do
+        local rn_advances = i - 1
+        local encounter_rn = RandomNumber.next(RandomNumber.General.Value,
+                                               rn_advances)
 
         local rate = Movement.StepRate
         if rate == 0 then
             encounter_rn = RandomNumber.next(encounter_rn, 4)
+            rn_advances = rn_advances + 4
         end
 
         local ratio_total = 0
@@ -77,6 +80,7 @@ function Encounters.update_encounter_groups()
         end
 
         encounter_rn = RandomNumber.next(encounter_rn, 1)
+        rn_advances = rn_advances + 1
         local group_rng = RandomNumber.generate(encounter_rn)
         local group_distribution = RandomNumber.distribution(group_rng,
                                                              ratio_total)
@@ -94,12 +98,13 @@ function Encounters.update_encounter_groups()
         for _, enemy in ipairs(group.Enemies) do
             if enemy.Min < enemy.Max then
                 encounter_rn = RandomNumber.next(encounter_rn, 1)
+                rn_advances = rn_advances + 1
                 local count_rng = RandomNumber.generate(encounter_rn)
                 local count_distribution =
                     RandomNumber.distribution(count_rng,
                                               enemy.Max - enemy.Min + 1)
                 enemies[enemy.ID] = enemy.Min + count_distribution
-            else
+            elseif enemy.ID ~= 0 then
                 enemies[enemy.ID] = enemy.Min
             end
         end
@@ -118,20 +123,24 @@ function Encounters.update_encounter_groups()
             enemies[slot_b] = enemy
         end
 
-        local x_offset = i * 120
+        rn_advances = rn_advances + 20
+
+        local x_offset = (i - 1) * 120
         local y_offset = 0
-        if i > 3 then
-            x_offset = (i - 4) * 120
+        if i > 4 then
+            x_offset = (i - 5) * 120
             y_offset = 100
         end
 
-        Encounters.Info.buttons[i] = {
+        Encounters.Info.Buttons[i] = {
             type = Encounters.Info.enemies.type,
             box = {
                 Encounters.Info.enemies.box[1] + x_offset,
                 Encounters.Info.enemies.box[2] + y_offset,
                 Encounters.Info.enemies.box[3], Encounters.Info.enemies.box[4]
             },
+            rn_advances = rn_advances,
+            enemies = enemies,
             getText = function(self)
                 local text = ""
                 for id, count in pairs(enemies) do

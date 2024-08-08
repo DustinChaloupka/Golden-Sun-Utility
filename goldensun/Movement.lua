@@ -7,6 +7,11 @@ Movement = {
 Movement.Info = {}
 
 function Movement.update()
+    if State.in_battle() then
+        Movement.Info = {}
+        return
+    end
+
     local step_rate = emulator:read_dword(GameSettings.Movement.StepRate)
     if step_rate ~= 0 then
         step_rate = normalize_step_rate(step_rate)
@@ -40,7 +45,7 @@ function Movement.update_step_rates()
                 Movement.encounter_rates.coords[1] + x_offset,
                 Movement.encounter_rates.coords[2] + y_offset
             },
-            getText = function() return "Rate: " .. rate end
+            getText = function() return "Rate:" .. rate end
         }
     end
 end

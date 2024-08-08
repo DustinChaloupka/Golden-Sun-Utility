@@ -70,32 +70,10 @@ Battle.Info = {
         getText = function()
             if State.cannot_flee() then return "" end
 
-            local front_average_level = Party.get_front_average_level()
-            local enemy_average_level = Enemies.get_average_level()
-            local current_attempts = emulator:read_byte(GameSettings.Battle
-                                                            .FleeAttempts)
-
-            local level_difference = math.floor(front_average_level * 500) -
-                                         math.floor(enemy_average_level * 500)
-            local attempt = math.min(10000,
-                                     math.max(0, 5000 + level_difference) +
-                                         (2000 * current_attempts))
-
-            local first_rn_advance_success = 0
-            local grn = RandomNumber.next(RandomNumber.General.Value, 1)
-            for _ = 0, 100 do
-                local rng = RandomNumber.generate(grn)
-                local threshold = RandomNumber.distribution(rng, 10000)
-
-                if threshold < attempt then
-                    break
-                else
-                    first_rn_advance_success = first_rn_advance_success + 1
-                end
-
-                grn = RandomNumber.next(grn, 1)
-            end
-
+            local attempt = Flee.get_attempt(
+                                Enemies.get_average_level(Enemies.Active),
+                                emulator:read_byte(
+                                    GameSettings.Battle.FleeAttempts))
             local flee_percent = attempt / 100
 
             local flee_probability = flee_percent / 100
@@ -111,7 +89,8 @@ Battle.Info = {
 
             ev = math.ceil(ev * 100) / 100
 
-            return "Fleeing:\nACs for Success: " .. first_rn_advance_success ..
+            return "Fleeing:\nACs for Success: " ..
+                       Flee.get_acs_for_rn(RandomNumber.General.Value, attempt) ..
                        "\nPercent for Success: " .. flee_percent ..
                        "\nEV for Success: " .. ev
         end
@@ -145,6 +124,12 @@ function Battle.update_turn_data()
 end
 
 function Battle.update_enemies()
+    Battle.Buttons[0] = nil
+    Battle.Buttons[1] = nil
+    Battle.Buttons[2] = nil
+    Battle.Buttons[3] = nil
+    Battle.Buttons[4] = nil
+
     for slot, enemy in pairs(Enemies.Active) do
         if enemy.CurrentHP > 0 then
             local slot_offset = slot * 120

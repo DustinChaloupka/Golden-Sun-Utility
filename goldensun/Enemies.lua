@@ -12,7 +12,6 @@ function Enemies.update()
         local current_hp = emulator:read_word(base +
                                                   GameSettings.Battle.Enemy
                                                       .CurrentHPOffset)
-
         if current_hp > 0 then
             local name = ""
             local enemy_name = ""
@@ -52,10 +51,10 @@ function Enemies.update()
     end
 end
 
-function Enemies.get_average_level()
+function Enemies.get_average_level(enemies)
     local levels = 0
     local alive = 0
-    for _, enemy in pairs(Enemies.Active) do
+    for _, enemy in pairs(enemies) do
         alive = alive + 1
         levels = levels + enemy.BattleLevel
     end

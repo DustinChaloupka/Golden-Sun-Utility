@@ -39,6 +39,7 @@ require("goldensun.Encounters")
 require("goldensun.Party")
 require("goldensun.Movement")
 require("goldensun.Enemies")
+require("goldensun.Flee")
 require("goldensun.Map")
 require("goldensun.Info")
 require("goldensun.State")
@@ -55,6 +56,7 @@ while true do
     if State.in_battle() then Battle.update() end
     RandomNumber.update()
     Map.update()
+    Flee.update()
     Party.update()
     Movement.update()
     Encounters.update()
@@ -88,6 +90,7 @@ while true do
     Toggles:draw()
     Map:draw()
     Movement.draw()
+    Flee.draw()
     Encounters.draw()
     Info.drawSections()
 
