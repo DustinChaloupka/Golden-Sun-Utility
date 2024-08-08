@@ -53,6 +53,11 @@ function Encounters.update()
         Encounters.previous_grn = RandomNumber.General.Value
         Encounters.update_encounter_groups()
     end
+
+    if Encounters.previous_brnn ~= RandomNumber.Battle.Value then
+        Encounters.previous_brn = RandomNumber.Battle.Value
+        Encounters.update_encounter_priority()
+    end
 end
 
 function Encounters.update_encounter_groups()
@@ -152,5 +157,41 @@ function Encounters.update_encounter_groups()
                 return text
             end
         }
+    end
+end
+
+function Encounters.update_encounter_priority()
+    Encounters.AttackFirsts = {}
+    Encounters.CaughtBySurprises = {}
+
+    local af_brn = RandomNumber.next(RandomNumber.Battle.Value, 1)
+    local cbs_brn = RandomNumber.next(RandomNumber.Battle.Value, 2)
+    local af_count = 0
+    local cbs_count = 0
+    for i = 0, 2 do
+        local af_tries = af_count
+        local af_rng = RandomNumber.generate(af_brn)
+        while emulator:band(af_rng, 0xF) ~= 0 do
+            af_brn = RandomNumber.next(af_brn, 1)
+            af_rng = RandomNumber.generate(af_brn)
+            af_tries = af_tries + 1
+        end
+
+        Encounters.AttackFirsts[i] = af_tries
+
+        local cbs_tries = cbs_count
+        local cbs_rng = RandomNumber.generate(cbs_brn)
+        while emulator:band(cbs_rng, 0x1F) ~= 0 do
+            cbs_brn = RandomNumber.next(cbs_brn, 1)
+            cbs_rng = RandomNumber.generate(cbs_brn)
+            cbs_tries = cbs_tries + 1
+        end
+
+        Encounters.CaughtBySurprises[i] = cbs_tries
+
+        af_brn = RandomNumber.next(af_brn, 1)
+        cbs_brn = RandomNumber.next(cbs_brn, 1)
+        af_count = af_tries + 1
+        cbs_count = cbs_tries + 1
     end
 end

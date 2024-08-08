@@ -146,6 +146,24 @@ Info.sections = {
             return "Retreat Map: " ..
                        emulator:read_word(GameSettings.Map.Retreat)
         end
+    },
+    af = {
+        coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 210, 65},
+        getText = function()
+            if State.in_battle() then return "" end
+            return "AF: " .. Encounters.AttackFirsts[0] .. " " ..
+                       Encounters.AttackFirsts[1] .. " " ..
+                       Encounters.AttackFirsts[2]
+        end
+    },
+    cbs = {
+        coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 210, 80},
+        getText = function()
+            if State.in_battle() then return "" end
+            return "CBS: " .. Encounters.CaughtBySurprises[0] .. " " ..
+                       Encounters.CaughtBySurprises[1] .. " " ..
+                       Encounters.CaughtBySurprises[2]
+        end
     }
 }
 
