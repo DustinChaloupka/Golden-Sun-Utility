@@ -35,19 +35,13 @@ Map.buttons = {
             Constants.Screen.HEIGHT - Constants.Screen.DOWN_GAP - 20, 55, 15
         },
         preDraw = function(self)
-            if Map.Overlay.layer_offset == GameSettings.Layer.Offset[1] then
+            if Map.Overlay.layer_offset == nil then
                 self.border_color = self.on_border_color
             else
                 self.border_color = self.off_border_color
             end
         end,
-        onClick = function(self)
-            if Map.Overlay.layer_offset == GameSettings.Layer.Offset[1] then
-                Map.Overlay.layer_offset = nil
-            else
-                Map.Overlay.layer_offset = GameSettings.Layer.Offset[1]
-            end
-        end
+        onClick = function(self) Map.Overlay.layer_offset = nil end
     },
     layer2 = {
         text = "Layer 2",

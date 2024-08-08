@@ -64,6 +64,7 @@ GameSettings.Map = {
     Door = 0x0200042A,
     Retreat = 0x020004A0,
     TileAddress = 0x020301A4,
+    LayerAddress = 0x03000020,
 
     TileXOffset = 0x4,
     TileYOffset = 0x200,
