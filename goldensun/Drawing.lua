@@ -24,6 +24,8 @@ function Drawing.drawButtons(buttons)
 end
 
 function Drawing.drawButton(button)
+    if button.isVisible ~= nil and not button.isVisible() then return end
+
     local x = button.box[1]
     local y = button.box[2]
     local width = button.box[3]

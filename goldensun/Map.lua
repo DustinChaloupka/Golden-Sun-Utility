@@ -103,6 +103,12 @@ Map.buttons = {
     }
 }
 
+function Map.initialize()
+    event.on_bus_exec(
+        function() Map.Tileset.Terrain = emu.getregister("R0") end,
+        GameSettings.Map.BattleBackgroundFunction)
+end
+
 function Map.update()
     if State.in_battle() or State.in_transition() or State.in_menu() then
         return
@@ -119,12 +125,6 @@ function Map.update()
 
     Map.Tile.PreviousTileAddress = Map.Tile.CurrentTileAddress
     Map.update_current_area()
-end
-
-function Map.initialize()
-    event.on_bus_exec(
-        function() Map.Tileset.Terrain = emu.getregister("R0") end,
-        GameSettings.Map.BattleBackgroundFunction)
 end
 
 function Map.draw()
@@ -154,6 +154,19 @@ end
 
 function Map.update_current_area()
     Map.Tileset.Area = emulator:read_byte(Map.Tile.CurrentTileAddress + 3)
+end
+
+function Map.get_encounter_index()
+    local zone = 0
+    if emulator:read_byte(GameSettings.Map.Type) == 2 then
+        zone = emulator:read_byte(GameSettings.Map.Zone)
+        if zone == 0 then
+            zone = emulator:read_byte(GameSettings.Map.Zone + 1)
+        end
+    else
+        zone = get_overworld_zone()
+    end
+    return zone
 end
 
 function draw_overlay()
@@ -217,4 +230,32 @@ function draw_options()
                      Drawing.Text.SHADOW_COLOR)
         gui.drawText(button.box[1], button.box[2], button.text)
     end
+end
+
+function get_overworld_zone()
+    local encounter_data
+    if Map.Movement.Type == GameSettings.Movement.Overworld then
+        encounter_data = GameSettings.Encounters.OverworldData
+    elseif Map.Movement.Type == GameSettings.Movement.ShipOverworld then
+        encounter_data = GameSettings.Encounters.OverworldShipData
+    else
+        return 0
+    end
+
+    for _, encounter in pairs(encounter_data) do
+        if type(encounter) == "table" then
+            local area_match = encounter.AreaType ==
+                                   (emulator:band(Map.Tileset.Area, 0x3F) % 0x14)
+            local terrain_match = Map.Movement.Type ==
+                                      GameSettings.Movement.ShipOverworld or
+                                      encounter.TerrainType ==
+                                      Map.Tileset.Terrain
+
+            if area_match and terrain_match then
+                return encounter.BattleEncountersIndex
+            end
+        end
+    end
+
+    return 0
 end

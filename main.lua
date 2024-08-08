@@ -37,6 +37,7 @@ Constants.Screen.WIDTH = client.screenwidth()
 require("goldensun.GameSettings")
 require("goldensun.Encounters")
 require("goldensun.Party")
+require("goldensun.Movement")
 require("goldensun.Enemies")
 require("goldensun.Map")
 require("goldensun.Info")
@@ -51,10 +52,11 @@ Map.initialize()
 
 while true do
     State.update()
-    Battle.update()
+    if State.in_battle() then Battle.update() end
     RandomNumber.update()
     Map.update()
     Party.update()
+    Movement.update()
     Encounters.update()
     Enemies.update()
     drawing:reset()
@@ -85,6 +87,7 @@ while true do
 
     Toggles:draw()
     Map:draw()
+    Movement.draw()
     Encounters.draw()
     Info.drawSections()
 

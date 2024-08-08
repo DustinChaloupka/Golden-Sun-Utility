@@ -53,38 +53,23 @@ function Encounters.update()
         Encounters.previous_grn = RandomNumber.General.Value
         Encounters.update_encounter_groups()
     end
-    if Encounters.previous_brn ~= RandomNumber.Battle.Value then
-        Encounters.previous_brn = RandomNumber.Battle.Value
-        Encounters.update_encounter_checks()
-    end
 end
 
 function Encounters.update_encounter_groups()
     Encounters.Info.buttons = {}
 
-    local grn = RandomNumber.General.Value
-
-    local zone = 0
-    if emulator:read_byte(GameSettings.Map.Type) == 2 then
-        zone = emulator:read_byte(GameSettings.Map.Zone)
-        if zone == 0 then
-            zone = emulator:read_byte(GameSettings.Map.Zone + 1)
-        end
-    else
-        zone = get_overworld_zone()
-    end
+    local zone = Map.get_encounter_index()
 
     if zone == 0 then return end
 
     local encounter_data = GameSettings.Encounters.Data[zone]
     for i = 0, 7 do
-        local encounter_rn = grn
+        local encounter_rn = RandomNumber.next(RandomNumber.General.Value, i)
 
-        if emulator:read_dword(GameSettings.Movement.StepRate) == 0 then
+        local rate = Movement.StepRate
+        if rate == 0 then
             encounter_rn = RandomNumber.next(encounter_rn, 4)
         end
-
-        encounter_rn = RandomNumber.next(encounter_rn, i)
 
         local ratio_total = 0
         for _, group in pairs(encounter_data.Groups) do
@@ -137,7 +122,7 @@ function Encounters.update_encounter_groups()
         local y_offset = 0
         if i > 3 then
             x_offset = (i - 4) * 120
-            y_offset = 80
+            y_offset = 100
         end
 
         Encounters.Info.buttons[i] = {
@@ -159,34 +144,4 @@ function Encounters.update_encounter_groups()
             end
         }
     end
-end
-
-function Encounters.update_encounter_checks() end
-
-function get_overworld_zone()
-    local encounter_data
-    if Map.Movement.Type == GameSettings.Movement.Overworld then
-        encounter_data = GameSettings.Encounters.OverworldData
-    elseif Map.Movement.Type == GameSettings.Movement.ShipOverworld then
-        encounter_data = GameSettings.Encounters.OverworldShipData
-    else
-        return 0
-    end
-
-    for _, encounter in pairs(encounter_data) do
-        if type(encounter) == "table" then
-            local area_match = encounter.AreaType ==
-                                   (emulator:band(Map.Tileset.Area, 0x3F) % 0x14)
-            local terrain_match = Map.Movement.Type ==
-                                      GameSettings.Movement.ShipOverworld or
-                                      encounter.TerrainType ==
-                                      Map.Tileset.Terrain
-
-            if area_match and terrain_match then
-                return encounter.BattleEncountersIndex
-            end
-        end
-    end
-
-    return 0
 end

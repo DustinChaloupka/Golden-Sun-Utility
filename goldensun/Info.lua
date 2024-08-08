@@ -63,12 +63,10 @@ Info.sections = {
         getText = function()
             if State.in_battle() then return "" end
 
-            local rate = emulator:read_dword(GameSettings.Movement.StepRate)
+            local rate = Movement.StepRate
             if rate == 0 then return "" end
 
-            -- Unsure how all of these were calculated
-            if rate >= 0xFFFF0000 then rate = rate - 0xFFFFFFFF end
-            return "Step Rate: " .. math.floor((0xFFFF - rate) / 0xFF0)
+            return "Step Rate: " .. rate
         end
     },
     step_count = {
@@ -124,12 +122,7 @@ Info.sections = {
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 210, 35},
         getText = function()
             if State.in_battle() then return "" end
-            local zone = emulator:read_byte(GameSettings.Map.Zone)
-            if zone == 0 then
-                zone = emulator:read_byte(GameSettings.Map.Zone + 1)
-            end
-
-            return "Encounter Index: " .. zone
+            return "Encounter Index: " .. Map.get_encounter_index()
         end
     },
     playerX = {
@@ -152,90 +145,6 @@ Info.sections = {
             if State.in_battle() then return "" end
             return "Retreat Map: " ..
                        emulator:read_word(GameSettings.Map.Retreat)
-        end
-    },
-    player_agilities = {
-        coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 200},
-        getText = function()
-            if not State.in_battle() then return "" end
-
-            local text = "Player Agilities:\n"
-            for slot, id in pairs(Party.Front) do
-                local name = GameSettings.Characters[id]
-                local current_agility = emulator:read_word(
-                                            GameSettings.Character[name]
-                                                .CurrentAgility)
-                local max_agility = current_agility + current_agility *
-                                        GameSettings.RandomModifiers.Agility
-
-                local turn_agility = "N/A"
-                for _, data in pairs(Battle.turn_data) do
-                    if data.id == id then
-                        turn_agility = data.agility
-                    end
-                end
-
-                text = text .. name .. ": " .. turn_agility .. " (" ..
-                           current_agility .. "-" .. math.floor(max_agility) ..
-                           ")\n"
-            end
-
-            return text
-        end
-    },
-    fleeing = {
-        coords = {
-            Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 300, 200
-        },
-        getText = function()
-            if not State.in_battle() or State.cannot_flee() then
-                return ""
-            end
-
-            local front_average_level = Party.get_front_average_level()
-            local enemy_average_level = Enemies.get_average_level()
-            local current_attempts = emulator:read_byte(GameSettings.Battle
-                                                            .FleeAttempts)
-
-            local level_difference = math.floor(front_average_level * 500) -
-                                         math.floor(enemy_average_level * 500)
-            local attempt = math.min(10000,
-                                     math.max(0, 5000 + level_difference) +
-                                         (2000 * current_attempts))
-
-            local first_rn_advance_success = 0
-            local grn = RandomNumber.next(RandomNumber.General.Value, 1)
-            for _ = 0, 100 do
-                local rng = RandomNumber.generate(grn)
-                local threshold = RandomNumber.distribution(rng, 10000)
-
-                if threshold < attempt then
-                    break
-                else
-                    first_rn_advance_success = first_rn_advance_success + 1
-                end
-
-                grn = RandomNumber.next(grn, 1)
-            end
-
-            local flee_percent = attempt / 100
-
-            local flee_probability = flee_percent / 100
-            local ev_tries = 1
-            local turn_probability = 1
-            local ev = flee_probability * ev_tries * turn_probability
-            while flee_probability < 1 do
-                turn_probability = (1 - flee_probability) * turn_probability
-                flee_probability = math.min(flee_probability + 0.2, 1)
-                ev_tries = ev_tries + 1
-                ev = ev + flee_probability * ev_tries * turn_probability
-            end
-
-            ev = math.ceil(ev * 100) / 100
-
-            return "Fleeing:\nACs for Success: " .. first_rn_advance_success ..
-                       "\nPercent for Success: " .. flee_percent ..
-                       "\nEV for Success: " .. ev
         end
     }
 }
