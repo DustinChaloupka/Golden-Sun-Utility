@@ -98,6 +98,12 @@ Battle.Info = {
         end
     },
     timer = {
+        checkInput = function(keyInput)
+            if keyInput["T"] then
+                Battle.Timer.Enabled = not Battle.Timer.Enabled
+                Battle.Timer.Ticks = 0
+            end
+        end,
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 285},
         isVisible = function() return Battle.Timer.Enabled end,
         onFrameAdvance = function()
@@ -116,7 +122,8 @@ function Battle.update()
         Battle.update_turn_data()
 
         for _, info in pairs(Battle.Info) do
-            if info.onFrameAdvance ~= nil then info.onFrameAdvance() end
+            if info.onFrameAdvance ~= nil and info.isVisible ~= nil and
+                info.isVisible() then info.onFrameAdvance() end
         end
     elseif Battle.Timer.Ticks ~= 0 then
         local store2 = Info.Battle.Timer[2]
@@ -179,5 +186,11 @@ function Battle.update_enemies()
                 onClick = Battle.enemies.onClick
             }
         end
+    end
+end
+
+function Battle.checkKeyInputs(keyInput)
+    for _, info in pairs(Battle.Info) do
+        if info.checkInput ~= nil then info.checkInput(keyInput) end
     end
 end

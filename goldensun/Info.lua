@@ -196,6 +196,7 @@ Info.sections = {
     },
     battle_timers = {
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 210, 95},
+        isVisible = function() return Battle.Timer.Enabled end,
         getText = function()
             if State.in_battle() then return "" end
             return "Battle T0: " .. Info.Battle.Timer[0] .. "s\nBattle T1: " ..

@@ -53,4 +53,7 @@ function Inputs.checkButtonsClicked(mouse_x, mouse_y, buttons)
     end
 end
 
-function Inputs.checkKeyInputs(keyInput) Info.checkKeyInputs(keyInput) end
+function Inputs.checkKeyInputs(keyInput)
+    Info.checkKeyInputs(keyInput)
+    Battle.checkKeyInputs(keyInput)
+end

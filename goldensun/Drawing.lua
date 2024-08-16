@@ -44,6 +44,7 @@ function Drawing.drawButton(button)
 end
 
 function Drawing.drawText(info)
+    if info.isVisible ~= nil and not info.isVisible() then return end
     local x = info.coords[1]
     local y = info.coords[2]
     local text = info.getText()
