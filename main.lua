@@ -53,7 +53,7 @@ Map.initialize()
 
 while true do
     State.update()
-    if State.in_battle() then Battle.update() end
+    Battle.update()
     RandomNumber.update()
     Map.update()
     Flee.update()

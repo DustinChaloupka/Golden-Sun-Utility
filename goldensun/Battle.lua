@@ -25,6 +25,8 @@ Battle = {
     }
 }
 
+Battle.Timer = {Enabled = false, Ticks = 0, Store = {}}
+
 Battle.Buttons = {
     back = {
         type = Constants.ButtonTypes.BORDERED,
@@ -94,12 +96,38 @@ Battle.Info = {
                        "\nPercent for Success: " .. flee_percent ..
                        "\nEV for Success: " .. ev
         end
+    },
+    timer = {
+        coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 285},
+        isVisible = function() return Battle.Timer.Enabled end,
+        onFrameAdvance = function()
+            Battle.Timer.Ticks = Battle.Timer.Ticks + 1
+        end,
+        getText = function()
+            return "Battle timer: " .. math.floor(Battle.Timer.Ticks / 60) ..
+                       "s"
+        end
     }
 }
 
 function Battle.update()
-    Battle.update_enemies()
-    Battle.update_turn_data()
+    if State.in_battle() then
+        Battle.update_enemies()
+        Battle.update_turn_data()
+
+        for _, info in pairs(Battle.Info) do
+            if info.onFrameAdvance ~= nil then info.onFrameAdvance() end
+        end
+    elseif Battle.Timer.Ticks ~= 0 then
+        local store2 = Info.Battle.Timer[2]
+        local store1 = Info.Battle.Timer[1]
+
+        Info.Battle.Timer[2] = math.floor(Battle.Timer.Ticks / 60)
+        Info.Battle.Timer[1] = store2
+        Info.Battle.Timer[0] = store1
+
+        Battle.Timer.Ticks = 0
+    end
 end
 
 function Battle.draw()

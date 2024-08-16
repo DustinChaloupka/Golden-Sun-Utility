@@ -1,5 +1,7 @@
 Info = {}
 
+Info.Battle = {Timer = {[0] = 0, [1] = 0, [2] = 0}}
+
 Info.sections = {
     tile_address = {
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 5},
@@ -163,6 +165,15 @@ Info.sections = {
             return "CBS: " .. Encounters.CaughtBySurprises[0] .. " " ..
                        Encounters.CaughtBySurprises[1] .. " " ..
                        Encounters.CaughtBySurprises[2]
+        end
+    },
+    battle_timers = {
+        coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 210, 95},
+        getText = function()
+            if State.in_battle() then return "" end
+            return "Battle T0: " .. Info.Battle.Timer[0] .. "s\nBattle T1: " ..
+                       Info.Battle.Timer[1] .. "s\nBattle T2: " ..
+                       Info.Battle.Timer[2] .. "s"
         end
     }
 }
