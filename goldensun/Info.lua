@@ -1,6 +1,8 @@
 Info = {}
 
-Info.Battle = {Timer = {[0] = 0, [1] = 0, [2] = 0}}
+Info.Battle = {Timer = {[0] = 0, [1] = 0, [2] = 0, Enabled = false}}
+
+Info.Timer = {Enabled = false, Paused = false, Ticks = 0}
 
 Info.sections = {
     tile_address = {
@@ -106,6 +108,31 @@ Info.sections = {
                        GameSettings.Encounters.Data[zone].Level
         end
     },
+    timer = {
+        checkInput = function(keyInput)
+            if keyInput["Q"] then
+                Info.Timer.Enabled = not Info.Timer.Enabled
+                Info.Timer.Ticks = 0
+            end
+
+            if keyInput["W"] then
+                Info.Timer.Paused = not Info.Timer.Paused
+            end
+        end,
+        coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 125},
+        onFrameAdvance = function()
+            if not Info.Timer.Paused and Info.Timer.Enabled then
+                Info.Timer.Ticks = Info.Timer.Ticks + 1
+            end
+        end,
+        getText = function()
+            if Info.Timer.Enabled then
+                return "Timer: " .. math.floor(Info.Timer.Ticks / 60) .. "s"
+            else
+                return ""
+            end
+        end
+    },
     map = {
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 210, 5},
         getText = function()
@@ -177,6 +204,12 @@ Info.sections = {
         end
     }
 }
+
+function Info.update()
+    for _, section in pairs(Info.sections) do
+        if section.onFrameAdvance ~= nil then section.onFrameAdvance() end
+    end
+end
 
 function Info.drawSections()
     for _, section in pairs(Info.sections) do Drawing.drawText(section) end

@@ -53,6 +53,7 @@ Map.initialize()
 
 while true do
     State.update()
+    Info.update()
     Battle.update()
     RandomNumber.update()
     Map.update()
