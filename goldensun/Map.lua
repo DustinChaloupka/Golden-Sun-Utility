@@ -146,6 +146,22 @@ function Map.update_current_coordinates()
     end
 end
 
+function Map.set_current_coordinates()
+    if Map.Movement.Type == GameSettings.Movement.Normal then
+        emulator:write_dword(GameSettings.Map.NormalX, Map.Coordinates.X)
+        emulator:write_dword(GameSettings.Map.NormalY, Map.Coordinates.Y)
+    elseif Map.Movement.Type == GameSettings.Movement.Overworld then
+        emulator:write_dword(GameSettings.Map.OverworldX, Map.Coordinates.X)
+        emulator:write_dword(GameSettings.Map.OverworldY, Map.Coordinates.Y)
+    elseif Map.Movement.Type == GameSettings.Movement.ShipNormal then
+        emulator:write_dword(GameSettings.Map.NormalShipX, Map.Coordinates.X)
+        emulator:write_dword(GameSettings.Map.NormalShipY, Map.Coordinates.Y)
+    elseif Map.Movement.Type == GameSettings.Movement.ShipOverworld then
+        emulator:write_dword(GameSettings.Map.OverworldShipX, Map.Coordinates.X)
+        emulator:write_dword(GameSettings.Map.OverworldShipY, Map.Coordinates.Y)
+    end
+end
+
 function Map.update_current_area()
     Map.Tileset.Area = emulator:read_byte(Map.Tile.CurrentTileAddress + 3)
 end

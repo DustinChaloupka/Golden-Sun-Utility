@@ -68,6 +68,22 @@ Toggles.buttons = {
                 self.image.path = Constants.ButtonImages.NO
             end
         end
+    },
+    fast_travel = {
+        text = "Fast Travel",
+        type = Constants.ButtonTypes.IMAGE,
+        image = {path = Constants.ButtonImages.NO},
+        box = {
+            320, Constants.Screen.HEIGHT - Constants.Screen.DOWN_GAP + 5, 29, 29
+        },
+        onClick = function(self)
+            Movement.FastTravel.Enabled = not Movement.FastTravel.Enabled
+            if Movement.FastTravel.Enabled then
+                self.image.path = Constants.ButtonImages.YES
+            else
+                self.image.path = Constants.ButtonImages.NO
+            end
+        end
     }
 }
 

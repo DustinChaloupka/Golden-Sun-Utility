@@ -4,6 +4,9 @@ Movement = {
     }
 }
 
+Movement.FastTravel = {Enabled = false}
+Movement.Speed = {X = 0, Y = 0, Z = 0}
+
 Movement.Info = {}
 
 function Movement.update()
@@ -21,6 +24,24 @@ function Movement.update()
     end
 
     Movement.StepRate = step_rate
+
+    if Map.Movement.Type == GameSettings.Movement.Overworld and
+        emulator:button_pressed("B") then
+        Movement.Speed = get_speed(Constants.Speed.OverworldRun)
+    elseif Map.Movement.Type == GameSettings.Movement.Overworld then
+        Movement.peed = get_speed(Constants.Speed.Overworld)
+    elseif Map.Movement.Type == GameSettings.Movement.Normal or
+        Map.Movement.Type == GameSettings.Movement.ShipNormal then
+        Movement.Speed = get_speed(Constants.Speed.Town)
+    elseif Map.Movement.Type == GameSettings.Movement.ShipOverworld then
+        Movement.Speed = get_speed(Constants.Speed.Ship)
+    elseif Map.Movement.Type == GameSettings.Movement.ShipHover then
+        Movement.Speed = get_speed(Constants.Speed.HoverShip)
+    end
+
+    if Movement.FastTravel and emulator:button_pressed("L") then
+        Movement.speed_up()
+    end
 end
 
 function Movement.draw()
@@ -70,4 +91,21 @@ end
 function normalize_step_rate(rate)
     if rate >= 0xFFFF0000 then rate = rate - 0xFFFFFFFF end
     return math.floor((0xFFFF - rate) / 0xFF0)
+end
+
+function get_speed(speed)
+    local s = {X = 0, Y = 0, Z = 0}
+    if emulator:button_pressed("down") then s.Y = s.Y + speed end
+    if emulator:button_pressed("up") then s.Y = s.Y - speed end
+    if emulator:button_pressed("left") then s.X = s.X - speed end
+    if emulator:button_pressed("right") then s.X = s.X + speed end
+    return s
+end
+
+function Movement.speed_up()
+    Map.Coordinates.X = Map.Coordinates.X + Movement.Speed.X
+    Map.Coordinates.Y = Map.Coordinates.Y + Movement.Speed.Y
+    -- Map.Coordinates.Z = Map.Coordinates.Z + Movement.Speed.Z
+
+    Map.set_current_coordinates()
 end

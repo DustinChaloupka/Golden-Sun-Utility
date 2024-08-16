@@ -10,13 +10,13 @@ local Game = {
 }
 
 function Game:check_analysis_trigger()
-    if emulator:key_pressed("M") then
-        self.encounters:toggle_analysis_enabled()
-        self.movement:toggle_analysis_enabled()
-        self.random_number.battle:toggle_analysis_enabled()
-        self.random_number.general:toggle_analysis_enabled()
-        self.timer.battle:toggle_analysis_enabled()
-    end
+    -- if emulator:key_pressed("M") then
+    -- self.encounters:toggle_analysis_enabled()
+    -- self.movement:toggle_analysis_enabled()
+    -- self.random_number.battle:toggle_analysis_enabled()
+    -- self.random_number.general:toggle_analysis_enabled()
+    -- self.timer.battle:toggle_analysis_enabled()
+    -- end
 end
 
 -- Manage encounters
@@ -24,8 +24,8 @@ function Game:encounter_checks()
     -- if emulator:key_pressed("E") then self.encounters:toggle_disabled() end
     if emulator:key_pressed("L") then
         self.encounters:next_psynergy_analysis()
-        self.encounters:toggle_avoid_information()
-        self.party:toggle_avoid_information()
+        -- self.encounters:toggle_avoid_information()
+        -- self.party:toggle_avoid_information()
     end
 
     if emulator:key_pressed("J") then
@@ -34,15 +34,15 @@ function Game:encounter_checks()
 
     -- self.encounters:maybe_disable()
 
-    local zone_one, zone_two = self.map:get_zones()
-    local zone_id = zone_one ~= 0 and zone_one or zone_two
-    self.encounters:draw(self.movement.type:is_overworld(), zone_id)
+    -- local zone_one, zone_two = self.map:get_zones()
+    -- local zone_id = zone_one ~= 0 and zone_one or zone_two
+    -- self.encounters:draw(self.movement.type:is_overworld(), zone_id)
     -- if not self.encounters.analysis.is_enabled then
     --    self.party:draw_party_level()
     -- end
-    self.encounters:draw_analysis(self.random_number.battle,
-                                  self.random_number.general, zone_id,
-                                  self.party:get_front_average_level())
+    -- self.encounters:draw_analysis(self.random_number.battle,
+    --                              self.random_number.general, zone_id,
+    --                              self.party:get_front_average_level())
 end
 
 function Game:movement_checks()
@@ -70,29 +70,29 @@ end
 -- Hold L to go fast
 local settings = require("config.settings")
 function Game:fast_travel()
-    if emulator:button_pressed("L") and not self.transition:is_in_progress() then
-        local speed = self.movement.type:speed_up()
+    -- if emulator:button_pressed("L") and not self.transition:is_in_progress() then
+    --     local speed = self.movement.type:speed_up()
 
-        if speed then self.camera:add_speed(speed) end
+    --     if speed then self.camera:add_speed(speed) end
 
-        -- if not settings.encounters_if_fast_travel then
-        -- self.encounters:disable()
-        -- end
-    end
+    --     -- if not settings.encounters_if_fast_travel then
+    --     -- self.encounters:disable()
+    --     -- end
+    -- end
 end
 
 function Game:battle_checks()
-    self.timer.battle:draw_battle()
-    self.party:draw_battle()
-    self.encounters:draw_battle(self.random_number.general,
-                                self.party:get_front_average_level())
+    -- self.timer.battle:draw_battle()
+    -- self.party:draw_battle()
+    -- self.encounters:draw_battle(self.random_number.general,
+    --                            self.party:get_front_average_level())
 end
 
 function Game:timer_checks()
-    if emulator:key_pressed("T") then self.timer.battle:toggle() end
-    if emulator:key_pressed("Q") then self.timer.general:toggle() end
-    if emulator:key_pressed("W") then self.timer.general:toggle_pause() end
-    self.timer.general:draw()
+    -- if emulator:key_pressed("T") then self.timer.battle:toggle() end
+    -- if emulator:key_pressed("Q") then self.timer.general:toggle() end
+    -- if emulator:key_pressed("W") then self.timer.general:toggle_pause() end
+    -- self.timer.general:draw()
 end
 
 function Game:map_checks() self.timer.battle:draw() end

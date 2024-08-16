@@ -8,3 +8,11 @@ Constants.ButtonImages = {
     NO = "goldensun/images/no.png",
     YES = "goldensun/images/yes.png"
 }
+
+Constants.Speed = {
+    Town = 3,
+    Overworld = 3,
+    OverworldRun = 4,
+    Ship = 3,
+    HoverShip = 5
+}
