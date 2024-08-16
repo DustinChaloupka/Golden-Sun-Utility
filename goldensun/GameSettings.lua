@@ -59,7 +59,13 @@ GameSettings.Character = {}
 
 GameSettings.Party = {Order = 0x02000458}
 
-GameSettings.Camera = {Address = 0x03001300, XOffset = 0x2, YOffset = 0xA}
+GameSettings.Camera = {
+    Address = 0x03001300,
+    XOffset = 0x2,
+    YOffset = 0xA,
+
+    ZoomLock = 0x03001169
+}
 
 GameSettings.Map = {
     Number = 0x02000428,

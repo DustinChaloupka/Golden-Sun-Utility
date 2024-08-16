@@ -3,11 +3,13 @@ Camera = {}
 Camera.Coordinates = {Address = 0x03001300, X = 0x0, Y = 0x0}
 
 function Camera.update()
+    if Movement.FastTravel.Enabled then Camera.lock_zoom() end
+
     Camera.Coordinates.Address =
         emulator:read_dword(GameSettings.Camera.Address)
 
     Camera.update_current_coordinates()
-    if Movement.FastTravel and emulator:button_pressed("L") then
+    if Movement.FastTravel.Enabled and emulator:button_pressed("L") then
         Camera.speed_up()
     end
 end
@@ -28,4 +30,10 @@ function Camera.speed_up()
                              GameSettings.Camera.XOffset, Camera.Coordinates.X)
     emulator:write_dword(Camera.Coordinates.Address +
                              GameSettings.Camera.YOffset, Camera.Coordinates.Y)
+end
+
+function Camera.lock_zoom()
+    if not State.in_menu() and State.on_overworld() then
+        emulator:write_byte(GameSettings.Camera.ZoomLock, 2)
+    end
 end

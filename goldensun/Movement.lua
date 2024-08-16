@@ -39,7 +39,7 @@ function Movement.update()
         Movement.Speed = get_speed(Constants.Speed.HoverShip)
     end
 
-    if Movement.FastTravel and emulator:button_pressed("L") then
+    if Movement.FastTravel.Enabled and emulator:button_pressed("L") then
         Movement.speed_up()
     end
 end
