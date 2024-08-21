@@ -160,6 +160,12 @@ Info.sections = {
                 Map.Coordinates.UpdateNeeded = true
                 Camera.Coordinates.UpdateNeeded = true
             end
+
+            if emulator:button_pressed("L") and emulator:button_pressed("B") and
+                State.on_overworld() and State.in_menu() then
+                emulator:write_dword(GameSettings.Map.BoatOverworldX,
+                                     Map.Coordinates.X)
+            end
         end,
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 360, 5},
         getText = function()
@@ -174,6 +180,12 @@ Info.sections = {
             if State.on_overworld_map() and emulator:button_pressed("A") then
                 Map.Coordinates.UpdateNeeded = true
                 Camera.Coordinates.UpdateNeeded = true
+            end
+
+            if emulator:button_pressed("L") and emulator:button_pressed("B") and
+                State.on_overworld() and State.in_menu() then
+                emulator:write_dword(GameSettings.Map.BoatOverworldY,
+                                     Map.Coordinates.Y)
             end
         end,
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 360, 20},

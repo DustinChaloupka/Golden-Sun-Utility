@@ -125,12 +125,6 @@ function Map.update()
                                  Map.Overworld.Map.Y)
         end
 
-        -- Boat
-        emulator:write_dword(GameSettings.Map.BoatOverworldX,
-                             Map.Overworld.Map.X)
-        emulator:write_dword(GameSettings.Map.BoatOverworldY,
-                             Map.Overworld.Map.Y)
-
         Map.Coordinates.UpdateNeeded = false
     end
 
