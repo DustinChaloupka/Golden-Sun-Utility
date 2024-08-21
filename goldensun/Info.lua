@@ -155,17 +155,33 @@ Info.sections = {
         end
     },
     playerX = {
+        checkInput = function()
+            if State.on_overworld_map() and emulator:button_pressed("A") then
+                Map.Coordinates.UpdateNeeded = true
+                Camera.Coordinates.UpdateNeeded = true
+            end
+        end,
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 360, 5},
         getText = function()
             if State.in_battle() then return "" end
-            return "X: " .. string.format("0x%x", Map.Coordinates.X)
+            local x = Map.Coordinates.X
+            if State.on_overworld_map() then x = Map.Overworld.Map.X end
+            return "X: " .. string.format("0x%x", x)
         end
     },
     playerY = {
+        checkInput = function()
+            if State.on_overworld_map() and emulator:button_pressed("A") then
+                Map.Coordinates.UpdateNeeded = true
+                Camera.Coordinates.UpdateNeeded = true
+            end
+        end,
         coords = {Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 360, 20},
         getText = function()
             if State.in_battle() then return "" end
-            return "Y: " .. string.format("0x%x", Map.Coordinates.Y)
+            local y = Map.Coordinates.Y
+            if State.on_overworld_map() then y = Map.Overworld.Map.Y end
+            return "Y: " .. string.format("0x%x", y)
         end
     },
     retreat = {

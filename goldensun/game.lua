@@ -98,13 +98,13 @@ end
 function Game:map_checks() self.timer.battle:draw() end
 
 function Game:maybe_get_teleport_location()
-    if self.overworld_map:is_teleport_available() and
-        emulator:button_pressed("A") then
-        local cursor_location = self.overworld_map:get_teleport_location()
-        local location = self:calculate_map_location(cursor_location)
+    -- if self.overworld_map:is_teleport_available() and
+    --     emulator:button_pressed("A") then
+    --     local cursor_location = self.overworld_map:get_teleport_location()
+    --     local location = self:calculate_map_location(cursor_location)
 
-        return location
-    end
+    --     return location
+    -- end
 end
 
 -- The state takes a bit to change, but the map changes right away?
@@ -122,12 +122,12 @@ end
 
 -- Press A on world map to teleport to cursor
 function Game:teleport_to_cursor()
-    local location = self:maybe_get_teleport_location()
+    -- local location = self:maybe_get_teleport_location()
 
-    if location then
-        self.field_player:set_overworld_location(location)
-        self.camera:set_location(location)
-    end
+    -- if location then
+    --     self.field_player:set_overworld_location(location)
+    --     self.camera:set_location(location)
+    -- end
 end
 
 function game.new(o)

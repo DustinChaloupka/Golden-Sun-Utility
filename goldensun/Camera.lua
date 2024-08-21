@@ -1,9 +1,25 @@
 Camera = {}
 
-Camera.Coordinates = {Address = 0x03001300, X = 0x0, Y = 0x0}
+Camera.Coordinates = {
+    Address = 0x03001300,
+    UpdateNeeded = false,
+    X = 0x0,
+    Y = 0x0
+}
 
 function Camera.update()
     if Movement.FastTravel.Enabled then Camera.lock_zoom() end
+
+    if Camera.Coordinates.UpdateNeeded and not State.on_overworld_map() then
+        emulator:write_dword(Camera.Coordinates.Address +
+                                 GameSettings.Camera.XOffset,
+                             Map.Overworld.Map.X)
+        emulator:write_dword(Camera.Coordinates.Address +
+                                 GameSettings.Camera.YOffset,
+                             Map.Overworld.Map.Y)
+
+        Camera.Coordinates.UpdateNeeded = false
+    end
 
     Camera.Coordinates.Address =
         emulator:read_dword(GameSettings.Camera.Address)

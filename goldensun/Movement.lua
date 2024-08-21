@@ -29,7 +29,7 @@ function Movement.update()
         emulator:button_pressed("B") then
         Movement.Speed = get_speed(Constants.Speed.OverworldRun)
     elseif Map.Movement.Type == GameSettings.Movement.Overworld then
-        Movement.peed = get_speed(Constants.Speed.Overworld)
+        Movement.Speed = get_speed(Constants.Speed.Overworld)
     elseif Map.Movement.Type == GameSettings.Movement.Normal or
         Map.Movement.Type == GameSettings.Movement.ShipNormal then
         Movement.Speed = get_speed(Constants.Speed.Town)

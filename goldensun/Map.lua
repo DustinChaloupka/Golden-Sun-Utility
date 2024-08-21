@@ -1,6 +1,8 @@
 Map = {}
 
-Map.Coordinates = {}
+Map.Coordinates = {UpdateNeeded = false}
+
+Map.Overworld = {Map = {X = 0, Y = 0, Enabled = false}}
 
 Map.Movement = {}
 
@@ -112,6 +114,26 @@ function Map.update()
                                                           .TileAddress)
 
     Map.Movement.Type = emulator:read_byte(GameSettings.Movement.Type)
+
+    if Map.Coordinates.UpdateNeeded and not State.on_overworld_map() then
+        if not (Map.Movement.Type == GameSettings.Movement.ShipOverworld) and
+            not (Map.Movement.Type == GameSettings.Movement.ShipHover) and
+            not (Map.Movement.Type == GameSettings.Movement.ShipNormal) then
+            emulator:write_dword(GameSettings.Map.OverworldX,
+                                 Map.Overworld.Map.X)
+            emulator:write_dword(GameSettings.Map.OverworldY,
+                                 Map.Overworld.Map.Y)
+        end
+
+        -- Boat
+        emulator:write_dword(GameSettings.Map.BoatOverworldX,
+                             Map.Overworld.Map.X)
+        emulator:write_dword(GameSettings.Map.BoatOverworldY,
+                             Map.Overworld.Map.Y)
+
+        Map.Coordinates.UpdateNeeded = false
+    end
+
     Map.update_current_coordinates()
     if Map.Tile.CurrentTileAddress == Map.Tile.PreviousTileAddress then
         return
@@ -143,6 +165,15 @@ function Map.update_current_coordinates()
     elseif Map.Movement.Type == GameSettings.Movement.ShipOverworld then
         Map.Coordinates.X = emulator:read_dword(GameSettings.Map.OverworldShipX)
         Map.Coordinates.Y = emulator:read_dword(GameSettings.Map.OverworldShipY)
+    end
+
+    if State.on_overworld_map() and not Map.Coordinates.UpdateNeeded then
+        -- How are these calculated?
+        local x = emulator:read_word(GameSettings.Map.OverworldMapX)
+        Map.Overworld.Map.X = math.floor(emulator:lshift(x + 269, 14) / 853)
+
+        local y = emulator:read_word(GameSettings.Map.OverworldMapY)
+        Map.Overworld.Map.Y = math.floor(emulator:lshift(y + 112, 14) / 640)
     end
 end
 

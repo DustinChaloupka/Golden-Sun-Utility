@@ -58,16 +58,16 @@ end
 
 -- Press A on world map to teleport to cursor
 function TLA:teleport_to_cursor()
-    local location = self:maybe_get_teleport_location()
+    -- local location = self:maybe_get_teleport_location()
 
-    if location then
-        if self.movement.type:is_ship() then
-            self.ship:set_overworld_location(location)
-        else
-            self.field_player:set_overworld_location(location)
-        end
-        self.camera:set_location(location)
-    end
+    -- if location then
+    --     if self.movement.type:is_ship() then
+    --         self.ship:set_overworld_location(location)
+    --     else
+    --         self.field_player:set_overworld_location(location)
+    --     end
+    --     self.camera:set_location(location)
+    -- end
 end
 
 setmetatable(tla, {__index = TLA})

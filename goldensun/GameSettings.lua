@@ -92,7 +92,14 @@ GameSettings.Map = {
     OverworldShipX = 0x02032242,
     OverworldShipY = 0x0203224A,
 
-    BattleBackgroundFunction = 0x080CA514
+    BattleBackgroundFunction = 0x080CA514,
+
+    OverworldMapEnabled = 0x02030CA2,
+    OverworldMapX = 0x0202A006,
+    OverworldMapY = 0x0202A00A,
+
+    BoatOverworldX = 0x02032242,
+    BoatOverworldY = 0x0203224A
 }
 
 GameSettings.Layer = {Offset = {0x138, 0x170, 0x1a8}}

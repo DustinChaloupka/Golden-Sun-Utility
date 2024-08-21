@@ -27,3 +27,7 @@ end
 function State.on_overworld()
     return emulator:read_word(GameSettings.Map.Number) == 2
 end
+
+function State.on_overworld_map()
+    return emulator:read_byte(GameSettings.Map.OverworldMapEnabled) == 1
+end
