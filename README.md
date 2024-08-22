@@ -4,19 +4,21 @@
 
 Download the files either from the releases page or clone it. In your emulator, load the `main.lua` file.
 
-
 ### Game Support
 
-This should currently support the following games:
-- Golden Sun (The Broken Seal)
+This currently support:
 - Golden Sun: The Lost Age
+
+In the future, will support:
+- Golden Sun (The Broken Seal)
 
 ### Emulator Support
 
-This should currently support the following emulators:
-- VBA-rr v24
-- BizHawk 2.8
+This currently supports the following emulators:
+- BizHawk 2.9+
 
 ### Acknowledgements
 
-A big thanks to Dyrati, FX, Plexa, Salanewt, Teawater and many others for creating documentation for memory locations and the initial scripts this is based on!
+The Golden Sun Hacking and Speedrun Community has put together great documentation and scripts that helped as the foundation as well as any questions that have come up. Special thanks to DriftingPancake, Dyrati, FX, Plexa, Salanewt, Teawater and many others.
+
+The layout and implementation had heavy influence from the [Ironmon Tracker](https://github.com/besteon/Ironmon-Tracker) project.
