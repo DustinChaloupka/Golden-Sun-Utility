@@ -2,7 +2,9 @@ Encounters = {enabled = true}
 
 Encounters.Tile = {}
 
-Encounters.Info = {
+Encounters.RandomNumber = {Advance = 0}
+
+Encounters.Templates = {
     enemies = {
         type = Constants.ButtonTypes.BORDERED,
         box = {
@@ -26,8 +28,291 @@ Encounters.Info = {
                 end
             }
         end
+    },
+    Buttons = {
+        move = {
+            type = Constants.ButtonTypes.BORDERED,
+            box = {
+                Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5, 350,
+                35, 20
+            },
+            border_color = 0xFFFFFFFF,
+            fill_color = nil,
+            on_border_color = 0xFF000000,
+            off_border_color = 0xFFFFFFFF,
+            preDraw = function(self)
+                if Encounters.RandomNumber.Advance == GameSettings.Psynergy.Move then
+                    self.border_color = self.on_border_color
+                else
+                    self.border_color = self.off_border_color
+                end
+            end,
+            getText = function() return "Move" end,
+            onClick = function(self)
+                if Encounters.RandomNumber.Advance ~= GameSettings.Psynergy.Move then
+                    Encounters.RandomNumber.Advance = GameSettings.Psynergy.Move
+                else
+                    Encounters.RandomNumber.Advance = 0
+                end
+            end
+        },
+        lash = {
+            type = Constants.ButtonTypes.BORDERED,
+            box = {
+                Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 45, 350,
+                35, 20
+            },
+            border_color = 0xFFFFFFFF,
+            fill_color = nil,
+            on_border_color = 0xFF000000,
+            off_border_color = 0xFFFFFFFF,
+            preDraw = function(self)
+                if Encounters.RandomNumber.Advance == GameSettings.Psynergy.Lash then
+                    self.border_color = self.on_border_color
+                else
+                    self.border_color = self.off_border_color
+                end
+            end,
+            getText = function() return "Lash" end,
+            onClick = function(self)
+                if Encounters.RandomNumber.Advance ~= GameSettings.Psynergy.Lash then
+                    Encounters.RandomNumber.Advance = GameSettings.Psynergy.Lash
+                else
+                    Encounters.RandomNumber.Advance = 0
+                end
+            end
+        },
+        scoop = {
+            type = Constants.ButtonTypes.BORDERED,
+            box = {
+                Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 85, 350,
+                45, 20
+            },
+            border_color = 0xFFFFFFFF,
+            fill_color = nil,
+            on_border_color = 0xFF000000,
+            off_border_color = 0xFFFFFFFF,
+            preDraw = function(self)
+                if Encounters.RandomNumber.Advance ==
+                    GameSettings.Psynergy.Scoop then
+                    self.border_color = self.on_border_color
+                else
+                    self.border_color = self.off_border_color
+                end
+            end,
+            getText = function() return "Scoop" end,
+            onClick = function(self)
+                if Encounters.RandomNumber.Advance ~=
+                    GameSettings.Psynergy.Scoop then
+                    Encounters.RandomNumber.Advance =
+                        GameSettings.Psynergy.Scoop
+                else
+                    Encounters.RandomNumber.Advance = 0
+                end
+            end
+        },
+        frost = {
+            type = Constants.ButtonTypes.BORDERED,
+            box = {
+                Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 135, 350,
+                45, 20
+            },
+            border_color = 0xFFFFFFFF,
+            fill_color = nil,
+            on_border_color = 0xFF000000,
+            off_border_color = 0xFFFFFFFF,
+            preDraw = function(self)
+                if Encounters.RandomNumber.Advance ==
+                    GameSettings.Psynergy.Frost then
+                    self.border_color = self.on_border_color
+                else
+                    self.border_color = self.off_border_color
+                end
+            end,
+            getText = function() return "Frost" end,
+            onClick = function(self)
+                if Encounters.RandomNumber.Advance ~=
+                    GameSettings.Psynergy.Frost then
+                    Encounters.RandomNumber.Advance =
+                        GameSettings.Psynergy.Frost
+                else
+                    Encounters.RandomNumber.Advance = 0
+                end
+            end
+        },
+        pound = {
+            type = Constants.ButtonTypes.BORDERED,
+            box = {
+                Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 185, 350,
+                45, 20
+            },
+            border_color = 0xFFFFFFFF,
+            fill_color = nil,
+            on_border_color = 0xFF000000,
+            off_border_color = 0xFFFFFFFF,
+            preDraw = function(self)
+                if Encounters.RandomNumber.Advance ==
+                    GameSettings.Psynergy.Pound then
+                    self.border_color = self.on_border_color
+                else
+                    self.border_color = self.off_border_color
+                end
+            end,
+            getText = function() return "Pound" end,
+            onClick = function(self)
+                if Encounters.RandomNumber.Advance ~=
+                    GameSettings.Psynergy.Pound then
+                    Encounters.RandomNumber.Advance =
+                        GameSettings.Psynergy.Pound
+                else
+                    Encounters.RandomNumber.Advance = 0
+                end
+            end
+        },
+        growth = {
+            type = Constants.ButtonTypes.BORDERED,
+            box = {
+                Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 235, 350,
+                55, 20
+            },
+            border_color = 0xFFFFFFFF,
+            fill_color = nil,
+            on_border_color = 0xFF000000,
+            off_border_color = 0xFFFFFFFF,
+            preDraw = function(self)
+                if Encounters.RandomNumber.Advance ==
+                    GameSettings.Psynergy.Growth then
+                    self.border_color = self.on_border_color
+                else
+                    self.border_color = self.off_border_color
+                end
+            end,
+            getText = function() return "Growth" end,
+            onClick = function(self)
+                if Encounters.RandomNumber.Advance ~=
+                    GameSettings.Psynergy.Growth then
+                    Encounters.RandomNumber.Advance =
+                        GameSettings.Psynergy.Growth
+                else
+                    Encounters.RandomNumber.Advance = 0
+                end
+            end
+        },
+        cyclone = {
+            type = Constants.ButtonTypes.BORDERED,
+            box = {
+                Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 295, 350,
+                60, 20
+            },
+            border_color = 0xFFFFFFFF,
+            fill_color = nil,
+            on_border_color = 0xFF000000,
+            off_border_color = 0xFFFFFFFF,
+            preDraw = function(self)
+                if Encounters.RandomNumber.Advance ==
+                    GameSettings.Psynergy.Cyclone then
+                    self.border_color = self.on_border_color
+                else
+                    self.border_color = self.off_border_color
+                end
+            end,
+            getText = function() return "Cyclone" end,
+            onClick = function(self)
+                if Encounters.RandomNumber.Advance ~=
+                    GameSettings.Psynergy.Cyclone then
+                    Encounters.RandomNumber.Advance =
+                        GameSettings.Psynergy.Cyclone
+                else
+                    Encounters.RandomNumber.Advance = 0
+                end
+            end
+        },
+        douse = {
+            type = Constants.ButtonTypes.BORDERED,
+            box = {
+                Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 360, 350,
+                45, 20
+            },
+            border_color = 0xFFFFFFFF,
+            fill_color = nil,
+            on_border_color = 0xFF000000,
+            off_border_color = 0xFFFFFFFF,
+            preDraw = function(self)
+                if Encounters.RandomNumber.Advance ==
+                    GameSettings.Psynergy.Douse then
+                    self.border_color = self.on_border_color
+                else
+                    self.border_color = self.off_border_color
+                end
+            end,
+            getText = function() return "Douse" end,
+            onClick = function(self)
+                if Encounters.RandomNumber.Advance ~=
+                    GameSettings.Psynergy.Douse then
+                    Encounters.RandomNumber.Advance =
+                        GameSettings.Psynergy.Douse
+                else
+                    Encounters.RandomNumber.Advance = 0
+                end
+            end
+        },
+        sand = {
+            type = Constants.ButtonTypes.BORDERED,
+            box = {
+                Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 410, 350,
+                35, 20
+            },
+            border_color = 0xFFFFFFFF,
+            fill_color = nil,
+            on_border_color = 0xFF000000,
+            off_border_color = 0xFFFFFFFF,
+            preDraw = function(self)
+                if Encounters.RandomNumber.Advance == GameSettings.Psynergy.Sand then
+                    self.border_color = self.on_border_color
+                else
+                    self.border_color = self.off_border_color
+                end
+            end,
+            getText = function() return "Sand" end,
+            onClick = function(self)
+                if Encounters.RandomNumber.Advance ~= GameSettings.Psynergy.Sand then
+                    Encounters.RandomNumber.Advance = GameSettings.Psynergy.Sand
+                else
+                    Encounters.RandomNumber.Advance = 0
+                end
+            end
+        },
+        lift = {
+            type = Constants.ButtonTypes.BORDERED,
+            box = {
+                Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 450, 350,
+                35, 20
+            },
+            border_color = 0xFFFFFFFF,
+            fill_color = nil,
+            on_border_color = 0xFF000000,
+            off_border_color = 0xFFFFFFFF,
+            preDraw = function(self)
+                if Encounters.RandomNumber.Advance == GameSettings.Psynergy.Lift then
+                    self.border_color = self.on_border_color
+                else
+                    self.border_color = self.off_border_color
+                end
+            end,
+            getText = function() return "Lift" end,
+            onClick = function(self)
+                if Encounters.RandomNumber.Advance ~= GameSettings.Psynergy.Lift then
+                    Encounters.RandomNumber.Advance = GameSettings.Psynergy.Lift
+                else
+                    Encounters.RandomNumber.Advance = 0
+                end
+            end
+        }
     }
 }
+
+Encounters.Buttons = {}
+
 function Encounters.check() if not Encounters.enabled then Encounters.lock() end end
 
 function Encounters.lock()
@@ -37,7 +322,7 @@ end
 function Encounters.draw()
     if State.in_battle() then return end
 
-    Drawing.drawButtons(Encounters.Info.Buttons)
+    Drawing.drawButtons(Encounters.Buttons)
 end
 
 function Encounters.update()
@@ -49,8 +334,10 @@ function Encounters.update()
         Encounters.update_encounter_groups()
     end
 
-    if Encounters.previous_grn ~= RandomNumber.General.Value then
+    if (Encounters.previous_grn ~= RandomNumber.General.Value) or
+        (Encounters.previous_advance ~= Encounters.RandomNumber.Advance) then
         Encounters.previous_grn = RandomNumber.General.Value
+        Encounters.previous_advance = Encounters.RandomNumber.Advance
         Encounters.update_encounter_groups()
     end
 
@@ -61,17 +348,19 @@ function Encounters.update()
 end
 
 function Encounters.update_encounter_groups()
-    Encounters.Info.Buttons = {}
+    Encounters.Buttons = Encounters.Templates.Buttons
 
     local zone = Map.get_encounter_index()
 
     if zone == 0 then return end
 
+    local psynergy_grn = RandomNumber.next(RandomNumber.General.Value,
+                                           Encounters.RandomNumber.Advance)
+
     local encounter_data = GameSettings.Encounters.Data[zone]
     for i = 1, 8 do
         local rn_advances = i - 1
-        local encounter_rn = RandomNumber.next(RandomNumber.General.Value,
-                                               rn_advances)
+        local encounter_rn = RandomNumber.next(psynergy_grn, rn_advances)
 
         local rate = Movement.StepRate
         if rate == 0 then
@@ -137,12 +426,13 @@ function Encounters.update_encounter_groups()
             y_offset = 100
         end
 
-        Encounters.Info.Buttons[i] = {
-            type = Encounters.Info.enemies.type,
+        Encounters.Buttons[i] = {
+            type = Encounters.Templates.enemies.type,
             box = {
-                Encounters.Info.enemies.box[1] + x_offset,
-                Encounters.Info.enemies.box[2] + y_offset,
-                Encounters.Info.enemies.box[3], Encounters.Info.enemies.box[4]
+                Encounters.Templates.enemies.box[1] + x_offset,
+                Encounters.Templates.enemies.box[2] + y_offset,
+                Encounters.Templates.enemies.box[3],
+                Encounters.Templates.enemies.box[4]
             },
             rn_advances = rn_advances,
             enemies = enemies,

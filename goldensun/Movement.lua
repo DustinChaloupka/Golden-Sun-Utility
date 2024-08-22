@@ -49,10 +49,11 @@ function Movement.draw()
 end
 
 function Movement.update_step_rates()
+    local psynergy_grn = RandomNumber.next(RandomNumber.General.Value,
+                                           Encounters.RandomNumber.Advance)
     for i = 0, 7 do
-        local rate = Movement.predict_step_rate(RandomNumber.next(
-                                                    RandomNumber.General.Value,
-                                                    i))
+        local rate = Movement.predict_step_rate(
+                         RandomNumber.next(psynergy_grn, i))
 
         local x_offset = i * 120
         local y_offset = 0

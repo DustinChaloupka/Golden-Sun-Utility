@@ -22,15 +22,15 @@ end
 -- Manage encounters
 function Game:encounter_checks()
     -- if emulator:key_pressed("E") then self.encounters:toggle_disabled() end
-    if emulator:key_pressed("L") then
-        self.encounters:next_psynergy_analysis()
-        -- self.encounters:toggle_avoid_information()
-        -- self.party:toggle_avoid_information()
-    end
+    -- if emulator:key_pressed("L") then
+    --     self.encounters:next_psynergy_analysis()
+    -- self.encounters:toggle_avoid_information()
+    -- self.party:toggle_avoid_information()
+    -- end
 
-    if emulator:key_pressed("J") then
-        self.encounters:previous_psynergy_analysis()
-    end
+    -- if emulator:key_pressed("J") then
+    --     self.encounters:previous_psynergy_analysis()
+    -- end
 
     -- self.encounters:maybe_disable()
 
@@ -95,7 +95,9 @@ function Game:timer_checks()
     -- self.timer.general:draw()
 end
 
-function Game:map_checks() self.timer.battle:draw() end
+function Game:map_checks()
+    -- self.timer.battle:draw() 
+end
 
 function Game:maybe_get_teleport_location()
     -- if self.overworld_map:is_teleport_available() and

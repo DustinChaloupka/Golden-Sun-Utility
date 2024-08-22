@@ -34,6 +34,19 @@ GameSettings.Encounters = {
     }
 }
 
+GameSettings.Psynergy = {
+    Move = 295,
+    Lash = 144,
+    Scoop = 80,
+    Frost = 96,
+    Pound = 248,
+    Growth = 63,
+    Cyclone = 480,
+    Douse = 20,
+    Sand = 256,
+    Lift = 72
+}
+
 GameSettings.Characters = {
     [0] = "Isaac",
     [1] = "Garet",

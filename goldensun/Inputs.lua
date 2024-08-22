@@ -38,6 +38,8 @@ function Inputs.checkMouseInput(mouse_x, mouse_y)
 
     if State.in_battle() then
         Inputs.checkButtonsClicked(mouse_x, mouse_y, Battle.Buttons)
+    else
+        Inputs.checkButtonsClicked(mouse_x, mouse_y, Encounters.Buttons)
     end
 end
 

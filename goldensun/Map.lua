@@ -24,7 +24,7 @@ Map.Overlay = {
     current_tile_color = 0xFF00FF00
 }
 
-Map.buttons = {
+Map.Buttons = {
     layer1 = {
         text = "Layer 1",
         type = Constants.ButtonTypes.BORDERED,
@@ -142,7 +142,8 @@ function Map.draw()
         not State.in_battle() and not State.in_menu() and
         Map.Tile.CurrentTileAddress ~= 0x0 then
         draw_overlay()
-        draw_options()
+
+        Drawing.drawButtons(Map.Buttons)
     end
 end
 
@@ -253,18 +254,6 @@ function draw_overlay()
         end
     end
     gui.use_surface("client")
-end
-
-function draw_options()
-    for _, button in pairs(Map.buttons) do
-        if button.preDraw ~= nil then button:preDraw() end
-
-        gui.drawRectangle(button.box[1], button.box[2], button.box[3],
-                          button.box[4], button.border_color)
-        gui.drawText(button.box[1] + 1, button.box[2] + 1, button.text,
-                     Drawing.Text.SHADOW_COLOR)
-        gui.drawText(button.box[1], button.box[2], button.text)
-    end
 end
 
 function get_overworld_zone()

@@ -25,6 +25,7 @@ end
 
 function Drawing.drawButton(button)
     if button.isVisible ~= nil and not button.isVisible() then return end
+    if button.preDraw ~= nil then button:preDraw() end
 
     local x = button.box[1]
     local y = button.box[2]

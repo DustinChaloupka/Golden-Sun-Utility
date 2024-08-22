@@ -49,10 +49,12 @@ function Flee.get_acs_for_rn(rn, attempt)
 end
 
 function Flee.update_analysis_acs()
-    if Encounters.Info.Buttons == nil then return end
+    if Encounters.Buttons[1] == nil then return end
 
+    local psynergy_grn = RandomNumber.next(RandomNumber.General.Value,
+                                           Encounters.RandomNumber.Advance)
     local rn_advances = 0
-    for i, encounter in ipairs(Encounters.Info.Buttons) do
+    for i, encounter in ipairs(Encounters.Buttons) do
         rn_advances = encounter.rn_advances
         local enemies = {}
         local j = 0
@@ -78,8 +80,7 @@ function Flee.update_analysis_acs()
         local enemy_average_level = Enemies.get_average_level(enemies)
         local attempt = Flee.get_attempt(enemy_average_level, 0)
 
-        local rn = RandomNumber.next(RandomNumber.General.Value,
-                                     (i - 1) + rn_advances)
+        local rn = RandomNumber.next(psynergy_grn, (i - 1) + rn_advances)
         local acs = Flee.get_acs_for_rn(rn, attempt)
 
         local x_offset = (i - 1) * 120
