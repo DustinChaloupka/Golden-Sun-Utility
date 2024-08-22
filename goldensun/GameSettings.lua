@@ -1,5 +1,7 @@
 GameSettings = {}
 
+GameSettings.Rom = {Address = 0x080000A0, TBS = 0x646C6F47, TLA = 0x444C4F47}
+
 GameSettings.RandomModifiers = {Agility = 0.0625}
 
 GameSettings.DebugMode = {address = 0x03001238}
@@ -556,6 +558,16 @@ GameSettings.Enemy = { -- Need to double check all these
 }
 
 function GameSettings.initialize()
+    local rom = emulator:read_dword(GameSettings.Rom.Address)
+    -- Actually load the differences
+    if rom == GameSettings.Rom.TBS then
+        print("Loading TBS...")
+    elseif rom == GameSettings.Rom.TLA then
+        print("Loading TLA...")
+    else
+        print("Bad ROM...")
+    end
+
     for id, name in pairs(GameSettings.Characters) do
         local base = GameSettings.PlayerCharacterData.BaseAddress +
                          GameSettings.PlayerCharacterData.CharacterOffset * id

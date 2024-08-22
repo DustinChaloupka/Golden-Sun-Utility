@@ -26,7 +26,6 @@ Map.Overlay = {
 
 Map.Buttons = {
     layer1 = {
-        text = "Layer 1",
         type = Constants.ButtonTypes.BORDERED,
         border_color = 0xFFFFFFFF,
         fill_color = nil,
@@ -34,7 +33,7 @@ Map.Buttons = {
         off_border_color = 0xFFFFFFFF,
         box = {
             Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5,
-            Constants.Screen.HEIGHT - Constants.Screen.DOWN_GAP - 20, 55, 15
+            Constants.Screen.HEIGHT - Constants.Screen.DOWN_GAP - 20, 60, 17
         },
         preDraw = function(self)
             if Map.Overlay.layer_offset == nil then
@@ -43,18 +42,18 @@ Map.Buttons = {
                 self.border_color = self.off_border_color
             end
         end,
+        getText = function() return "Layer 1" end,
         onClick = function(self) Map.Overlay.layer_offset = nil end
     },
     layer2 = {
-        text = "Layer 2",
         type = Constants.ButtonTypes.BORDERED,
         border_color = 0xFFFFFFFF,
         fill_color = nil,
         on_border_color = 0xFF000000,
         off_border_color = 0xFFFFFFFF,
         box = {
-            Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5 + 60,
-            Constants.Screen.HEIGHT - Constants.Screen.DOWN_GAP - 20, 55, 15
+            Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5 + 65,
+            Constants.Screen.HEIGHT - Constants.Screen.DOWN_GAP - 20, 60, 17
         },
         preDraw = function(self)
             if Map.Overlay.layer_offset == GameSettings.Layer.Offset[2] then
@@ -63,6 +62,7 @@ Map.Buttons = {
                 self.border_color = self.off_border_color
             end
         end,
+        getText = function() return "Layer 2" end,
         onClick = function(self)
             if Map.Overlay.layer_offset == GameSettings.Layer.Offset[2] then
                 Map.Overlay.layer_offset = nil
@@ -72,15 +72,14 @@ Map.Buttons = {
         end
     },
     layer3 = {
-        text = "Layer 3",
         type = Constants.ButtonTypes.BORDERED,
         border_color = 0xFFFFFFFF,
         fill_color = nil,
         on_border_color = 0xFF000000,
         off_border_color = 0xFFFFFFFF,
         box = {
-            Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5 + 120,
-            Constants.Screen.HEIGHT - Constants.Screen.DOWN_GAP - 20, 55, 15
+            Constants.Screen.WIDTH - Constants.Screen.RIGHT_GAP + 5 + 130,
+            Constants.Screen.HEIGHT - Constants.Screen.DOWN_GAP - 20, 60, 17
         },
         preDraw = function(self)
             if Map.Overlay.layer_offset == GameSettings.Layer.Offset[3] then
@@ -89,6 +88,7 @@ Map.Buttons = {
                 self.border_color = self.off_border_color
             end
         end,
+        getText = function() return "Layer 3" end,
         onClick = function(self)
             if Map.Overlay.layer_offset == GameSettings.Layer.Offset[3] then
                 Map.Overlay.layer_offset = nil

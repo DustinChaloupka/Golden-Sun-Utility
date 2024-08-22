@@ -11,7 +11,6 @@ local BizHawk = Emulator.new {
         start = "Start",
         select = "Select"
     },
-    gui = require("emulation.emulator.gui.dialog"),
     memory = memory
 }
 BizHawk.memory.readword = memory.read_u16_le

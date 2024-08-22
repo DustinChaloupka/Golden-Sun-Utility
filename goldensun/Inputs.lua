@@ -33,7 +33,7 @@ function Inputs.checkMouseInput(mouse_x, mouse_y)
     Inputs.checkButtonsClicked(mouse_x, mouse_y, Toggles.buttons)
 
     if Map.Overlay.enabled then
-        Inputs.checkButtonsClicked(mouse_x, mouse_y, Map.buttons)
+        Inputs.checkButtonsClicked(mouse_x, mouse_y, Map.Buttons)
     end
 
     if State.in_battle() then
